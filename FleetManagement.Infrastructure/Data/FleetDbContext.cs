@@ -9,6 +9,7 @@ public class FleetDbContext : DbContext
 
     // Core tables
     public DbSet<Vehicle> Vehicles { get; set; }
+    public DbSet<VehicleAssignment> VehicleAssignments { get; set; }
 
     // Dictionaries
     public DbSet<DcVehicleMake> VehicleMakes { get; set; }
@@ -19,12 +20,11 @@ public class FleetDbContext : DbContext
     public DbSet<Driver> Drivers { get; set; }
     public DbSet<DriverLicenseCategory> DriverLicenseCategories { get; set; }
     public DbSet<DcLicenseCategory> LicenseCategories { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // Tell EF Core to use the "fleet" schema
         modelBuilder.HasDefaultSchema("fleet");
 
-        // Vehicle table mapping
         modelBuilder.Entity<Vehicle>(entity =>
         {
             entity.ToTable("vehicle");
@@ -47,14 +47,12 @@ public class FleetDbContext : DbContext
             entity.Property(e => e.ModifiedAt).HasColumnName("modified_at");
             entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
 
-            // Relationships
             entity.HasOne(e => e.Make).WithMany().HasForeignKey(e => e.MakeId);
             entity.HasOne(e => e.Model).WithMany().HasForeignKey(e => e.ModelId);
             entity.HasOne(e => e.Category).WithMany().HasForeignKey(e => e.CategoryId);
             entity.HasOne(e => e.FuelType).WithMany().HasForeignKey(e => e.FuelTypeId);
         });
 
-        // Dictionary tables mapping
         modelBuilder.Entity<DcVehicleMake>(entity =>
         {
             entity.ToTable("dc_vehicle_make");
@@ -94,6 +92,7 @@ public class FleetDbContext : DbContext
             entity.Property(e => e.IsElectric).HasColumnName("is_electric");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
         });
+
         modelBuilder.Entity<Employee>(entity =>
         {
             entity.ToTable("employee");
@@ -157,6 +156,31 @@ public class FleetDbContext : DbContext
             entity.Property(e => e.Code).HasColumnName("code");
             entity.Property(e => e.Description).HasColumnName("description");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
+        });
+
+        // --- VehicleAssignment mapping ---
+        modelBuilder.Entity<VehicleAssignment>(entity =>
+        {
+            entity.ToTable("vehicle_assignment");
+            entity.HasKey(e => e.AssignmentId);
+            entity.Property(e => e.AssignmentId).HasColumnName("assignment_id");
+            entity.Property(e => e.VehicleId).HasColumnName("vehicle_id");
+            entity.Property(e => e.DriverId).HasColumnName("driver_id");
+            entity.Property(e => e.AssignedFrom).HasColumnName("assigned_from");
+            entity.Property(e => e.AssignedTo).HasColumnName("assigned_to");
+            entity.Property(e => e.Notes).HasColumnName("notes");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
+            entity.Property(e => e.ModifiedAt).HasColumnName("modified_at");
+            entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
+
+            entity.HasOne(e => e.Vehicle)
+                  .WithMany()
+                  .HasForeignKey(e => e.VehicleId);
+
+            entity.HasOne(e => e.Driver)
+                  .WithMany()
+                  .HasForeignKey(e => e.DriverId);
         });
     }
 }
