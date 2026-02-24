@@ -2,6 +2,8 @@ using FleetManagement.Application.Interfaces;
 using FleetManagement.Infrastructure.Data;
 using FleetManagement.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +17,8 @@ builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IDriverRepository, DriverRepository>();
 builder.Services.AddScoped<IVehicleAssignmentRepository, VehicleAssignmentRepository>(); // NEW
-
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateEmployeeValidator>();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -23,12 +26,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.MapGet("/test-db", async (FleetDbContext db) =>
-{
-    var makes = await db.VehicleMakes.Take(5).ToListAsync();
-    return Results.Ok(makes);
-});
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
