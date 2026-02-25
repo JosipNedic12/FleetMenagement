@@ -3,4 +3,3 @@ bin/
 obj/
 *.user
 appsettings.Development.json
-FleetManagement.API/appsettings.json
