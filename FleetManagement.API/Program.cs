@@ -80,6 +80,7 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
+builder.Services.AddScoped<IOdometerLogRepository, OdometerLogRepository>();
 
 var app = builder.Build();
 

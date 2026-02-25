@@ -21,6 +21,8 @@ public class FleetDbContext : DbContext
     public DbSet<DriverLicenseCategory> DriverLicenseCategories { get; set; }
     public DbSet<DcLicenseCategory> LicenseCategories { get; set; }
     public DbSet<AppUser> AppUsers { get; set; }
+    public DbSet<OdometerLog> OdometerLogs { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema("fleet");
@@ -201,6 +203,22 @@ public class FleetDbContext : DbContext
             entity.HasOne(e => e.Employee)
                   .WithMany()
                   .HasForeignKey(e => e.EmployeeId);
+        });
+        modelBuilder.Entity<OdometerLog>(entity =>
+        {
+            entity.ToTable("odometer_log");
+            entity.HasKey(e => e.LogId);
+            entity.Property(e => e.LogId).HasColumnName("log_id");
+            entity.Property(e => e.VehicleId).HasColumnName("vehicle_id");
+            entity.Property(e => e.OdometerKm).HasColumnName("odometer_km");
+            entity.Property(e => e.LogDate).HasColumnName("log_date");
+            entity.Property(e => e.Notes).HasColumnName("notes");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
+
+            entity.HasOne(e => e.Vehicle)
+                  .WithMany()
+                  .HasForeignKey(e => e.VehicleId);
         });
     }
 }
