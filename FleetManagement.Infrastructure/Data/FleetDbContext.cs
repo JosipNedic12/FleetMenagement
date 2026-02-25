@@ -26,6 +26,8 @@ public class FleetDbContext : DbContext
     public DbSet<MaintenanceOrder> MaintenanceOrders { get; set; }
     public DbSet<MaintenanceItem> MaintenanceItems { get; set; }
     public DbSet<DcMaintenanceType> MaintenanceTypes { get; set; }
+    public DbSet<FuelCard> FuelCards { get; set; }
+    public DbSet<FuelTransaction> FuelTransactions { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema("fleet");
@@ -305,5 +307,63 @@ public class FleetDbContext : DbContext
                   .WithMany()
                   .HasForeignKey(e => e.MaintenanceTypeId);
         });
+        modelBuilder.Entity<FuelCard>(entity =>
+        {
+            entity.ToTable("fuel_card");
+            entity.HasKey(e => e.FuelCardId);
+            entity.Property(e => e.FuelCardId).HasColumnName("fuel_card_id");
+            entity.Property(e => e.CardNumber).HasColumnName("card_number");
+            entity.Property(e => e.Provider).HasColumnName("provider");
+            entity.Property(e => e.AssignedVehicleId).HasColumnName("assigned_vehicle_id");
+            entity.Property(e => e.ValidFrom).HasColumnName("valid_from");
+            entity.Property(e => e.ValidTo).HasColumnName("valid_to");
+            entity.Property(e => e.IsActive).HasColumnName("is_active");
+            entity.Property(e => e.Notes).HasColumnName("notes");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
+            entity.Property(e => e.ModifiedAt).HasColumnName("modified_at");
+            entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
+
+            entity.HasOne(e => e.AssignedVehicle)
+                  .WithMany()
+                  .HasForeignKey(e => e.AssignedVehicleId);
+        });
+
+        modelBuilder.Entity<FuelTransaction>(entity =>
+        {
+            entity.ToTable("fuel_transaction");
+            entity.HasKey(e => e.TransactionId);
+            entity.Property(e => e.TransactionId).HasColumnName("transaction_id");
+            entity.Property(e => e.VehicleId).HasColumnName("vehicle_id");
+            entity.Property(e => e.FuelCardId).HasColumnName("fuel_card_id");
+            entity.Property(e => e.FuelTypeId).HasColumnName("fuel_type_id");
+            entity.Property(e => e.PostedAt).HasColumnName("posted_at");
+            entity.Property(e => e.OdometerKm).HasColumnName("odometer_km");
+            entity.Property(e => e.Liters).HasColumnName("liters");
+            entity.Property(e => e.PricePerLiter).HasColumnName("price_per_liter");
+            entity.Property(e => e.EnergyKwh).HasColumnName("energy_kwh");
+            entity.Property(e => e.PricePerKwh).HasColumnName("price_per_kwh");
+            entity.Property(e => e.TotalCost).HasColumnName("total_cost");
+            entity.Property(e => e.StationName).HasColumnName("station_name");
+            entity.Property(e => e.ReceiptNumber).HasColumnName("receipt_number");
+            entity.Property(e => e.IsSuspicious).HasColumnName("is_suspicious");
+            entity.Property(e => e.Notes).HasColumnName("notes");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
+
+            entity.HasOne(e => e.Vehicle)
+                  .WithMany()
+                  .HasForeignKey(e => e.VehicleId);
+
+            entity.HasOne(e => e.FuelCard)
+                  .WithMany()
+                  .HasForeignKey(e => e.FuelCardId);
+
+            entity.HasOne(e => e.FuelType)
+                  .WithMany()
+                  .HasForeignKey(e => e.FuelTypeId);
+        });
+
+
     }
 }

@@ -83,6 +83,8 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddScoped<IOdometerLogRepository, OdometerLogRepository>();
 builder.Services.AddScoped<IVendorRepository, VendorRepository>();
 builder.Services.AddScoped<IMaintenanceOrderRepository, MaintenanceOrderRepository>();
+builder.Services.AddScoped<IFuelCardRepository, FuelCardRepository>();
+builder.Services.AddScoped<IFuelTransactionRepository, FuelTransactionRepository>();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
