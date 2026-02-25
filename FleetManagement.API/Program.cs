@@ -81,7 +81,8 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 builder.Services.AddScoped<IOdometerLogRepository, OdometerLogRepository>();
-
+builder.Services.AddScoped<IVendorRepository, VendorRepository>();
+builder.Services.AddScoped<IMaintenanceOrderRepository, MaintenanceOrderRepository>();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

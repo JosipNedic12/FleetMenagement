@@ -89,4 +89,21 @@ public class LookupsController : ControllerBase
             .ToListAsync();
         return Ok(categories);
     }
+
+    [HttpGet("maintenance-types")]
+    [Authorize]
+    public async Task<ActionResult<IEnumerable<MaintenanceTypeDto>>> GetMaintenanceTypes()
+    {
+        var types = await _context.MaintenanceTypes
+            .Where(t => t.IsActive)
+            .OrderBy(t => t.Name)
+            .Select(t => new MaintenanceTypeDto
+            {
+                MaintenanceTypeId = t.MaintenanceTypeId,
+                Name = t.Name,
+                Description = t.Description
+            })
+            .ToListAsync();
+        return Ok(types);
+    }
 }

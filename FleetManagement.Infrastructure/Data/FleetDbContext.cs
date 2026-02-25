@@ -22,7 +22,10 @@ public class FleetDbContext : DbContext
     public DbSet<DcLicenseCategory> LicenseCategories { get; set; }
     public DbSet<AppUser> AppUsers { get; set; }
     public DbSet<OdometerLog> OdometerLogs { get; set; }
-
+    public DbSet<Vendor> Vendors { get; set; }
+    public DbSet<MaintenanceOrder> MaintenanceOrders { get; set; }
+    public DbSet<MaintenanceItem> MaintenanceItems { get; set; }
+    public DbSet<DcMaintenanceType> MaintenanceTypes { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema("fleet");
@@ -219,6 +222,88 @@ public class FleetDbContext : DbContext
             entity.HasOne(e => e.Vehicle)
                   .WithMany()
                   .HasForeignKey(e => e.VehicleId);
+        });
+        modelBuilder.Entity<Vendor>(entity =>
+        {
+            entity.ToTable("vendor");
+            entity.HasKey(e => e.VendorId);
+            entity.Property(e => e.VendorId).HasColumnName("vendor_id");
+            entity.Property(e => e.Name).HasColumnName("name");
+            entity.Property(e => e.ContactPerson).HasColumnName("contact_person");
+            entity.Property(e => e.Phone).HasColumnName("phone");
+            entity.Property(e => e.Email).HasColumnName("email");
+            entity.Property(e => e.Address).HasColumnName("address");
+            entity.Property(e => e.IsActive).HasColumnName("is_active");
+            entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
+            entity.Property(e => e.ModifiedAt).HasColumnName("modified_at");
+            entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
+        });
+
+        modelBuilder.Entity<DcMaintenanceType>(entity =>
+        {
+            entity.ToTable("dc_maintenance_type");
+            entity.HasKey(e => e.MaintenanceTypeId);
+            entity.Property(e => e.MaintenanceTypeId).HasColumnName("maintenance_type_id");
+            entity.Property(e => e.Name).HasColumnName("name");
+            entity.Property(e => e.Description).HasColumnName("description");
+            entity.Property(e => e.IsActive).HasColumnName("is_active");
+        });
+
+        modelBuilder.Entity<MaintenanceOrder>(entity =>
+        {
+            entity.ToTable("maintenance_order");
+            entity.HasKey(e => e.OrderId);
+            entity.Property(e => e.OrderId).HasColumnName("order_id");
+            entity.Property(e => e.VehicleId).HasColumnName("vehicle_id");
+            entity.Property(e => e.VendorId).HasColumnName("vendor_id");
+            entity.Property(e => e.Status).HasColumnName("status");
+            entity.Property(e => e.ReportedAt).HasColumnName("reported_at");
+            entity.Property(e => e.ScheduledAt).HasColumnName("scheduled_at");
+            entity.Property(e => e.ClosedAt).HasColumnName("closed_at");
+            entity.Property(e => e.OdometerKm).HasColumnName("odometer_km");
+            entity.Property(e => e.TotalCost).HasColumnName("total_cost");
+            entity.Property(e => e.Description).HasColumnName("description");
+            entity.Property(e => e.CancelReason).HasColumnName("cancel_reason");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
+            entity.Property(e => e.ModifiedAt).HasColumnName("modified_at");
+            entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
+
+            entity.HasOne(e => e.Vehicle)
+                  .WithMany()
+                  .HasForeignKey(e => e.VehicleId);
+
+            entity.HasOne(e => e.Vendor)
+                  .WithMany()
+                  .HasForeignKey(e => e.VendorId);
+
+            entity.HasMany(e => e.Items)
+                  .WithOne(i => i.Order)
+                  .HasForeignKey(i => i.OrderId);
+        });
+
+        modelBuilder.Entity<MaintenanceItem>(entity =>
+        {
+            entity.ToTable("maintenance_item");
+            entity.HasKey(e => e.ItemId);
+            entity.Property(e => e.ItemId).HasColumnName("item_id");
+            entity.Property(e => e.OrderId).HasColumnName("order_id");
+            entity.Property(e => e.MaintenanceTypeId).HasColumnName("maintenance_type_id");
+            entity.Property(e => e.PartsCost).HasColumnName("parts_cost");
+            entity.Property(e => e.LaborCost).HasColumnName("labor_cost");
+            entity.Property(e => e.Notes).HasColumnName("notes");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
+
+            entity.HasOne(e => e.Order)
+                  .WithMany(o => o.Items)
+                  .HasForeignKey(e => e.OrderId);
+
+            entity.HasOne(e => e.MaintenanceType)
+                  .WithMany()
+                  .HasForeignKey(e => e.MaintenanceTypeId);
         });
     }
 }
