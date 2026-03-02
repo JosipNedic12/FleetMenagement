@@ -13,6 +13,14 @@ public class OdometerLogsController : ControllerBase
     private readonly IOdometerLogRepository _repo;
     public OdometerLogsController(IOdometerLogRepository repo) => _repo = repo;
 
+    [HttpGet]
+    [Authorize(Roles = "Admin,FleetManager,ReadOnly")]
+    public async Task<ActionResult<IEnumerable<OdometerLogDto>>> GetAll()
+    {
+        var logs = await _repo.GetAllAsync();
+        return Ok(logs.Select(MapToDto));
+    }
+
     // GET api/v1/odometerlogs/vehicle/5
     [HttpGet("vehicle/{vehicleId}")]
     [Authorize(Roles = "Admin,FleetManager,ReadOnly")]

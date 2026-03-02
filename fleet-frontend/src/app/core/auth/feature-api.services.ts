@@ -41,22 +41,22 @@ export class LookupApiService extends ApiService {
   constructor(http: HttpClient) { super(http); }
 
   getMakes(): Observable<MakeDto[]> {
-    return this.get<MakeDto[]>('v1/makes');
+    return this.get<MakeDto[]>('makes');
   }
   getModelsByMake(makeId: number): Observable<ModelDto[]> {
-    return this.get<ModelDto[]>(`v1/makes/${makeId}/models`);
+    return this.get<ModelDto[]>(`makes/${makeId}/models`);
   }
   getVehicleCategories(): Observable<VehicleCategoryDto[]> {
-    return this.get<VehicleCategoryDto[]>('v1/vehicle-categories');
+    return this.get<VehicleCategoryDto[]>('vehicle-categories');
   }
   getFuelTypes(): Observable<FuelTypeDto[]> {
-    return this.get<FuelTypeDto[]>('v1/fuel-types');
+    return this.get<FuelTypeDto[]>('fuel-types');
   }
   getLicenseCategories(): Observable<LicenseCategoryDto[]> {
-    return this.get<LicenseCategoryDto[]>('v1/license-categories');
+    return this.get<LicenseCategoryDto[]>('license-categories');
   }
   getMaintenanceTypes(): Observable<MaintenanceTypeDto[]> {
-    return this.get<MaintenanceTypeDto[]>('v1/maintenance-types');
+    return this.get<MaintenanceTypeDto[]>('maintenance-types');
   }
 }
 
@@ -67,19 +67,19 @@ export class VehicleApiService extends ApiService {
   constructor(http: HttpClient) { super(http); }
 
   getAll(): Observable<Vehicle[]> {
-    return this.get<Vehicle[]>('v1/vehicles');
+    return this.get<Vehicle[]>('Vehicles');
   }
   getById(id: number): Observable<Vehicle> {
-    return this.get<Vehicle>(`v1/vehicles/${id}`);
+    return this.get<Vehicle>(`Vehicles/${id}`);
   }
   create(dto: CreateVehicleDto): Observable<Vehicle> {
-    return this.post<Vehicle>('v1/vehicles', dto);
+    return this.post<Vehicle>('Vehicles', dto);
   }
   update(id: number, dto: UpdateVehicleDto): Observable<Vehicle> {
-    return this.patch<Vehicle>(`v1/vehicles/${id}`, dto);
+    return this.patch<Vehicle>(`Vehicles/${id}`, dto);
   }
   deleteById(id: number): Observable<void> {
-    return super.delete<void>(`v1/vehicles/${id}`);
+    return super.delete<void>(`Vehicles/${id}`);
   }
 }
 
@@ -90,19 +90,19 @@ export class EmployeeApiService extends ApiService {
   constructor(http: HttpClient) { super(http); }
 
   getAll(): Observable<Employee[]> {
-    return this.get<Employee[]>('v1/employees');
+    return this.get<Employee[]>('Employees');
   }
   getById(id: number): Observable<Employee> {
-    return this.get<Employee>(`v1/employees/${id}`);
+    return this.get<Employee>(`Employees/${id}`);
   }
   create(dto: CreateEmployeeDto): Observable<Employee> {
-    return this.post<Employee>('v1/employees', dto);
+    return this.post<Employee>('Employees', dto);
   }
   update(id: number, dto: UpdateEmployeeDto): Observable<Employee> {
-    return this.patch<Employee>(`v1/employees/${id}`, dto);
+    return this.patch<Employee>(`Employees/${id}`, dto);
   }
   deleteById(id: number): Observable<void> {
-    return super.delete<void>(`v1/employees/${id}`);
+    return super.delete<void>(`Employees/${id}`);
   }
 }
 
@@ -113,19 +113,19 @@ export class DriverApiService extends ApiService {
   constructor(http: HttpClient) { super(http); }
 
   getAll(): Observable<Driver[]> {
-    return this.get<Driver[]>('v1/drivers');
+    return this.get<Driver[]>('Drivers');
   }
   getById(id: number): Observable<Driver> {
-    return this.get<Driver>(`v1/drivers/${id}`);
+    return this.get<Driver>(`Drivers/${id}`);
   }
   create(dto: CreateDriverDto): Observable<Driver> {
-    return this.post<Driver>('v1/drivers', dto);
+    return this.post<Driver>('Drivers', dto);
   }
   update(id: number, dto: UpdateDriverDto): Observable<Driver> {
-    return this.patch<Driver>(`v1/drivers/${id}`, dto);
+    return this.patch<Driver>(`Drivers/${id}`, dto);
   }
   deleteById(id: number): Observable<void> {
-    return super.delete<void>(`v1/drivers/${id}`);
+    return super.delete<void>(`Drivers/${id}`);
   }
 }
 
@@ -136,28 +136,28 @@ export class VehicleAssignmentApiService extends ApiService {
   constructor(http: HttpClient) { super(http); }
 
   getAll(activeOnly = false): Observable<VehicleAssignment[]> {
-    return this.get<VehicleAssignment[]>(`v1/vehicleassignments${activeOnly ? '?activeOnly=true' : ''}`);
+    return this.get<VehicleAssignment[]>(`VehicleAssignments${activeOnly ? '?activeOnly=true' : ''}`);
   }
   getById(id: number): Observable<VehicleAssignment> {
-    return this.get<VehicleAssignment>(`v1/vehicleassignments/${id}`);
+    return this.get<VehicleAssignment>(`VehicleAssignments/${id}`);
   }
   getByVehicle(vehicleId: number): Observable<VehicleAssignment[]> {
-    return this.get<VehicleAssignment[]>(`v1/vehicleassignments/vehicle/${vehicleId}`);
+    return this.get<VehicleAssignment[]>(`VehicleAssignments/vehicle/${vehicleId}`);
   }
   getByDriver(driverId: number): Observable<VehicleAssignment[]> {
-    return this.get<VehicleAssignment[]>(`v1/vehicleassignments/driver/${driverId}`);
+    return this.get<VehicleAssignment[]>(`VehicleAssignments/driver/${driverId}`);
   }
   create(dto: CreateVehicleAssignmentDto): Observable<VehicleAssignment> {
-    return this.post<VehicleAssignment>('v1/vehicleassignments', dto);
+    return this.post<VehicleAssignment>('VehicleAssignments', dto);
   }
   update(id: number, dto: UpdateVehicleAssignmentDto): Observable<VehicleAssignment> {
-    return this.patch<VehicleAssignment>(`v1/vehicleassignments/${id}`, dto);
+    return this.patch<VehicleAssignment>(`VehicleAssignments/${id}`, dto);
   }
   end(id: number): Observable<VehicleAssignment> {
-    return this.post<VehicleAssignment>(`v1/vehicleassignments/${id}/end`, {});
+    return this.post<VehicleAssignment>(`VehicleAssignments/${id}/end`, {});
   }
   deleteById(id: number): Observable<void> {
-    return super.delete<void>(`v1/vehicleassignments/${id}`);
+    return super.delete<void>(`VehicleAssignments/${id}`);
   }
 }
 
@@ -168,19 +168,19 @@ export class VendorApiService extends ApiService {
   constructor(http: HttpClient) { super(http); }
 
   getAll(): Observable<Vendor[]> {
-    return this.get<Vendor[]>('v1/vendors');
+    return this.get<Vendor[]>('Vendors');
   }
   getById(id: number): Observable<Vendor> {
-    return this.get<Vendor>(`v1/vendors/${id}`);
+    return this.get<Vendor>(`Vendors/${id}`);
   }
   create(dto: CreateVendorDto): Observable<Vendor> {
-    return this.post<Vendor>('v1/vendors', dto);
+    return this.post<Vendor>('Vendors', dto);
   }
   update(id: number, dto: UpdateVendorDto): Observable<Vendor> {
-    return this.patch<Vendor>(`v1/vendors/${id}`, dto);
+    return this.patch<Vendor>(`Vendors/${id}`, dto);
   }
   deleteById(id: number): Observable<void> {
-    return super.delete<void>(`v1/vendors/${id}`);
+    return super.delete<void>(`Vendors/${id}`);
   }
 }
 
@@ -191,37 +191,37 @@ export class MaintenanceOrderApiService extends ApiService {
   constructor(http: HttpClient) { super(http); }
 
   getAll(): Observable<MaintenanceOrder[]> {
-    return this.get<MaintenanceOrder[]>('v1/maintenanceorders');
+    return this.get<MaintenanceOrder[]>('MaintenanceOrders');
   }
   getById(id: number): Observable<MaintenanceOrder> {
-    return this.get<MaintenanceOrder>(`v1/maintenanceorders/${id}`);
+    return this.get<MaintenanceOrder>(`MaintenanceOrders/${id}`);
   }
   getByVehicle(vehicleId: number): Observable<MaintenanceOrder[]> {
-    return this.get<MaintenanceOrder[]>(`v1/maintenanceorders/vehicle/${vehicleId}`);
+    return this.get<MaintenanceOrder[]>(`MaintenanceOrders/vehicle/${vehicleId}`);
   }
   create(dto: CreateMaintenanceOrderDto): Observable<MaintenanceOrder> {
-    return this.post<MaintenanceOrder>('v1/maintenanceorders', dto);
+    return this.post<MaintenanceOrder>('MaintenanceOrders', dto);
   }
   update(id: number, dto: UpdateMaintenanceOrderDto): Observable<MaintenanceOrder> {
-    return this.patch<MaintenanceOrder>(`v1/maintenanceorders/${id}`, dto);
+    return this.patch<MaintenanceOrder>(`MaintenanceOrders/${id}`, dto);
   }
   start(id: number): Observable<MaintenanceOrder> {
-    return this.post<MaintenanceOrder>(`v1/maintenanceorders/${id}/start`, {});
+    return this.post<MaintenanceOrder>(`MaintenanceOrders/${id}/start`, {});
   }
   close(id: number, dto: CloseMaintenanceOrderDto): Observable<MaintenanceOrder> {
-    return this.post<MaintenanceOrder>(`v1/maintenanceorders/${id}/close`, dto);
+    return this.post<MaintenanceOrder>(`MaintenanceOrders/${id}/close`, dto);
   }
   cancel(id: number, dto: CancelMaintenanceOrderDto): Observable<MaintenanceOrder> {
-    return this.post<MaintenanceOrder>(`v1/maintenanceorders/${id}/cancel`, dto);
+    return this.post<MaintenanceOrder>(`MaintenanceOrders/${id}/cancel`, dto);
   }
   addItem(orderId: number, dto: CreateMaintenanceItemDto): Observable<MaintenanceItem> {
-    return this.post<MaintenanceItem>(`v1/maintenanceorders/${orderId}/items`, dto);
+    return this.post<MaintenanceItem>(`MaintenanceOrders/${orderId}/items`, dto);
   }
   deleteItem(itemId: number): Observable<void> {
-    return super.delete<void>(`v1/maintenanceorders/items/${itemId}`);
+    return super.delete<void>(`MaintenanceOrders/items/${itemId}`);
   }
   deleteById(id: number): Observable<void> {
-    return super.delete<void>(`v1/maintenanceorders/${id}`);
+    return super.delete<void>(`MaintenanceOrders/${id}`);
   }
 }
 
@@ -232,22 +232,22 @@ export class FuelCardApiService extends ApiService {
   constructor(http: HttpClient) { super(http); }
 
   getAll(): Observable<FuelCard[]> {
-    return this.get<FuelCard[]>('v1/fuelcards');
+    return this.get<FuelCard[]>('FuelCards');
   }
   getById(id: number): Observable<FuelCard> {
-    return this.get<FuelCard>(`v1/fuelcards/${id}`);
+    return this.get<FuelCard>(`FuelCards/${id}`);
   }
   getByVehicle(vehicleId: number): Observable<FuelCard[]> {
-    return this.get<FuelCard[]>(`v1/fuelcards/vehicle/${vehicleId}`);
+    return this.get<FuelCard[]>(`FuelCards/vehicle/${vehicleId}`);
   }
   create(dto: CreateFuelCardDto): Observable<FuelCard> {
-    return this.post<FuelCard>('v1/fuelcards', dto);
+    return this.post<FuelCard>('FuelCards', dto);
   }
   update(id: number, dto: UpdateFuelCardDto): Observable<FuelCard> {
-    return this.patch<FuelCard>(`v1/fuelcards/${id}`, dto);
+    return this.patch<FuelCard>(`FuelCards/${id}`, dto);
   }
   deleteById(id: number): Observable<void> {
-    return super.delete<void>(`v1/fuelcards/${id}`);
+    return super.delete<void>(`FuelCards/${id}`);
   }
 }
 
@@ -258,22 +258,22 @@ export class FuelTransactionApiService extends ApiService {
   constructor(http: HttpClient) { super(http); }
 
   getAll(): Observable<FuelTransaction[]> {
-    return this.get<FuelTransaction[]>('v1/fueltransactions');
+    return this.get<FuelTransaction[]>('FuelTransactions');
   }
   getById(id: number): Observable<FuelTransaction> {
-    return this.get<FuelTransaction>(`v1/fueltransactions/${id}`);
+    return this.get<FuelTransaction>(`FuelTransactions/${id}`);
   }
   getByVehicle(vehicleId: number): Observable<FuelTransaction[]> {
-    return this.get<FuelTransaction[]>(`v1/fueltransactions/vehicle/${vehicleId}`);
+    return this.get<FuelTransaction[]>(`FuelTransactions/vehicle/${vehicleId}`);
   }
   create(dto: CreateFuelTransactionDto): Observable<FuelTransaction> {
-    return this.post<FuelTransaction>('v1/fueltransactions', dto);
+    return this.post<FuelTransaction>('FuelTransactions', dto);
   }
   markSuspicious(id: number): Observable<FuelTransaction> {
-    return this.patch<FuelTransaction>(`v1/fueltransactions/${id}/suspicious`, {});
+    return this.patch<FuelTransaction>(`FuelTransactions/${id}/suspicious`, {});
   }
   deleteById(id: number): Observable<void> {
-    return super.delete<void>(`v1/fueltransactions/${id}`);
+    return super.delete<void>(`FuelTransactions/${id}`);
   }
 }
 

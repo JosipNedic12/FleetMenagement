@@ -1,4 +1,5 @@
-﻿using FleetManagement.Application.Interfaces;
+﻿using FleetManagement.Application.DTOs;
+using FleetManagement.Application.Interfaces;
 using FleetManagement.Domain.Entities;
 using FleetManagement.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,12 @@ public class OdometerLogRepository : IOdometerLogRepository
     private readonly FleetDbContext _context;
     public OdometerLogRepository(FleetDbContext context) => _context = context;
 
+    public async Task<IEnumerable<OdometerLog>> GetAllAsync()
+    {
+        return await _context.OdometerLogs
+        .Include(x => x.Vehicle)
+        .ToListAsync();
+    }
     public async Task<IEnumerable<OdometerLog>> GetByVehicleIdAsync(int vehicleId) =>
         await _context.OdometerLogs
             .Include(l => l.Vehicle)
