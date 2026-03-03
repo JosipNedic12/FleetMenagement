@@ -12,3 +12,7 @@ export interface AuthResponse {
 }
 
 export type UserRole = 'Admin' | 'FleetManager' | 'ReadOnly';
+export interface ChangePasswordDto {
+  currentPassword: string;
+  newPassword: string;
+}

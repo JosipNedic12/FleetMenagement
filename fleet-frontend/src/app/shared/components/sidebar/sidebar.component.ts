@@ -19,13 +19,14 @@ interface NavItem { label: string; route: string; icon: string; }
         <span class="logo-text">FleetMgr</span>
       </div>
 
-      <div class="sidebar-user">
+      <a routerLink="/profile" class="sidebar-user sidebar-user-link" routerLinkActive="user-active">
         <div class="user-avatar">{{ initials() }}</div>
         <div class="user-info">
           <span class="user-name">{{ auth.fullName() }}</span>
           <span class="user-role">{{ auth.role() }}</span>
         </div>
-      </div>
+        <span class="user-arrow">›</span>
+      </a>
 
       <nav class="sidebar-nav">
         <div class="nav-section-label">Overview</div>
@@ -44,6 +45,12 @@ interface NavItem { label: string; route: string; icon: string; }
             <span class="nav-icon">{{ item.icon }}</span><span>{{ item.label }}</span>
           </a>
         }
+        @if (auth.hasRole('Admin')) {
+          <div class="nav-section-label">Admin</div>
+          <a routerLink="/users" routerLinkActive="active" class="nav-item">
+            <span class="nav-icon">👥</span><span>User Management</span>
+          </a>
+        }
       </nav>
 
       <div class="sidebar-footer">
@@ -58,6 +65,22 @@ interface NavItem { label: string; route: string; icon: string; }
     .sidebar-logo { display:flex; align-items:center; gap:10px; padding:20px 20px 16px; border-bottom:1px solid var(--sidebar-border); }
     .logo-text { font-size:17px; font-weight:700; color:var(--sidebar-text); letter-spacing:-0.3px; }
     .sidebar-user { display:flex; align-items:center; gap:10px; padding:14px 20px; border-bottom:1px solid var(--sidebar-border); }
+    .sidebar-user-link {
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.15s;
+      position: relative;
+    }
+    .sidebar-user-link:hover { background: var(--sidebar-hover); }
+    .sidebar-user-link.user-active { background: rgba(37, 99, 235, 0.1); }
+    .user-arrow {
+      margin-left: auto;
+      color: var(--sidebar-muted);
+      font-size: 18px;
+      font-weight: 300;
+      transition: transform 0.15s, color 0.15s;
+    }
+    .sidebar-user-link:hover .user-arrow { color: var(--sidebar-text); transform: translateX(2px); }
     .user-avatar { width:34px; height:34px; border-radius:50%; background:var(--brand); color:white; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; flex-shrink:0; }
     .user-name { display:block; font-size:13px; font-weight:600; color:var(--sidebar-text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .user-role { display:block; font-size:11px; color:var(--sidebar-muted); }

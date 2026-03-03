@@ -57,7 +57,11 @@ public class FuelTransactionRepository : IFuelTransactionRepository
         }
 
         await _context.SaveChangesAsync();
-        return await BaseQuery().FirstAsync(t => t.TransactionId == transaction.TransactionId);
+        return await _context.FuelTransactions
+        .Include(t => t.Vehicle)
+        .Include(t => t.FuelType)
+        .Include(t => t.FuelCard)
+        .FirstAsync(t => t.TransactionId == transaction.TransactionId);
     }
 
     public async Task<bool> DeleteAsync(int id)

@@ -141,9 +141,9 @@ import { HasRoleDirective } from '../../../shared/directives/has-role.directive'
               <input [(ngModel)]="cardForm.provider" placeholder="INA, Shell, Petrol…" />
             </div>
             <div class="form-group">
-              <label>Assigned Vehicle</label>
+              <label>Vehicle</label>
               <select [(ngModel)]="cardForm.assignedVehicleId">
-                <option [ngValue]="undefined">Unassigned</option>
+                <option [ngValue]="undefined">No vehicle</option>
                 @for (v of vehicles(); track v.vehicleId) {
                   <option [ngValue]="v.vehicleId">{{ v.registrationNumber }}</option>
                 }
@@ -181,7 +181,7 @@ import { HasRoleDirective } from '../../../shared/directives/has-role.directive'
           <div class="form-grid">
             <div class="form-group">
               <label>Vehicle *</label>
-              <select [(ngModel)]="txForm.vehicleId">
+              <select [(ngModel)]="txForm.vehicleId" (ngModelChange)="onTxVehicleChange($event)">
                 <option [ngValue]="0">Select vehicle…</option>
                 @for (v of vehicles(); track v.vehicleId) {
                   <option [ngValue]="v.vehicleId">{{ v.registrationNumber }}</option>
@@ -199,7 +199,7 @@ import { HasRoleDirective } from '../../../shared/directives/has-role.directive'
             </div>
             <div class="form-group">
               <label>Fuel Type *</label>
-              <select [(ngModel)]="txForm.fuelTypeId">
+              <select [(ngModel)]="txForm.fuelTypeId" (ngModelChange)="recalcTotalCost()">
                 <option [ngValue]="0">Select type…</option>
                 @for (f of fuelTypes(); track f.fuelTypeId) {
                   <option [ngValue]="f.fuelTypeId">{{ f.label }}</option>
@@ -210,29 +210,39 @@ import { HasRoleDirective } from '../../../shared/directives/has-role.directive'
               <label>Date *</label>
               <input type="datetime-local" [(ngModel)]="txForm.postedAt" />
             </div>
-            <div class="form-group">
-              <label>Liters (fuel)</label>
-              <input type="number" [(ngModel)]="txForm.liters" min="0" step="0.01" />
-            </div>
-            <div class="form-group">
-              <label>Price/L (EUR)</label>
-              <input type="number" [(ngModel)]="txForm.pricePerLiter" min="0" step="0.001" />
-            </div>
-            <div class="form-group">
-              <label>kWh (electric)</label>
-              <input type="number" [(ngModel)]="txForm.energyKwh" min="0" step="0.01" />
-            </div>
-            <div class="form-group">
-              <label>Price/kWh (EUR)</label>
-              <input type="number" [(ngModel)]="txForm.pricePerKwh" min="0" step="0.001" />
-            </div>
+
+            @if (!isElectric()) {
+              <div class="form-group">
+                <label>Liters</label>
+                <input type="number" [(ngModel)]="txForm.liters" min="0" step="0.01"
+                      (ngModelChange)="recalcTotalCost()" />
+              </div>
+              <div class="form-group">
+                <label>Price/L (EUR)</label>
+                <input type="number" [(ngModel)]="txForm.pricePerLiter" min="0" step="0.001"
+                      (ngModelChange)="recalcTotalCost()" />
+              </div>
+            }
+            @if (isElectric()) {
+              <div class="form-group">
+                <label>kWh</label>
+                <input type="number" [(ngModel)]="txForm.energyKwh" min="0" step="0.01"
+                      (ngModelChange)="recalcTotalCost()" />
+              </div>
+              <div class="form-group">
+                <label>Price/kWh (EUR)</label>
+                <input type="number" [(ngModel)]="txForm.pricePerKwh" min="0" step="0.001"
+                      (ngModelChange)="recalcTotalCost()" />
+              </div>
+            }
+
             <div class="form-group">
               <label>Total Cost (EUR) *</label>
               <input type="number" [(ngModel)]="txForm.totalCost" min="0" step="0.01" />
             </div>
             <div class="form-group">
-              <label>Odometer (km)</label>
-              <input type="number" [(ngModel)]="txForm.odometerKm" min="0" />
+              <label>Odometer (km) *</label>
+              <input type="number" [(ngModel)]="txForm.odometerKm" min="0" required />
             </div>
             <div class="form-group">
               <label>Station</label>
@@ -284,12 +294,12 @@ import { HasRoleDirective } from '../../../shared/directives/has-role.directive'
   `]
 })
 export class FuelListComponent implements OnInit {
-  cards        = signal<FuelCard[]>([]);
+  cards = signal<FuelCard[]>([]);
   transactions = signal<FuelTransaction[]>([]);
-  vehicles     = signal<Vehicle[]>([]);
-  fuelTypes    = signal<FuelTypeDto[]>([]);
+  vehicles = signal<Vehicle[]>([]);
+  fuelTypes = signal<FuelTypeDto[]>([]);
   loadingCards = signal(true);
-  loadingTx    = signal(true);
+  loadingTx = signal(true);
   saving = signal(false); formError = signal('');
   tab = signal<'cards' | 'transactions'>('cards');
   cardSearch = ''; txSearch = '';
@@ -316,7 +326,7 @@ export class FuelListComponent implements OnInit {
     private vehicleApi: VehicleApiService,
     private lookupApi: LookupApiService,
     public auth: AuthService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadCards();
@@ -361,15 +371,23 @@ export class FuelListComponent implements OnInit {
   closeCreateCard(): void { this.showCreateCard = false; this.editCardId = null; this.formError.set(''); }
 
   openCreateTx(): void {
-    this.txForm = { vehicleId: 0, fuelTypeId: 0, postedAt: new Date().toISOString().slice(0, 16), totalCost: 0 };
+    this.txForm = { vehicleId: 0, fuelTypeId: 0, postedAt: new Date().toISOString(), totalCost: 0, odometerKm: 0 };
     this.formError.set(''); this.showCreateTx = true;
   }
+
   saveTx(): void {
     if (!this.txForm.vehicleId || !this.txForm.fuelTypeId || !this.txForm.postedAt) {
       this.formError.set('Fill all required fields.'); return;
     }
+    if (!this.txForm.odometerKm || this.txForm.odometerKm <= 0) {
+      this.formError.set('Odometer reading is required.'); return;
+    }
+    const payload = {
+      ...this.txForm,
+      postedAt: new Date(this.txForm.postedAt).toISOString()
+    };
     this.saving.set(true);
-    this.txApi.create(this.txForm).subscribe({
+    this.txApi.create(payload).subscribe({
       next: () => { this.loadTx(); this.closeCreateTx(); this.saving.set(false); },
       error: (e) => { this.saving.set(false); this.formError.set(e.error?.message ?? 'Save failed.'); }
     });
@@ -389,5 +407,35 @@ export class FuelListComponent implements OnInit {
   doDeleteTx(): void {
     if (!this.deleteTxTarget) return;
     this.txApi.deleteById(this.deleteTxTarget.transactionId).subscribe({ next: () => { this.loadTx(); this.deleteTxTarget = null; } });
+  }
+  //________Helper______________________________
+  onTxVehicleChange(vehicleId: number): void {
+  const vehicle = this.vehicles().find(v => v.vehicleId === vehicleId);
+  if (vehicle) {
+    this.txForm.odometerKm = vehicle.currentOdometerKm + 1;
+    const matchedType = this.fuelTypes().find(f => f.label.toLowerCase() === vehicle.fuelType?.toLowerCase());
+    if (matchedType) {
+      this.txForm.fuelTypeId = matchedType.fuelTypeId;
+    }
+    // Clear quantity fields when vehicle changes
+    this.txForm.liters = undefined;
+    this.txForm.pricePerLiter = undefined;
+    this.txForm.energyKwh = undefined;
+    this.txForm.pricePerKwh = undefined;
+    this.txForm.totalCost = 0;
+  }
+}
+
+  isElectric(): boolean {
+    const ft = this.fuelTypes().find(f => f.fuelTypeId === this.txForm.fuelTypeId);
+    return ft?.label?.toLowerCase().includes('electric') ?? false;
+  }
+
+  recalcTotalCost(): void {
+    if (this.txForm.liters && this.txForm.pricePerLiter) {
+      this.txForm.totalCost = parseFloat((this.txForm.liters * this.txForm.pricePerLiter).toFixed(2));
+    } else if (this.txForm.energyKwh && this.txForm.pricePerKwh) {
+      this.txForm.totalCost = parseFloat((this.txForm.energyKwh * this.txForm.pricePerKwh).toFixed(2));
+    }
   }
 }

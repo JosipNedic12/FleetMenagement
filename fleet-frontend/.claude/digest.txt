@@ -1825,7 +1825,7 @@ export class MaintenanceOrderApiService extends ApiService {
     return super.delete<void>(`v1/maintenanceorders/items/${itemId}`);
   }
   deleteById(id: number): Observable<void> {
-    return super.delete<void>(`v1/maintenanceorders/items/${id}`);
+    return super.delete<void>(`v1/maintenanceorders/${id}`);
   }
 }
 

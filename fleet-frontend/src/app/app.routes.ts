@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard } from './core/auth/auth.guard';
+import { authGuard, roleGuard } from './core/auth/auth.guard';
 import { AppShellComponent } from './app-shell.component';
 
 export const routes: Routes = [
@@ -21,6 +21,19 @@ export const routes: Routes = [
         path: 'dashboard',
         loadComponent: () =>
           import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent)
+      },
+      // ── User profile ──
+      {
+        path: 'profile',
+        loadComponent: () =>
+          import('./features/profile/profile.component').then(m => m.ProfileComponent)
+      },
+      // ── Admin: User management ──
+      {
+        path: 'users',
+        canActivate: [roleGuard('Admin')],
+        loadComponent: () =>
+          import('./features/users/list/users-list.component').then(m => m.UsersListComponent)
       },
       // ── Fleet core ──
       {

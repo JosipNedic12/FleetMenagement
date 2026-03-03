@@ -139,25 +139,36 @@ public class FuelTransactionsController : ControllerBase
     [Authorize(Roles = "Admin,FleetManager")]
     public async Task<ActionResult<FuelTransactionDto>> Create(CreateFuelTransactionDto dto)
     {
-        var transaction = new FuelTransaction
+        try
         {
-            VehicleId = dto.VehicleId,
-            FuelCardId = dto.FuelCardId,
-            FuelTypeId = dto.FuelTypeId,
-            PostedAt = dto.PostedAt,
-            OdometerKm = dto.OdometerKm,
-            Liters = dto.Liters,
-            PricePerLiter = dto.PricePerLiter,
-            EnergyKwh = dto.EnergyKwh,
-            PricePerKwh = dto.PricePerKwh,
-            TotalCost = dto.TotalCost,
-            StationName = dto.StationName,
-            ReceiptNumber = dto.ReceiptNumber,
-            Notes = dto.Notes
-        };
-
-        var created = await _repo.CreateAsync(transaction);
-        return CreatedAtAction(nameof(GetById), new { id = created.TransactionId }, MapToDto(created));
+            var transaction = new FuelTransaction
+            {
+                VehicleId = dto.VehicleId,
+                FuelCardId = dto.FuelCardId,
+                FuelTypeId = dto.FuelTypeId,
+                PostedAt = dto.PostedAt,
+                OdometerKm = dto.OdometerKm,
+                Liters = dto.Liters,
+                PricePerLiter = dto.PricePerLiter,
+                EnergyKwh = dto.EnergyKwh,
+                PricePerKwh = dto.PricePerKwh,
+                TotalCost = dto.TotalCost,
+                StationName = dto.StationName,
+                ReceiptNumber = dto.ReceiptNumber,
+                Notes = dto.Notes
+            };
+            var created = await _repo.CreateAsync(transaction);
+            return CreatedAtAction(nameof(GetById), new { id = created.TransactionId }, MapToDto(created));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new
+            {
+                message = ex.Message,
+                inner = ex.InnerException?.Message,
+                trace = ex.StackTrace
+            });
+        }
     }
 
     // PATCH api/v1/fueltransactions/5/suspicious

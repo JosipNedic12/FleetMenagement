@@ -20,7 +20,7 @@ import {
   RegistrationRecord, CreateRegistrationRecordDto, UpdateRegistrationRecordDto,
   Inspection, CreateInspectionDto, UpdateInspectionDto,
   Fine, CreateFineDto, UpdateFineDto, MarkFinePaidDto,
-  Accident, CreateAccidentDto, UpdateAccidentDto,
+  Accident, CreateAccidentDto, UpdateAccidentDto,ChangePasswordDto
 } from '../models/models';
 
 // ─── Auth ─────────────────────────────────────────────────────────────────────
@@ -31,6 +31,10 @@ export class AuthApiService extends ApiService {
 
   login(dto: LoginDto): Observable<AuthResponse> {
     return this.post<AuthResponse>('auth/login', dto);
+  }
+  
+  changePassword(dto: ChangePasswordDto): Observable<void> {
+    return this.post<void>('auth/change-password', dto);
   }
 }
 

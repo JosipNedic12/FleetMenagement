@@ -2,7 +2,7 @@ import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
-import { VehicleApiService, MaintenanceOrderApiService, OdometerLogApiService, InsurancePolicyApiService, RegistrationApiService, InspectionApiService, FineApiService, AccidentApiService } from '../../core/auth/feature-api.services';
+import { VehicleApiService, MaintenanceOrderApiService, OdometerLogApiService, InsurancePolicyApiService, RegistrationApiService, InspectionApiService, FineApiService, AccidentApiService, FuelTransactionApiService } from '../../core/auth/feature-api.services';
 import { OdometerLog } from '../../core/models/models';
 interface StatCard {
   label: string;
@@ -122,7 +122,8 @@ export class DashboardComponent implements OnInit {
     private registrationApi: RegistrationApiService,
     private inspectionApi: InspectionApiService,
     private fineApi: FineApiService,
-    private accidentApi: AccidentApiService
+    private accidentApi: AccidentApiService,
+    private fuelApi: FuelTransactionApiService,
   ) { }
 
   ngOnInit(): void {
@@ -134,7 +135,8 @@ export class DashboardComponent implements OnInit {
       registration: this.registrationApi.getAll(),
       inspections: this.inspectionApi.getAll(),
       fines: this.fineApi.getAll(),
-      accidents: this.accidentApi.getAll()
+      accidents: this.accidentApi.getAll(),
+      fuel: this.fuelApi.getAll(),
     }).subscribe({
       next: (data) => {
         const now = new Date();
@@ -145,7 +147,9 @@ export class DashboardComponent implements OnInit {
         const kmThisMonth = calculateKmThisMonth(data.odometer);
         const unpaidFines = data.fines.filter(f => !f.isPaid).length;
         const expiredIns = data.insurance.filter(i => !i.isActive).length;
-
+        const fuelCostThisMonth = data.fuel
+          .filter(t => thisMonth(t.postedAt))
+          .reduce((sum, t) => sum + (t.totalCost ?? 0), 0);
         this.cards.set([
           { label: 'Vehicles', value: data.vehicles.length, sub: `${activeVehicles} active`, route: '/vehicles', icon: '🚗', accent: '#10b981' },
           { label: 'Open Orders', value: openOrders, sub: 'Maintenance in progress', route: '/maintenance', icon: '🔧', accent: '#f97316' },
@@ -155,6 +159,7 @@ export class DashboardComponent implements OnInit {
           { label: 'Inspections', value: data.inspections.length, sub: 'Total inspections', route: '/inspections', icon: '🔍', accent: '#06b6d4' },
           { label: 'Fines', value: data.fines.length, sub: `${unpaidFines} unpaid`, route: '/fines', icon: '⚠', accent: '#f59e0b' },
           { label: 'Accidents', value: data.accidents.length, sub: 'Reported incidents', route: '/accidents', icon: '🚨', accent: '#ef4444' },
+          { label: 'Fuel Cost This Month', value: fuelCostThisMonth, sub: 'EUR spent on fuel', route: '/fuel', icon: '⛽', accent: '#14b8a6' },
         ]);
         this.loading.set(false);
       },
