@@ -81,7 +81,6 @@ type OrderStatus = 'open' | 'in_progress' | 'closed' | 'cancelled';
                     @if (row.status === 'open' || row.status === 'in_progress') {
                       <button *hasRole="['Admin','FleetManager']" class="btn-icon" title="Add Item" (click)="openAddItem(row)">＋</button>
                     }
-                    <button *hasRole="'Admin'" class="btn-icon danger" title="Delete" (click)="confirmDelete(row)">🗑</button>
                   </td>
                 </tr>
                 @if (row.items.length > 0) {
@@ -113,33 +112,33 @@ type OrderStatus = 'open' | 'in_progress' | 'closed' | 'cancelled';
           <h2 class="modal-title">New Maintenance Order</h2>
           <div class="form-grid">
             <div class="form-group">
-              <label>Vehicle *</label>
-              <select [(ngModel)]="createForm.vehicleId">
-                <option [ngValue]="0">Select vehicle…</option>
-                @for (v of vehicles(); track v.vehicleId) {
-                  <option [ngValue]="v.vehicleId">{{ v.registrationNumber }} – {{ v.make }} {{ v.model }}</option>
-                }
-              </select>
-            </div>
+            <label>Vehicle *</label>
+            <select [(ngModel)]="createForm.vehicleId" (ngModelChange)="onCreateVehicleChange($event)">
+              <option [ngValue]="0">Select vehicle…</option>
+              @for (v of vehicles(); track v.vehicleId) {
+                <option [ngValue]="v.vehicleId">{{ v.registrationNumber }} – {{ v.make }} {{ v.model }}</option>
+              }
+            </select>
+          </div>
             <div class="form-group">
-              <label>Vendor</label>
+              <label>Vendor *</label>
               <select [(ngModel)]="createForm.vendorId">
-                <option [ngValue]="undefined">No vendor</option>
+                <option [ngValue]="0">Select vendor…</option>
                 @for (v of vendors(); track v.vendorId) {
                   <option [ngValue]="v.vendorId">{{ v.name }}</option>
                 }
               </select>
             </div>
             <div class="form-group">
-              <label>Scheduled At</label>
+              <label>Scheduled At *</label>
               <input type="datetime-local" [(ngModel)]="createForm.scheduledAt" />
             </div>
             <div class="form-group">
               <label>Odometer (km)</label>
-              <input type="number" [(ngModel)]="createForm.odometerKm" min="0" />
+              <input type="number" [(ngModel)]="createForm.odometerKm" [readonly]="true" />
             </div>
-            <div class="form-group span-2">
-              <label>Description</label>
+            <<div class="form-group span-2">
+              <label>Description *</label>
               <textarea [(ngModel)]="createForm.description" rows="3" placeholder="Describe the maintenance needed…"></textarea>
             </div>
           </div>
@@ -285,9 +284,9 @@ type OrderStatus = 'open' | 'in_progress' | 'closed' | 'cancelled';
   `]
 })
 export class MaintenanceListComponent implements OnInit {
-  orders         = signal<MaintenanceOrder[]>([]);
-  vehicles       = signal<Vehicle[]>([]);
-  vendors        = signal<Vendor[]>([]);
+  orders = signal<MaintenanceOrder[]>([]);
+  vehicles = signal<Vehicle[]>([]);
+  vendors = signal<Vendor[]>([]);
   maintenanceTypes = signal<MaintenanceTypeDto[]>([]);
   loading = signal(true); saving = signal(false); formError = signal('');
   search = ''; showCreate = false; showEdit = false;
@@ -297,7 +296,7 @@ export class MaintenanceListComponent implements OnInit {
   deleteTarget: MaintenanceOrder | null = null;
   filter = signal<'all' | OrderStatus>('all');
 
-  createForm: CreateMaintenanceOrderDto = { vehicleId: 0 };
+  createForm: CreateMaintenanceOrderDto = { vehicleId: 0, vendorId: 0, scheduledAt: '', odometerKm: 0, description: '' };
   editForm: UpdateMaintenanceOrderDto = {};
   closeForm: CloseMaintenanceOrderDto = {};
   cancelForm: CancelMaintenanceOrderDto = { cancelReason: '' };
@@ -321,7 +320,7 @@ export class MaintenanceListComponent implements OnInit {
     private vendorApi: VendorApiService,
     private lookupApi: LookupApiService,
     public auth: AuthService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.load();
@@ -348,15 +347,33 @@ export class MaintenanceListComponent implements OnInit {
     return 'neutral';
   }
 
-  openCreate(): void { this.createForm = { vehicleId: 0 }; this.formError.set(''); this.showCreate = true; }
-  saveCreate(): void {
-    if (!this.createForm.vehicleId) { this.formError.set('Select a vehicle.'); return; }
-    this.saving.set(true);
-    this.api.create(this.createForm).subscribe({
-      next: () => { this.load(); this.closeCreate(); this.saving.set(false); },
-      error: (e) => { this.saving.set(false); this.formError.set(e.error?.message ?? 'Save failed.'); }
-    });
+  openCreate(): void {
+    this.createForm = { vehicleId: 0, vendorId: 0, scheduledAt: '', odometerKm: 0, description: '' };
+    this.formError.set('');
+    this.showCreate = true;
   }
+  onCreateVehicleChange(vehicleId: number): void {
+    const vehicle = this.vehicles().find(v => v.vehicleId === vehicleId);
+    if (vehicle) {
+      this.createForm.odometerKm = vehicle.currentOdometerKm;
+    }
+  }
+  saveCreate(): void {
+  if (!this.createForm.vehicleId) { this.formError.set('Select a vehicle.'); return; }
+  if (!this.createForm.vendorId) { this.formError.set('Select a vendor.'); return; }
+  if (!this.createForm.scheduledAt) { this.formError.set('Set a scheduled date.'); return; }
+  if (!this.createForm.description?.trim()) { this.formError.set('Enter a description.'); return; }
+  this.saving.set(true);
+  const payload = {
+    ...this.createForm,
+    scheduledAt: new Date(this.createForm.scheduledAt).toISOString()
+  };
+  console.log('PAYLOAD:', JSON.stringify(payload));
+  this.api.create(payload).subscribe({
+    next: () => { this.load(); this.closeCreate(); this.saving.set(false); },
+    error: (e) => { this.saving.set(false); this.formError.set(e.error?.message ?? 'Save failed.'); }
+  });
+}
   closeCreate(): void { this.showCreate = false; this.formError.set(''); }
 
   startEdit(row: MaintenanceOrder): void {

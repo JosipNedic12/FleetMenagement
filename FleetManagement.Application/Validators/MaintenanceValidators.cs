@@ -18,10 +18,12 @@ public class CreateMaintenanceOrderValidator : AbstractValidator<CreateMaintenan
     public CreateMaintenanceOrderValidator()
     {
         RuleFor(x => x.VehicleId).GreaterThan(0);
-        RuleFor(x => x.OdometerKm).GreaterThan(0).When(x => x.OdometerKm.HasValue);
+        RuleFor(x => x.VendorId).GreaterThan(0);
+        RuleFor(x => x.OdometerKm).GreaterThanOrEqualTo(0);
         RuleFor(x => x.ScheduledAt)
-            .GreaterThan(DateTime.UtcNow).When(x => x.ScheduledAt.HasValue)
+            .GreaterThan(DateTime.UtcNow)
             .WithMessage("Scheduled date must be in the future.");
+        RuleFor(x => x.Description).NotEmpty();
     }
 }
 

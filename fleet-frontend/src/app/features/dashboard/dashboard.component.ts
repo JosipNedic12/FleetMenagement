@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { VehicleApiService, MaintenanceOrderApiService, OdometerLogApiService, InsurancePolicyApiService, RegistrationApiService, InspectionApiService, FineApiService, AccidentApiService } from '../../core/auth/feature-api.services';
-
+import { OdometerLog } from '../../core/models/models';
 interface StatCard {
   label: string;
   value: number;
@@ -112,7 +112,7 @@ interface StatCard {
 })
 export class DashboardComponent implements OnInit {
   loading = signal(true);
-  cards   = signal<StatCard[]>([]);
+  cards = signal<StatCard[]>([]);
 
   constructor(
     private vehicleApi: VehicleApiService,
@@ -123,42 +123,74 @@ export class DashboardComponent implements OnInit {
     private inspectionApi: InspectionApiService,
     private fineApi: FineApiService,
     private accidentApi: AccidentApiService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     forkJoin({
-      vehicles:     this.vehicleApi.getAll(),
-      maintenance:  this.maintenanceApi.getAll(),
-      odometer:     this.odometerApi.getAll(),
-      insurance:    this.insuranceApi.getAll(),
+      vehicles: this.vehicleApi.getAll(),
+      maintenance: this.maintenanceApi.getAll(),
+      odometer: this.odometerApi.getAll(),
+      insurance: this.insuranceApi.getAll(),
       registration: this.registrationApi.getAll(),
-      inspections:  this.inspectionApi.getAll(),
-      fines:        this.fineApi.getAll(),
-      accidents:    this.accidentApi.getAll()
+      inspections: this.inspectionApi.getAll(),
+      fines: this.fineApi.getAll(),
+      accidents: this.accidentApi.getAll()
     }).subscribe({
       next: (data) => {
         const now = new Date();
         const thisMonth = (d: string) => { const dt = new Date(d); return dt.getFullYear() === now.getFullYear() && dt.getMonth() === now.getMonth(); };
 
         const activeVehicles = data.vehicles.filter(v => v.status === 'active').length;
-        const openOrders     = data.maintenance.filter(o => o.status === 'open' || o.status === 'in_progress').length;
-        const kmThisMonth    = data.odometer.filter(o => thisMonth(o.logDate)).reduce((sum, o) => sum + o.odometerKm, 0);
-        const unpaidFines    = data.fines.filter(f => !f.isPaid).length;
-        const expiredIns     = data.insurance.filter(i => !i.isActive).length;
+        const openOrders = data.maintenance.filter(o => o.status === 'open' || o.status === 'in_progress').length;
+        const kmThisMonth = calculateKmThisMonth(data.odometer);
+        const unpaidFines = data.fines.filter(f => !f.isPaid).length;
+        const expiredIns = data.insurance.filter(i => !i.isActive).length;
 
         this.cards.set([
-          { label: 'Vehicles',           value: data.vehicles.length,     sub: `${activeVehicles} active`,        route: '/vehicles',      icon: '🚗', accent: '#10b981' },
-          { label: 'Open Orders',        value: openOrders,               sub: 'Maintenance in progress',         route: '/maintenance',   icon: '🔧', accent: '#f97316' },
-          { label: 'KM This Month',      value: kmThisMonth,              sub: 'From odometer logs',              route: '/odometer',      icon: '📍', accent: '#6366f1' },
-          { label: 'Insurance Policies', value: data.insurance.length,    sub: `${expiredIns} expired`,           route: '/insurance',     icon: '🛡', accent: '#3b82f6' },
-          { label: 'Registrations',      value: data.registration.length, sub: 'Active records',                  route: '/registration',  icon: '📋', accent: '#8b5cf6' },
-          { label: 'Inspections',        value: data.inspections.length,  sub: 'Total inspections',               route: '/inspections',   icon: '🔍', accent: '#06b6d4' },
-          { label: 'Fines',              value: data.fines.length,        sub: `${unpaidFines} unpaid`,           route: '/fines',         icon: '⚠', accent: '#f59e0b' },
-          { label: 'Accidents',          value: data.accidents.length,    sub: 'Reported incidents',              route: '/accidents',     icon: '🚨', accent: '#ef4444' },
+          { label: 'Vehicles', value: data.vehicles.length, sub: `${activeVehicles} active`, route: '/vehicles', icon: '🚗', accent: '#10b981' },
+          { label: 'Open Orders', value: openOrders, sub: 'Maintenance in progress', route: '/maintenance', icon: '🔧', accent: '#f97316' },
+          { label: 'KM This Month', value: kmThisMonth, sub: 'From odometer logs', route: '/odometer', icon: '📍', accent: '#6366f1' },
+          { label: 'Insurance Policies', value: data.insurance.length, sub: `${expiredIns} expired`, route: '/insurance', icon: '🛡', accent: '#3b82f6' },
+          { label: 'Registrations', value: data.registration.length, sub: 'Active records', route: '/registration', icon: '📋', accent: '#8b5cf6' },
+          { label: 'Inspections', value: data.inspections.length, sub: 'Total inspections', route: '/inspections', icon: '🔍', accent: '#06b6d4' },
+          { label: 'Fines', value: data.fines.length, sub: `${unpaidFines} unpaid`, route: '/fines', icon: '⚠', accent: '#f59e0b' },
+          { label: 'Accidents', value: data.accidents.length, sub: 'Reported incidents', route: '/accidents', icon: '🚨', accent: '#ef4444' },
         ]);
         this.loading.set(false);
       },
       error: () => this.loading.set(false)
     });
   }
+}
+
+// ── Helpers ────────────────────────────────────────────────────────
+function calculateKmThisMonth(odometerLogs: OdometerLog[]): number {
+  const now = new Date();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const isThisMonth = (d: string) => {
+    const dt = new Date(d);
+    return dt.getFullYear() === now.getFullYear() && dt.getMonth() === now.getMonth();
+  };
+
+  const byVehicle = new Map<number, OdometerLog[]>();
+  for (const o of odometerLogs) {
+    if (!byVehicle.has(o.vehicleId)) byVehicle.set(o.vehicleId, []);
+    byVehicle.get(o.vehicleId)!.push(o);
+  }
+
+  let total = 0;
+  for (const [, logs] of byVehicle) {
+    const sorted = [...logs].sort((a, b) => new Date(a.logDate).getTime() - new Date(b.logDate).getTime());
+    const thisMonthLogs = sorted.filter(o => isThisMonth(o.logDate));
+    if (thisMonthLogs.length === 0) continue;
+
+    const maxThisMonth = Math.max(...thisMonthLogs.map(o => o.odometerKm));
+    const beforeMonth = sorted.filter(o => new Date(o.logDate) < monthStart);
+    const baseline = beforeMonth.length > 0
+      ? beforeMonth[beforeMonth.length - 1].odometerKm
+      : Math.min(...thisMonthLogs.map(o => o.odometerKm));
+
+    total += Math.max(0, maxThisMonth - baseline);
+  }
+  return total;
 }

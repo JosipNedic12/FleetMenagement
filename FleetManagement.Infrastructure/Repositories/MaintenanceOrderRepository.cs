@@ -75,6 +75,14 @@ public class MaintenanceOrderRepository : IMaintenanceOrderRepository
             return null;
 
         order.Status = newStatus;
+        if (newStatus == "in_progress")
+        {
+            var vehicle = await _context.Vehicles.FindAsync(order.VehicleId);
+            if (vehicle != null)
+            {
+                vehicle.Status = "service";
+            }
+        }
         order.ModifiedAt = DateTime.UtcNow;
         await _context.SaveChangesAsync();
         return await BaseQuery().FirstAsync(o => o.OrderId == id);

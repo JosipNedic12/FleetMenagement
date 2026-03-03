@@ -79,3 +79,5 @@ public class OdometerLogRepository : IOdometerLogRepository
             .Where(l => l.VehicleId == vehicleId)
             .MaxAsync(l => (int?)l.OdometerKm);
 }
+
+

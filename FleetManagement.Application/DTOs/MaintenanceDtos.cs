@@ -89,10 +89,10 @@ public class MaintenanceOrderDto
 public class CreateMaintenanceOrderDto
 {
     public int VehicleId { get; set; }
-    public int? VendorId { get; set; }
-    public DateTime? ScheduledAt { get; set; }
-    public int? OdometerKm { get; set; }
-    public string? Description { get; set; }
+    public int VendorId { get; set; }
+    public DateTime ScheduledAt { get; set; }
+    public int OdometerKm { get; set; }
+    public string Description { get; set; } = string.Empty;
 }
 
 public class UpdateMaintenanceOrderDto

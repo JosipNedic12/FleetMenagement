@@ -61,10 +61,10 @@ export interface MaintenanceOrder {
 
 export interface CreateMaintenanceOrderDto {
   vehicleId: number;
-  vendorId?: number;
-  scheduledAt?: string;
-  odometerKm?: number;
-  description?: string;
+  vendorId: number;
+  scheduledAt: string;
+  odometerKm: number;
+  description: string;
 }
 
 export interface UpdateMaintenanceOrderDto {
