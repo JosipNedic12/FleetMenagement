@@ -8,11 +8,12 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { BadgeComponent } from '../../../shared/components/badge/badge.component';
 import { ConfirmModalComponent } from '../../../shared/components/modal/confirm-modal.component';
 import { HasRoleDirective } from '../../../shared/directives/has-role.directive';
+import { SearchSelectComponent } from '../../../shared/components/search-select/search-select.component';
 
 @Component({
   selector: 'app-assignments-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, BadgeComponent, ConfirmModalComponent, HasRoleDirective, LucideAngularModule],
+  imports: [CommonModule, FormsModule, BadgeComponent, ConfirmModalComponent, HasRoleDirective, LucideAngularModule, SearchSelectComponent],
   template: `
     <div class="page">
       <div class="page-header">
@@ -87,21 +88,23 @@ import { HasRoleDirective } from '../../../shared/directives/has-role.directive'
           <div class="form-grid">
             <div class="form-group">
               <label>Vehicle *</label>
-              <select [(ngModel)]="createForm.vehicleId">
-                <option [ngValue]="0">Select vehicle…</option>
-                @for (v of vehicles(); track v.vehicleId) {
-                  <option [ngValue]="v.vehicleId">{{ v.registrationNumber }} – {{ v.make }} {{ v.model }}</option>
-                }
-              </select>
+              <app-search-select
+                [items]="vehicles()"
+                [displayFn]="vehicleDisplayFn"
+                valueField="vehicleId"
+                placeholder="Select vehicle…"
+                [(ngModel)]="createForm.vehicleId">
+              </app-search-select>
             </div>
             <div class="form-group">
               <label>Driver *</label>
-              <select [(ngModel)]="createForm.driverId">
-                <option [ngValue]="0">Select driver…</option>
-                @for (d of drivers(); track d.driverId) {
-                  <option [ngValue]="d.driverId">{{ d.fullName }}</option>
-                }
-              </select>
+              <app-search-select
+                [items]="drivers()"
+                [displayFn]="driverDisplayFn"
+                valueField="driverId"
+                placeholder="Select driver…"
+                [(ngModel)]="createForm.driverId">
+              </app-search-select>
             </div>
             <div class="form-group">
               <label>From *</label>
@@ -165,6 +168,8 @@ import { HasRoleDirective } from '../../../shared/directives/has-role.directive'
 })
 export class AssignmentsListComponent implements OnInit {
   readonly icons = { Eye, Pencil, Trash2 };
+  readonly vehicleDisplayFn = (v: Vehicle) => `${v.registrationNumber} – ${v.make} ${v.model}`;
+  readonly driverDisplayFn  = (d: Driver)  => d.fullName;
   private api = inject(VehicleAssignmentApiService);
   private vehicleApi = inject(VehicleApiService);
   private driverApi = inject(DriverApiService);

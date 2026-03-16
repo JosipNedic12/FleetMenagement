@@ -22,7 +22,7 @@ import {
   Inspection, CreateInspectionDto, UpdateInspectionDto,
   Fine, CreateFineDto, UpdateFineDto, MarkFinePaidDto,
   Accident, CreateAccidentDto, UpdateAccidentDto,ChangePasswordDto,
-  Document
+  Document, VehicleDocument
 } from '../models/models';
 
 // ─── Auth ─────────────────────────────────────────────────────────────────────
@@ -544,6 +544,10 @@ export class DocumentApiService extends ApiService {
 
   download(documentId: number): void {
     window.open(`${this.base}/documents/${documentId}/download`, '_blank');
+  }
+
+  getVehicleDocuments(vehicleId: number): Observable<VehicleDocument[]> {
+    return this.get<VehicleDocument[]>(`documents/vehicle/${vehicleId}`);
   }
 
   deleteDoc(documentId: number): Observable<void> {

@@ -2,24 +2,26 @@ import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { forkJoin } from 'rxjs';
-import { LucideAngularModule, ArrowLeft, IdCard, Users, TriangleAlert, Siren } from 'lucide-angular';
+import { LucideAngularModule, ArrowLeft, IdCard, Users, TriangleAlert, Siren, FileText, Download, Trash2 } from 'lucide-angular';
 import {
   DriverApiService,
   VehicleAssignmentApiService,
   FineApiService,
   AccidentApiService,
+  DocumentApiService,
 } from '../../../core/auth/feature-api.services';
 import {
-  Driver, VehicleAssignment, Fine, Accident,
+  Driver, VehicleAssignment, Fine, Accident, Document,
 } from '../../../core/models/models';
 import { BadgeComponent } from '../../../shared/components/badge/badge.component';
+import { FileUploadComponent } from '../../../shared/components/file-upload/file-upload.component';
 
-type Tab = 'overview' | 'assignments' | 'fines' | 'accidents';
+type Tab = 'overview' | 'assignments' | 'fines' | 'accidents' | 'documents';
 
 @Component({
   selector: 'app-driver-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, BadgeComponent, LucideAngularModule],
+  imports: [CommonModule, RouterModule, BadgeComponent, LucideAngularModule, FileUploadComponent],
   template: `
     <div class="page">
 
@@ -214,6 +216,60 @@ type Tab = 'overview' | 'assignments' | 'fines' | 'accidents';
           </div>
         }
 
+        <!-- Documents -->
+        @if (activeTab() === 'documents') {
+          <div class="section-card">
+            <app-file-upload
+              [entityType]="'Driver'"
+              [entityId]="driver()!.driverId"
+              (uploaded)="onDocumentUploaded($event)"
+            />
+            @if (documents().length === 0) {
+              <div class="table-empty">No documents attached.</div>
+            } @else {
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>File Name</th>
+                    <th>Category</th>
+                    <th>Size</th>
+                    <th>Uploaded</th>
+                    <th>Notes</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (doc of documents(); track doc.documentId) {
+                    <tr>
+                      <td><span style="font-size:13px">{{ doc.fileName }}</span></td>
+                      <td>
+                        @if (doc.category) {
+                          <app-badge [label]="doc.category" variant="info" />
+                        } @else {
+                          <span style="color:var(--text-muted)">—</span>
+                        }
+                      </td>
+                      <td style="color:var(--text-muted);font-size:13px">{{ formatFileSize(doc.fileSize) }}</td>
+                      <td style="color:var(--text-muted);font-size:13px">{{ doc.uploadedAt | date:'dd.MM.yyyy' }}</td>
+                      <td style="color:var(--text-muted);font-size:13px">{{ doc.notes || '—' }}</td>
+                      <td>
+                        <div style="display:flex;gap:6px">
+                          <button class="btn-icon" title="Download" (click)="downloadDoc(doc.documentId)">
+                            <lucide-icon [img]="icons.Download" [size]="14" [strokeWidth]="2"></lucide-icon>
+                          </button>
+                          <button class="btn-icon btn-icon--danger" title="Delete" (click)="deleteDoc(doc.documentId)">
+                            <lucide-icon [img]="icons.Trash2" [size]="14" [strokeWidth]="2"></lucide-icon>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            }
+          </div>
+        }
+
       }
     </div>
   `,
@@ -335,6 +391,15 @@ type Tab = 'overview' | 'assignments' | 'fines' | 'accidents';
       letter-spacing: 0.3px;
     }
 
+    .btn-icon {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 30px; height: 30px; border-radius: 6px; border: 1.5px solid var(--border);
+      background: var(--card-bg); color: var(--text-secondary); cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-icon:hover { border-color: var(--brand); color: var(--brand); }
+    .btn-icon--danger:hover { border-color: #dc2626; color: #dc2626; }
+
     @media (max-width: 768px) {
       .overview-grid { grid-template-columns: 1fr; }
     }
@@ -348,13 +413,14 @@ type Tab = 'overview' | 'assignments' | 'fines' | 'accidents';
   `]
 })
 export class DriverDetailComponent implements OnInit {
-  readonly icons = { ArrowLeft, IdCard, Users, TriangleAlert, Siren };
+  readonly icons = { ArrowLeft, IdCard, Users, TriangleAlert, Siren, FileText, Download, Trash2 };
 
   readonly tabs: { id: Tab; label: string; icon: any }[] = [
     { id: 'overview',    label: 'Overview',    icon: IdCard },
     { id: 'assignments', label: 'Assignments', icon: Users },
     { id: 'fines',       label: 'Fines',       icon: TriangleAlert },
     { id: 'accidents',   label: 'Accidents',   icon: Siren },
+    { id: 'documents',   label: 'Documents',   icon: FileText },
   ];
 
   activeTab   = signal<Tab>('overview');
@@ -362,6 +428,7 @@ export class DriverDetailComponent implements OnInit {
   assignments = signal<VehicleAssignment[]>([]);
   fines       = signal<Fine[]>([]);
   accidents   = signal<Accident[]>([]);
+  documents   = signal<Document[]>([]);
   loading     = signal(true);
 
   constructor(
@@ -371,6 +438,7 @@ export class DriverDetailComponent implements OnInit {
     private assignmentApi: VehicleAssignmentApiService,
     private fineApi: FineApiService,
     private accidentApi: AccidentApiService,
+    private documentApi: DocumentApiService,
   ) {}
 
   ngOnInit(): void {
@@ -380,12 +448,14 @@ export class DriverDetailComponent implements OnInit {
       assignments: this.assignmentApi.getByDriver(id),
       fines:       this.fineApi.getByDriver(id),
       accidents:   this.accidentApi.getByDriver(id),
+      documents:   this.documentApi.getByEntity('Driver', id),
     }).subscribe({
       next: r => {
         this.driver.set(r.driver);
         this.assignments.set(r.assignments);
         this.fines.set(r.fines);
         this.accidents.set(r.accidents);
+        this.documents.set(r.documents);
         this.loading.set(false);
       },
       error: () => this.loading.set(false),
@@ -405,7 +475,27 @@ export class DriverDetailComponent implements OnInit {
       case 'assignments': return this.assignments().length;
       case 'fines':       return this.fines().length;
       case 'accidents':   return this.accidents().length;
+      case 'documents':   return this.documents().length;
       default:            return 0;
     }
+  }
+
+  downloadDoc(documentId: number): void { this.documentApi.download(documentId); }
+
+  deleteDoc(documentId: number): void {
+    this.documentApi.deleteDoc(documentId).subscribe(() => {
+      this.documents.update(docs => docs.filter(d => d.documentId !== documentId));
+    });
+  }
+
+  onDocumentUploaded(_doc: Document): void {
+    const id = Number(this.route.snapshot.paramMap.get('id'));
+    this.documentApi.getByEntity('Driver', id).subscribe(docs => this.documents.set(docs));
+  }
+
+  formatFileSize(bytes: number): string {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   }
 }

@@ -96,11 +96,67 @@ builder.Services.AddScoped<IFineRepository, FineRepository>();
 builder.Services.AddScoped<IAccidentRepository, AccidentRepository>();
 builder.Services.AddScoped<IInspectionRepository, InspectionRepository>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 builder.Services.AddMemoryCache();
 var app = builder.Build();
 
 // Ensure uploads folder exists
 Directory.CreateDirectory(app.Configuration["FileStorage:UploadPath"] ?? "uploads");
+
+// Seed sample notifications for userId=1
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<FleetManagement.Infrastructure.Data.FleetDbContext>();
+    if (!db.Notifications.Any(n => n.UserId == 1))
+    {
+        var now = DateTime.UtcNow;
+        db.Notifications.AddRange(
+            new FleetManagement.Domain.Entities.Notification
+            {
+                UserId = 1, Type = "danger", IsRead = false, CreatedAt = now.AddMinutes(-5),
+                Title = "Insurance Expired",
+                Message = "Vehicle BA-123-AB insurance policy expired 3 days ago. Renew immediately.",
+                RelatedEntityType = "insurance", RelatedEntityId = 1
+            },
+            new FleetManagement.Domain.Entities.Notification
+            {
+                UserId = 1, Type = "warning", IsRead = false, CreatedAt = now.AddHours(-2),
+                Title = "Inspection Due Soon",
+                Message = "Vehicle ZG-456-CD is due for technical inspection in 7 days.",
+                RelatedEntityType = "inspection", RelatedEntityId = 2
+            },
+            new FleetManagement.Domain.Entities.Notification
+            {
+                UserId = 1, Type = "warning", IsRead = false, CreatedAt = now.AddHours(-5),
+                Title = "Overdue Maintenance Order",
+                Message = "Work order #14 (Oil change – ZG-789-EF) is overdue by 2 days.",
+                RelatedEntityType = "maintenance", RelatedEntityId = 14
+            },
+            new FleetManagement.Domain.Entities.Notification
+            {
+                UserId = 1, Type = "info", IsRead = true, CreatedAt = now.AddDays(-1),
+                Title = "New Driver Assigned",
+                Message = "Marko Horvat has been assigned to vehicle BA-321-GH.",
+                RelatedEntityType = "vehicle", RelatedEntityId = 3
+            },
+            new FleetManagement.Domain.Entities.Notification
+            {
+                UserId = 1, Type = "success", IsRead = true, CreatedAt = now.AddDays(-2),
+                Title = "Maintenance Completed",
+                Message = "Work order #11 (Brake service – ZG-654-IJ) was closed successfully.",
+                RelatedEntityType = "maintenance", RelatedEntityId = 11
+            },
+            new FleetManagement.Domain.Entities.Notification
+            {
+                UserId = 1, Type = "danger", IsRead = false, CreatedAt = now.AddDays(-3),
+                Title = "Unpaid Fine",
+                Message = "Vehicle BA-999-KL has an unpaid fine of 150 EUR from 3 days ago.",
+                RelatedEntityType = "fine", RelatedEntityId = 5
+            }
+        );
+        db.SaveChanges();
+    }
+}
 
 if (app.Environment.IsDevelopment())
 {

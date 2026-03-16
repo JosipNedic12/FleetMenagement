@@ -34,6 +34,8 @@ public class FleetDbContext : DbContext
     public DbSet<Accident> Accidents => Set<Accident>();
     public DbSet<Inspection> Inspections => Set<Inspection>();
     public DbSet<Document> Documents { get; set; }
+    public DbSet<VehicleDocument> VehicleDocuments { get; set; }
+    public DbSet<Notification> Notifications { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -488,6 +490,45 @@ public class FleetDbContext : DbContext
             entity.Property(e => e.Notes).HasColumnName("notes");
 
             entity.HasIndex(e => new { e.EntityType, e.EntityId }).HasDatabaseName("ix_document_entity_type_entity_id");
+        });
+
+        modelBuilder.Entity<VehicleDocument>(entity =>
+        {
+            entity.ToTable("vehicle_document", "fleet");
+            entity.HasKey(e => e.VehicleDocumentId);
+            entity.Property(e => e.VehicleDocumentId).HasColumnName("vehicle_document_id");
+            entity.Property(e => e.VehicleId).HasColumnName("vehicle_id");
+            entity.Property(e => e.DocumentId).HasColumnName("document_id");
+            entity.Property(e => e.DocumentTypeId).HasColumnName("document_type_id");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
+
+            entity.HasOne(e => e.Vehicle)
+                  .WithMany()
+                  .HasForeignKey(e => e.VehicleId);
+
+            entity.HasOne(e => e.Document)
+                  .WithMany()
+                  .HasForeignKey(e => e.DocumentId);
+        });
+
+        modelBuilder.Entity<Notification>(entity =>
+        {
+            entity.ToTable("notification");
+            entity.HasKey(e => e.NotificationId);
+            entity.Property(e => e.NotificationId).HasColumnName("notification_id");
+            entity.Property(e => e.UserId).HasColumnName("user_id");
+            entity.Property(e => e.Title).HasColumnName("title").HasMaxLength(200);
+            entity.Property(e => e.Message).HasColumnName("message").HasMaxLength(500);
+            entity.Property(e => e.Type).HasColumnName("type").HasMaxLength(20);
+            entity.Property(e => e.IsRead).HasColumnName("is_read");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+            entity.Property(e => e.RelatedEntityType).HasColumnName("related_entity_type");
+            entity.Property(e => e.RelatedEntityId).HasColumnName("related_entity_id");
+
+            entity.HasOne(e => e.User)
+                  .WithMany()
+                  .HasForeignKey(e => e.UserId);
         });
     }
 }

@@ -17,6 +17,15 @@ public class DocumentsController : ControllerBase
     private static readonly string[] AllowedEntityTypes =
         ["Vehicle", "Driver", "MaintenanceOrder", "Accident", "Inspection", "Insurance", "Registration", "Fine", "FuelTransaction"];
 
+    // Maps entity type → document_type_id from fleet.dc_document_type
+    // 5=INSURANCE, 6=REGISTRATION, 7=SERVICE, 8=OTHER
+    private static readonly Dictionary<string, int> VehicleDocumentTypeMap = new()
+    {
+        ["Registration"] = 6,
+        ["Insurance"]    = 5,
+        ["Inspection"]   = 8,
+    };
+
     private readonly FleetDbContext _db;
     private readonly IConfiguration _config;
 
@@ -81,6 +90,24 @@ public class DocumentsController : ControllerBase
         _db.Documents.Add(doc);
         await _db.SaveChangesAsync();
 
+        // Auto-link to vehicle_document for vehicle-related entity types
+        if (VehicleDocumentTypeMap.TryGetValue(entityType, out var docTypeId))
+        {
+            var vehicleId = await ResolveVehicleIdAsync(entityType, entityId);
+            if (vehicleId.HasValue)
+            {
+                _db.VehicleDocuments.Add(new VehicleDocument
+                {
+                    VehicleId      = vehicleId.Value,
+                    DocumentId     = doc.DocumentId,
+                    DocumentTypeId = docTypeId,
+                    CreatedAt      = doc.UploadedAt,
+                    CreatedBy      = null,
+                });
+                await _db.SaveChangesAsync();
+            }
+        }
+
         return CreatedAtAction(nameof(GetById), new { id = doc.DocumentId }, ToDto(doc));
     }
 
@@ -131,6 +158,62 @@ public class DocumentsController : ControllerBase
 
         return NoContent();
     }
+
+    // GET /api/documents/vehicle/{vehicleId}
+    [HttpGet("vehicle/{vehicleId}")]
+    public async Task<IActionResult> GetByVehicle(int vehicleId)
+    {
+        var items = await _db.VehicleDocuments
+            .Where(vd => vd.VehicleId == vehicleId)
+            .Include(vd => vd.Document)
+            .OrderByDescending(vd => vd.CreatedAt)
+            .ToListAsync();
+
+        return Ok(items.Select(ToVehicleDocumentDto));
+    }
+
+    private async Task<int?> ResolveVehicleIdAsync(string entityType, int entityId)
+    {
+        return entityType switch
+        {
+            "Registration" => await _db.RegistrationRecords
+                                    .Where(r => r.RegistrationId == entityId)
+                                    .Select(r => (int?)r.VehicleId)
+                                    .FirstOrDefaultAsync(),
+            "Insurance"    => await _db.InsurancePolicies
+                                    .Where(p => p.PolicyId == entityId)
+                                    .Select(p => (int?)p.VehicleId)
+                                    .FirstOrDefaultAsync(),
+            "Inspection"   => await _db.Inspections
+                                    .Where(i => i.InspectionId == entityId)
+                                    .Select(i => (int?)i.VehicleId)
+                                    .FirstOrDefaultAsync(),
+            _              => null,
+        };
+    }
+
+    private static VehicleDocumentDto ToVehicleDocumentDto(VehicleDocument vd) => new()
+    {
+        VehicleDocumentId = vd.VehicleDocumentId,
+        VehicleId         = vd.VehicleId,
+        DocumentId        = vd.DocumentId,
+        DocumentTypeId    = vd.DocumentTypeId,
+        DocumentTypeName  = vd.DocumentTypeId switch
+        {
+            5 => "Insurance",
+            6 => "Registration",
+            7 => "Service",
+            8 => "Other",
+            _ => "Other",
+        },
+        CreatedAt    = vd.CreatedAt,
+        CreatedBy    = vd.CreatedBy,
+        FileName     = vd.Document.FileName,
+        ContentType  = vd.Document.ContentType,
+        FileSize     = vd.Document.FileSize,
+        UploadedAt   = vd.Document.UploadedAt,
+        Notes        = vd.Document.Notes,
+    };
 
     private static DocumentDto ToDto(Document d) => new()
     {

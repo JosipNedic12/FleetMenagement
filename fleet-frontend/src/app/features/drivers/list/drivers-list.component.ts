@@ -9,11 +9,12 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { BadgeComponent } from '../../../shared/components/badge/badge.component';
 import { ConfirmModalComponent } from '../../../shared/components/modal/confirm-modal.component';
 import { HasRoleDirective } from '../../../shared/directives/has-role.directive';
+import { SearchSelectComponent } from '../../../shared/components/search-select/search-select.component';
 
 @Component({
   selector: 'app-drivers-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, BadgeComponent, ConfirmModalComponent, HasRoleDirective, LucideAngularModule],
+  imports: [CommonModule, FormsModule, RouterModule, BadgeComponent, ConfirmModalComponent, HasRoleDirective, LucideAngularModule, SearchSelectComponent],
   template: `
     <div class="page">
       <div class="page-header">
@@ -107,12 +108,13 @@ import { HasRoleDirective } from '../../../shared/directives/has-role.directive'
           <div class="form-grid">
             <div class="form-group span-2">
               <label>Employee *</label>
-              <select [(ngModel)]="createForm.employeeId">
-                <option [ngValue]="0">Select employee…</option>
-                @for (e of availableEmployees(); track e.employeeId) {
-                  <option [ngValue]="e.employeeId">{{ e.firstName }} {{ e.lastName }} {{ e.department ? '(' + e.department + ')' : '' }}</option>
-                }
-              </select>
+              <app-search-select
+                [items]="availableEmployees()"
+                [displayFn]="employeeDisplayFn"
+                valueField="employeeId"
+                placeholder="Select employee…"
+                [(ngModel)]="createForm.employeeId">
+              </app-search-select>
             </div>
             <div class="form-group">
               <label>License # *</label>
@@ -211,6 +213,8 @@ import { HasRoleDirective } from '../../../shared/directives/has-role.directive'
 })
 export class DriversListComponent implements OnInit {
   readonly icons = { Eye, Pencil, Trash2, UserRoundIcon };
+  readonly employeeDisplayFn = (e: Employee) =>
+    `${e.firstName} ${e.lastName}${e.department ? ' (' + e.department + ')' : ''}`;
   private api = inject(DriverApiService);
   private employeeApi = inject(EmployeeApiService);
   private lookupApi = inject(LookupApiService);

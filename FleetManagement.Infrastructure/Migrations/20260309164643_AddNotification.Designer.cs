@@ -3,6 +3,7 @@ using System;
 using FleetManagement.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FleetManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(FleetDbContext))]
-    partial class FleetDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260309164643_AddNotification")]
+    partial class AddNotification
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1246,44 +1249,6 @@ namespace FleetManagement.Infrastructure.Migrations
                     b.ToTable("vehicle_assignment", "fleet");
                 });
 
-            modelBuilder.Entity("FleetManagement.Domain.Entities.VehicleDocument", b =>
-                {
-                    b.Property<int>("VehicleDocumentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("vehicle_document_id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("VehicleDocumentId"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<Guid?>("CreatedBy")
-                        .HasColumnType("uuid")
-                        .HasColumnName("created_by");
-
-                    b.Property<int>("DocumentId")
-                        .HasColumnType("integer")
-                        .HasColumnName("document_id");
-
-                    b.Property<int>("DocumentTypeId")
-                        .HasColumnType("integer")
-                        .HasColumnName("document_type_id");
-
-                    b.Property<int>("VehicleId")
-                        .HasColumnType("integer")
-                        .HasColumnName("vehicle_id");
-
-                    b.HasKey("VehicleDocumentId");
-
-                    b.HasIndex("DocumentId");
-
-                    b.HasIndex("VehicleId");
-
-                    b.ToTable("vehicle_document", "fleet");
-                });
-
             modelBuilder.Entity("FleetManagement.Domain.Entities.Vendor", b =>
                 {
                     b.Property<int>("VendorId")
@@ -1604,25 +1569,6 @@ namespace FleetManagement.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Driver");
-
-                    b.Navigation("Vehicle");
-                });
-
-            modelBuilder.Entity("FleetManagement.Domain.Entities.VehicleDocument", b =>
-                {
-                    b.HasOne("FleetManagement.Domain.Entities.Document", "Document")
-                        .WithMany()
-                        .HasForeignKey("DocumentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FleetManagement.Domain.Entities.Vehicle", "Vehicle")
-                        .WithMany()
-                        .HasForeignKey("VehicleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Document");
 
                     b.Navigation("Vehicle");
                 });

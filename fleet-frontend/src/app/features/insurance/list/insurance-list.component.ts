@@ -1,18 +1,21 @@
-import { Component, OnInit, signal, computed, inject } from '@angular/core';
+import { Component, OnInit, signal, computed, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { InsurancePolicyApiService, VehicleApiService } from '../../../core/auth/feature-api.services';
-import { LucideAngularModule, Eye, Pencil, Trash2 } from 'lucide-angular';
+import { LucideAngularModule, Eye, Pencil, Trash2, Paperclip } from 'lucide-angular';
 import { InsurancePolicy, CreateInsurancePolicyDto, Vehicle } from '../../../core/models/models';
 import { AuthService } from '../../../core/auth/auth.service';
 import { BadgeComponent } from '../../../shared/components/badge/badge.component';
 import { ConfirmModalComponent } from '../../../shared/components/modal/confirm-modal.component';
 import { HasRoleDirective } from '../../../shared/directives/has-role.directive';
+import { SearchSelectComponent } from '../../../shared/components/search-select/search-select.component';
+import { FileUploadComponent } from '../../../shared/components/file-upload/file-upload.component';
+import { DocumentListComponent } from '../../../shared/components/document-list/document-list.component';
 
 @Component({
   selector: 'app-insurance-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, BadgeComponent, ConfirmModalComponent, HasRoleDirective, LucideAngularModule],
+  imports: [CommonModule, FormsModule, BadgeComponent, ConfirmModalComponent, HasRoleDirective, LucideAngularModule, SearchSelectComponent, FileUploadComponent, DocumentListComponent],
   template: `
     <div class="page">
       <!-- Header -->
@@ -72,6 +75,7 @@ import { HasRoleDirective } from '../../../shared/directives/has-role.directive'
                     />
                   </td>
                   <td class="actions">
+                    <button class="btn-icon" title="Documents" (click)="openDocs(row)"><lucide-icon [img]="icons.Paperclip" [size]="15" [strokeWidth]="2"></lucide-icon></button>
                     <button *hasRole="['Admin','FleetManager']" class="btn-icon" title="Edit" (click)="startEdit(row)"><lucide-icon [img]="icons.Pencil" [size]="15" [strokeWidth]="2"></lucide-icon></button>
                     <button *hasRole="'Admin'" class="btn-icon danger" title="Delete" (click)="confirmDelete(row)"><lucide-icon [img]="icons.Trash2" [size]="15" [strokeWidth]="2"></lucide-icon></button>
                   </td>
@@ -92,12 +96,14 @@ import { HasRoleDirective } from '../../../shared/directives/has-role.directive'
           <div class="form-grid">
             <div class="form-group">
               <label>Vehicle *</label>
-              <select [(ngModel)]="form.vehicleId" [disabled]="!!editId">
-                <option [ngValue]="0">Select vehicle…</option>
-                @for (v of vehicles(); track v.vehicleId) {
-                  <option [ngValue]="v.vehicleId">{{ v.registrationNumber }} — {{ v.make }} {{ v.model }}</option>
-                }
-              </select>
+              <app-search-select
+                [items]="vehicles()"
+                [displayFn]="vehicleDisplayFn"
+                valueField="vehicleId"
+                placeholder="Select vehicle…"
+                [disabled]="!!editId"
+                [(ngModel)]="form.vehicleId">
+              </app-search-select>
             </div>
             <div class="form-group">
               <label>Policy Number *</label>
@@ -147,11 +153,38 @@ import { HasRoleDirective } from '../../../shared/directives/has-role.directive'
       (confirmed)="doDelete()"
       (cancelled)="deleteTarget = null"
     />
+
+    <!-- Documents modal -->
+    @if (docsTarget) {
+      <div class="modal-overlay" (click)="docsTarget = null">
+        <div class="modal-box modal-box--wide" (click)="$event.stopPropagation()">
+          <h2 class="modal-title">Documents — {{ docsTarget.policyNumber }}</h2>
+          <app-file-upload
+            [entityType]="'Insurance'"
+            [entityId]="docsTarget.policyId"
+            (uploaded)="docList.loadDocuments()"
+          />
+          <app-document-list
+            #docList
+            [entityType]="'Insurance'"
+            [entityId]="docsTarget.policyId"
+          />
+          <div class="modal-actions">
+            <button class="btn btn-secondary" (click)="docsTarget = null">Close</button>
+          </div>
+        </div>
+      </div>
+    }
   `,
-  styles: []
+  styles: [`
+    .modal-box--wide { width: min(720px, 95vw); }
+  `]
 })
 export class InsuranceListComponent implements OnInit {
-  readonly icons = { Eye, Pencil, Trash2 };
+  readonly icons = { Eye, Pencil, Trash2, Paperclip };
+  readonly vehicleDisplayFn = (v: Vehicle) => `${v.registrationNumber} – ${v.make} ${v.model}`;
+  @ViewChild('docList') docList!: DocumentListComponent;
+  docsTarget: InsurancePolicy | null = null;
   private api = inject(InsurancePolicyApiService);
   private vehicleApi = inject(VehicleApiService);
   auth = inject(AuthService);
@@ -227,6 +260,8 @@ export class InsuranceListComponent implements OnInit {
       error: (e) => { this.saving.set(false); this.formError.set(e.error?.message ?? 'Save failed.'); }
     });
   }
+
+  openDocs(row: InsurancePolicy): void { this.docsTarget = row; }
 
   confirmDelete(row: InsurancePolicy): void { this.deleteTarget = row; }
 

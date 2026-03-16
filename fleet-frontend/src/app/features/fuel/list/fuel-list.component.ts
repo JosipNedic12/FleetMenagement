@@ -12,11 +12,12 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { BadgeComponent } from '../../../shared/components/badge/badge.component';
 import { ConfirmModalComponent } from '../../../shared/components/modal/confirm-modal.component';
 import { HasRoleDirective } from '../../../shared/directives/has-role.directive';
+import { SearchSelectComponent } from '../../../shared/components/search-select/search-select.component';
 
 @Component({
   selector: 'app-fuel-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, BadgeComponent, ConfirmModalComponent, HasRoleDirective, LucideAngularModule],
+  imports: [CommonModule, FormsModule, BadgeComponent, ConfirmModalComponent, HasRoleDirective, LucideAngularModule, SearchSelectComponent],
   template: `
     <div class="page">
       <div class="page-header">
@@ -143,12 +144,13 @@ import { HasRoleDirective } from '../../../shared/directives/has-role.directive'
             </div>
             <div class="form-group">
               <label>Vehicle</label>
-              <select [(ngModel)]="cardForm.assignedVehicleId">
-                <option [ngValue]="undefined">No vehicle</option>
-                @for (v of vehicles(); track v.vehicleId) {
-                  <option [ngValue]="v.vehicleId">{{ v.registrationNumber }}</option>
-                }
-              </select>
+              <app-search-select
+                [items]="vehicles()"
+                [displayFn]="vehicleDisplayFn"
+                valueField="vehicleId"
+                placeholder="No vehicle"
+                [(ngModel)]="cardForm.assignedVehicleId">
+              </app-search-select>
             </div>
             <div class="form-group">
               <label>Valid From</label>
@@ -182,21 +184,24 @@ import { HasRoleDirective } from '../../../shared/directives/has-role.directive'
           <div class="form-grid">
             <div class="form-group">
               <label>Vehicle *</label>
-              <select [(ngModel)]="txForm.vehicleId" (ngModelChange)="onTxVehicleChange($event)">
-                <option [ngValue]="0">Select vehicle…</option>
-                @for (v of vehicles(); track v.vehicleId) {
-                  <option [ngValue]="v.vehicleId">{{ v.registrationNumber }}</option>
-                }
-              </select>
+              <app-search-select
+                [items]="vehicles()"
+                [displayFn]="vehicleDisplayFn"
+                valueField="vehicleId"
+                placeholder="Select vehicle…"
+                [(ngModel)]="txForm.vehicleId"
+                (ngModelChange)="onTxVehicleChange($event)">
+              </app-search-select>
             </div>
             <div class="form-group">
               <label>Fuel Card</label>
-              <select [(ngModel)]="txForm.fuelCardId">
-                <option [ngValue]="undefined">No card (cash)</option>
-                @for (c of cards(); track c.fuelCardId) {
-                  <option [ngValue]="c.fuelCardId">{{ c.cardNumber }}</option>
-                }
-              </select>
+              <app-search-select
+                [items]="cards()"
+                [displayFn]="fuelCardDisplayFn"
+                valueField="fuelCardId"
+                placeholder="No card (cash)"
+                [(ngModel)]="txForm.fuelCardId">
+              </app-search-select>
             </div>
             <div class="form-group">
               <label>Fuel Type *</label>
@@ -295,6 +300,8 @@ import { HasRoleDirective } from '../../../shared/directives/has-role.directive'
 })
 export class FuelListComponent implements OnInit {
   readonly icons = { Eye, Pencil, Trash2, TriangleAlert };
+  readonly vehicleDisplayFn  = (v: Vehicle)  => v.registrationNumber;
+  readonly fuelCardDisplayFn = (c: FuelCard) => c.cardNumber;
   private cardApi = inject(FuelCardApiService);
   private txApi = inject(FuelTransactionApiService);
   private vehicleApi = inject(VehicleApiService);

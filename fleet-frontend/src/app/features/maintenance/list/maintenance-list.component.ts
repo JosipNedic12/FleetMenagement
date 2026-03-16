@@ -13,13 +13,14 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { BadgeComponent } from '../../../shared/components/badge/badge.component';
 import { ConfirmModalComponent } from '../../../shared/components/modal/confirm-modal.component';
 import { HasRoleDirective } from '../../../shared/directives/has-role.directive';
+import { SearchSelectComponent } from '../../../shared/components/search-select/search-select.component';
 
 type OrderStatus = 'open' | 'in_progress' | 'closed' | 'cancelled';
 
 @Component({
   selector: 'app-maintenance-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, BadgeComponent, ConfirmModalComponent, HasRoleDirective, LucideAngularModule],
+  imports: [CommonModule, FormsModule, BadgeComponent, ConfirmModalComponent, HasRoleDirective, LucideAngularModule, SearchSelectComponent],
   template: `
     <div class="page">
       <div class="page-header">
@@ -134,22 +135,25 @@ type OrderStatus = 'open' | 'in_progress' | 'closed' | 'cancelled';
           <h2 class="modal-title">New Maintenance Order</h2>
           <div class="form-grid">
             <div class="form-group">
-            <label>Vehicle *</label>
-            <select [(ngModel)]="createForm.vehicleId" (ngModelChange)="onCreateVehicleChange($event)">
-              <option [ngValue]="0">Select vehicle…</option>
-              @for (v of vehicles(); track v.vehicleId) {
-                <option [ngValue]="v.vehicleId">{{ v.registrationNumber }} – {{ v.make }} {{ v.model }}</option>
-              }
-            </select>
-          </div>
+              <label>Vehicle *</label>
+              <app-search-select
+                [items]="vehicles()"
+                [displayFn]="vehicleDisplayFn"
+                valueField="vehicleId"
+                placeholder="Select vehicle…"
+                [(ngModel)]="createForm.vehicleId"
+                (ngModelChange)="onCreateVehicleChange($event)">
+              </app-search-select>
+            </div>
             <div class="form-group">
               <label>Vendor *</label>
-              <select [(ngModel)]="createForm.vendorId">
-                <option [ngValue]="0">Select vendor…</option>
-                @for (v of vendors(); track v.vendorId) {
-                  <option [ngValue]="v.vendorId">{{ v.name }}</option>
-                }
-              </select>
+              <app-search-select
+                [items]="vendors()"
+                [displayFn]="vendorDisplayFn"
+                valueField="vendorId"
+                placeholder="Select vendor…"
+                [(ngModel)]="createForm.vendorId">
+              </app-search-select>
             </div>
             <div class="form-group">
               <label>Scheduled At *</label>
@@ -183,12 +187,13 @@ type OrderStatus = 'open' | 'in_progress' | 'closed' | 'cancelled';
           <div class="form-grid">
             <div class="form-group">
               <label>Vendor</label>
-              <select [(ngModel)]="editForm.vendorId">
-                <option [ngValue]="undefined">No vendor</option>
-                @for (v of vendors(); track v.vendorId) {
-                  <option [ngValue]="v.vendorId">{{ v.name }}</option>
-                }
-              </select>
+              <app-search-select
+                [items]="vendors()"
+                [displayFn]="vendorDisplayFn"
+                valueField="vendorId"
+                placeholder="No vendor"
+                [(ngModel)]="editForm.vendorId">
+              </app-search-select>
             </div>
             <div class="form-group">
               <label>Scheduled At</label>
@@ -306,6 +311,8 @@ type OrderStatus = 'open' | 'in_progress' | 'closed' | 'cancelled';
 })
 export class MaintenanceListComponent implements OnInit {
   readonly icons = { Eye, Pencil, Trash2, Check, X, Play, Plus, WrenchIcon };
+  readonly vehicleDisplayFn = (v: Vehicle) => `${v.registrationNumber} – ${v.make} ${v.model}`;
+  readonly vendorDisplayFn  = (v: Vendor)  => v.name;
   private api = inject(MaintenanceOrderApiService);
   private vehicleApi = inject(VehicleApiService);
   private vendorApi = inject(VendorApiService);

@@ -7,11 +7,12 @@ import { OdometerLog, CreateOdometerLogDto, Vehicle } from '../../../core/models
 import { AuthService } from '../../../core/auth/auth.service';
 import { ConfirmModalComponent } from '../../../shared/components/modal/confirm-modal.component';
 import { HasRoleDirective } from '../../../shared/directives/has-role.directive';
+import { SearchSelectComponent } from '../../../shared/components/search-select/search-select.component';
 
 @Component({
   selector: 'app-odometer-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, ConfirmModalComponent, HasRoleDirective, LucideAngularModule],
+  imports: [CommonModule, FormsModule, ConfirmModalComponent, HasRoleDirective, LucideAngularModule, SearchSelectComponent],
   template: `
     <div class="page">
       <div class="page-header">
@@ -20,12 +21,16 @@ import { HasRoleDirective } from '../../../shared/directives/has-role.directive'
           <p class="page-subtitle">{{ logs().length }} entries for selected vehicle</p>
         </div>
         <div class="header-actions">
-          <select class="search-input" [(ngModel)]="selectedVehicleId" (ngModelChange)="onVehicleChange($event)">
-            <option [ngValue]="0">Select vehicle…</option>
-            @for (v of vehicles(); track v.vehicleId) {
-              <option [ngValue]="v.vehicleId">{{ v.registrationNumber }} – {{ v.make }} {{ v.model }} ({{ v.currentOdometerKm | number }} km)</option>
-            }
-          </select>
+          <div style="width:320px">
+            <app-search-select
+              [items]="vehicles()"
+              [displayFn]="vehicleDisplayFn"
+              valueField="vehicleId"
+              placeholder="Select vehicle…"
+              [(ngModel)]="selectedVehicleId"
+              (ngModelChange)="onVehicleChange($event)">
+            </app-search-select>
+          </div>
           <button *hasRole="['Admin','FleetManager']" class="btn btn-primary" [disabled]="!selectedVehicleId" (click)="openCreate()">+ Add Reading</button>
         </div>
       </div>
@@ -113,6 +118,7 @@ import { HasRoleDirective } from '../../../shared/directives/has-role.directive'
 })
 export class OdometerListComponent implements OnInit {
   readonly icons = { Eye, Pencil, Trash2 };
+  readonly vehicleDisplayFn = (v: Vehicle) => `${v.registrationNumber} – ${v.make} ${v.model} (${v.currentOdometerKm?.toLocaleString()} km)`;
   private api = inject(OdometerLogApiService);
   private vehicleApi = inject(VehicleApiService);
   auth = inject(AuthService);

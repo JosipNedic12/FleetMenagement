@@ -405,7 +405,12 @@ const ENTITY_ROUTES: Record<string, string> = {
     .notif-list {
       overflow-y: auto;
       flex: 1;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
     }
+    .notif-list::-webkit-scrollbar { width: 4px; }
+    .notif-list::-webkit-scrollbar-track { background: transparent; }
+    .notif-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 
     .notif-empty {
       display: flex;

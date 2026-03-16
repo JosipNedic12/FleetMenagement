@@ -1,18 +1,21 @@
-import { Component, OnInit, signal, computed, inject } from '@angular/core';
+import { Component, OnInit, signal, computed, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { InspectionApiService, VehicleApiService } from '../../../core/auth/feature-api.services';
-import { LucideAngularModule, Eye, Pencil, Trash2 } from 'lucide-angular';
+import { LucideAngularModule, Eye, Pencil, Trash2, Paperclip } from 'lucide-angular';
 import { Inspection, CreateInspectionDto, Vehicle } from '../../../core/models/models';
 import { AuthService } from '../../../core/auth/auth.service';
 import { BadgeComponent } from '../../../shared/components/badge/badge.component';
 import { ConfirmModalComponent } from '../../../shared/components/modal/confirm-modal.component';
 import { HasRoleDirective } from '../../../shared/directives/has-role.directive';
+import { SearchSelectComponent } from '../../../shared/components/search-select/search-select.component';
+import { FileUploadComponent } from '../../../shared/components/file-upload/file-upload.component';
+import { DocumentListComponent } from '../../../shared/components/document-list/document-list.component';
 
 @Component({
   selector: 'app-inspections-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, BadgeComponent, ConfirmModalComponent, HasRoleDirective, LucideAngularModule],
+  imports: [CommonModule, FormsModule, BadgeComponent, ConfirmModalComponent, HasRoleDirective, LucideAngularModule, SearchSelectComponent, FileUploadComponent, DocumentListComponent],
   template: `
     <div class="page">
       <div class="page-header">
@@ -64,6 +67,7 @@ import { HasRoleDirective } from '../../../shared/directives/has-role.directive'
                   <td>{{ row.odometerKm != null ? (row.odometerKm | number) : '—' }}</td>
                   <td class="notes-cell">{{ row.notes ?? '—' }}</td>
                   <td class="actions">
+                    <button class="btn-icon" title="Documents" (click)="openDocs(row)"><lucide-icon [img]="icons.Paperclip" [size]="15" [strokeWidth]="2"></lucide-icon></button>
                     <button *hasRole="['Admin','FleetManager']" class="btn-icon" (click)="startEdit(row)"><lucide-icon [img]="icons.Pencil" [size]="15" [strokeWidth]="2"></lucide-icon></button>
                     <button *hasRole="'Admin'" class="btn-icon danger" (click)="confirmDelete(row)"><lucide-icon [img]="icons.Trash2" [size]="15" [strokeWidth]="2"></lucide-icon></button>
                   </td>
@@ -82,12 +86,14 @@ import { HasRoleDirective } from '../../../shared/directives/has-role.directive'
           <div class="form-grid">
             <div class="form-group">
               <label>Vehicle *</label>
-              <select [(ngModel)]="form.vehicleId" [disabled]="!!editId">
-                <option [ngValue]="0">Select vehicle…</option>
-                @for (v of vehicles(); track v.vehicleId) {
-                  <option [ngValue]="v.vehicleId">{{ v.registrationNumber }}</option>
-                }
-              </select>
+              <app-search-select
+                [items]="vehicles()"
+                [displayFn]="vehicleDisplayFn"
+                valueField="vehicleId"
+                placeholder="Select vehicle…"
+                [disabled]="!!editId"
+                [(ngModel)]="form.vehicleId">
+              </app-search-select>
             </div>
             <div class="form-group">
               <label>Result *</label>
@@ -124,11 +130,37 @@ import { HasRoleDirective } from '../../../shared/directives/has-role.directive'
     }
 
     <app-confirm-modal [visible]="!!deleteTarget" title="Delete Inspection" message="Delete this inspection record?" (confirmed)="doDelete()" (cancelled)="deleteTarget = null" />
+
+    @if (docsTarget) {
+      <div class="modal-overlay" (click)="docsTarget = null">
+        <div class="modal-box modal-box--wide" (click)="$event.stopPropagation()">
+          <h2 class="modal-title">Documents — {{ docsTarget.registrationNumber }} ({{ docsTarget.inspectedAt | date:'dd.MM.yyyy' }})</h2>
+          <app-file-upload
+            [entityType]="'Inspection'"
+            [entityId]="docsTarget.inspectionId"
+            (uploaded)="docList.loadDocuments()"
+          />
+          <app-document-list
+            #docList
+            [entityType]="'Inspection'"
+            [entityId]="docsTarget.inspectionId"
+          />
+          <div class="modal-actions">
+            <button class="btn btn-secondary" (click)="docsTarget = null">Close</button>
+          </div>
+        </div>
+      </div>
+    }
   `,
-  styles: []
+  styles: [`
+    .modal-box--wide { width: min(720px, 95vw); }
+  `]
 })
 export class InspectionsListComponent implements OnInit {
-  readonly icons = { Eye, Pencil, Trash2 };
+  readonly icons = { Eye, Pencil, Trash2, Paperclip };
+  readonly vehicleDisplayFn = (v: Vehicle) => v.registrationNumber;
+  @ViewChild('docList') docList!: DocumentListComponent;
+  docsTarget: Inspection | null = null;
   inspections = signal<Inspection[]>([]);
   vehicles    = signal<Vehicle[]>([]);
   loading = signal(true); saving = signal(false); formError = signal('');
@@ -167,6 +199,8 @@ export class InspectionsListComponent implements OnInit {
     const obs = this.editId ? this.api.update(this.editId, this.form) : this.api.create(this.form);
     obs.subscribe({ next: () => { this.load(); this.closeForm(); this.saving.set(false); }, error: (e) => { this.saving.set(false); this.formError.set(e.error?.message ?? 'Save failed.'); } });
   }
+
+  openDocs(row: Inspection): void { this.docsTarget = row; }
 
   confirmDelete(row: Inspection): void { this.deleteTarget = row; }
   doDelete(): void {

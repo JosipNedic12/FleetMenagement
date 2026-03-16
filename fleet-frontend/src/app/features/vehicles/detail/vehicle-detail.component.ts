@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewChild, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { forkJoin } from 'rxjs';
-import { LucideAngularModule, ArrowLeft, Car, Wrench, Fuel, Users, Shield, ClipboardCheck, TriangleAlert, Siren, FileText } from 'lucide-angular';
+import { LucideAngularModule, ArrowLeft, Car, Wrench, Fuel, Users, Shield, ClipboardCheck, TriangleAlert, Siren, FileText, Download } from 'lucide-angular';
 import {
   VehicleApiService,
   VehicleAssignmentApiService,
@@ -19,18 +19,17 @@ import {
 import {
   Vehicle, VehicleAssignment, MaintenanceOrder,
   FuelTransaction, OdometerLog, InsurancePolicy,
-  RegistrationRecord, Inspection, Fine, Accident, Document,
+  RegistrationRecord, Inspection, Fine, Accident, Document, VehicleDocument,
 } from '../../../core/models/models';
 import { BadgeComponent } from '../../../shared/components/badge/badge.component';
 import { FileUploadComponent } from '../../../shared/components/file-upload/file-upload.component';
-import { DocumentListComponent } from '../../../shared/components/document-list/document-list.component';
 
 type Tab = 'overview' | 'maintenance' | 'fuel' | 'assignments' | 'insurance' | 'inspections' | 'fines' | 'accidents' | 'documents';
 
 @Component({
   selector: 'app-vehicle-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, BadgeComponent, LucideAngularModule, FileUploadComponent, DocumentListComponent],
+  imports: [CommonModule, RouterModule, BadgeComponent, LucideAngularModule, FileUploadComponent],
   template: `
     <div class="page">
 
@@ -344,11 +343,36 @@ type Tab = 'overview' | 'maintenance' | 'fuel' | 'assignments' | 'insurance' | '
               [entityId]="vehicle()!.vehicleId"
               (uploaded)="onDocumentUploaded($event)"
             />
-            <app-document-list
-              #docList
-              [entityType]="'Vehicle'"
-              [entityId]="vehicle()!.vehicleId"
-            />
+            @if (documents().length === 0) {
+              <div class="table-empty">No documents attached.</div>
+            } @else {
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>File Name</th>
+                    <th>Type</th>
+                    <th>Size</th>
+                    <th>Uploaded</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (doc of documents(); track doc.vehicleDocumentId) {
+                    <tr>
+                      <td><span style="font-size:13px">{{ doc.fileName }}</span></td>
+                      <td><app-badge [label]="doc.documentTypeName" variant="info" /></td>
+                      <td style="color:var(--text-muted);font-size:13px">{{ formatFileSize(doc.fileSize) }}</td>
+                      <td style="color:var(--text-muted);font-size:13px">{{ doc.uploadedAt | date:'dd.MM.yyyy' }}</td>
+                      <td>
+                        <button class="btn-icon" title="Download" (click)="downloadDoc(doc.documentId)">
+                          <lucide-icon [img]="icons.Download" [size]="14" [strokeWidth]="2"></lucide-icon>
+                        </button>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            }
           </div>
         }
 
@@ -462,7 +486,7 @@ type Tab = 'overview' | 'maintenance' | 'fuel' | 'assignments' | 'insurance' | '
   `]
 })
 export class VehicleDetailComponent implements OnInit {
-  readonly icons = { ArrowLeft, Car, Wrench, Fuel, Users, Shield, ClipboardCheck, TriangleAlert, Siren, FileText };
+  readonly icons = { ArrowLeft, Car, Wrench, Fuel, Users, Shield, ClipboardCheck, TriangleAlert, Siren, FileText, Download };
 
   readonly tabs: { id: Tab; label: string; icon: any }[] = [
     { id: 'overview',     label: 'Overview',    icon: Car },
@@ -487,10 +511,10 @@ export class VehicleDetailComponent implements OnInit {
   inspections  = signal<Inspection[]>([]);
   fines        = signal<Fine[]>([]);
   accidents    = signal<Accident[]>([]);
-  documents    = signal<Document[]>([]);
+  documents    = signal<VehicleDocument[]>([]);
   loading      = signal(true);
 
-  @ViewChild('docList') docList?: DocumentListComponent;
+
 
   constructor(
     private route: ActivatedRoute,
@@ -521,7 +545,7 @@ export class VehicleDetailComponent implements OnInit {
       inspections:  this.inspectionApi.getByVehicle(id),
       fines:        this.fineApi.getByVehicle(id),
       accidents:    this.accidentApi.getByVehicle(id),
-      documents:    this.documentApi.getByEntity('Vehicle', id),
+      documents:    this.documentApi.getVehicleDocuments(id),
     }).subscribe({
       next: r => {
         this.vehicle.set(r.vehicle);
@@ -545,9 +569,17 @@ export class VehicleDetailComponent implements OnInit {
 
   goBack(): void { this.router.navigate(['/vehicles']); }
 
-  onDocumentUploaded(doc: Document): void {
-    this.documents.update(docs => [doc, ...docs]);
-    this.docList?.loadDocuments();
+  downloadDoc(documentId: number): void { this.documentApi.download(documentId); }
+
+  formatFileSize(bytes: number): string {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  }
+
+  onDocumentUploaded(_doc: Document): void {
+    const id = Number(this.route.snapshot.paramMap.get('id'));
+    this.documentApi.getVehicleDocuments(id).subscribe(docs => this.documents.set(docs));
   }
 
   statusVariant(status: string): 'success' | 'warning' | 'danger' | 'neutral' {
