@@ -247,8 +247,8 @@ import { SearchSelectComponent } from '../../../shared/components/search-select/
               <input type="number" [(ngModel)]="txForm.totalCost" min="0" step="0.01" />
             </div>
             <div class="form-group">
-              <label>Odometer (km) *</label>
-              <input type="number" [(ngModel)]="txForm.odometerKm" min="0" required />
+              <label>Odometer (km)</label>
+              <input type="number" [(ngModel)]="txForm.odometerKm" min="0" />
             </div>
             <div class="form-group">
               <label>Station</label>
@@ -377,16 +377,13 @@ export class FuelListComponent implements OnInit {
   closeCreateCard(): void { this.showCreateCard = false; this.editCardId = null; this.formError.set(''); }
 
   openCreateTx(): void {
-    this.txForm = { vehicleId: 0, fuelTypeId: 0, postedAt: new Date().toISOString(), totalCost: 0, odometerKm: 0 };
+    this.txForm = { vehicleId: 0, fuelTypeId: 0, postedAt: new Date().toISOString(), totalCost: 0 };
     this.formError.set(''); this.showCreateTx = true;
   }
 
   saveTx(): void {
     if (!this.txForm.vehicleId || !this.txForm.fuelTypeId || !this.txForm.postedAt) {
       this.formError.set('Fill all required fields.'); return;
-    }
-    if (!this.txForm.odometerKm || this.txForm.odometerKm <= 0) {
-      this.formError.set('Odometer reading is required.'); return;
     }
     const payload = {
       ...this.txForm,
@@ -418,7 +415,6 @@ export class FuelListComponent implements OnInit {
   onTxVehicleChange(vehicleId: number): void {
   const vehicle = this.vehicles().find(v => v.vehicleId === vehicleId);
   if (vehicle) {
-    this.txForm.odometerKm = vehicle.currentOdometerKm + 1;
     const matchedType = this.fuelTypes().find(f => f.label.toLowerCase() === vehicle.fuelType?.toLowerCase());
     if (matchedType) {
       this.txForm.fuelTypeId = matchedType.fuelTypeId;

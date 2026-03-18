@@ -69,7 +69,7 @@ public class FineRepository : IFineRepository
         var fine = await _context.Fines.FindAsync(id);
         if (fine == null) return null;
 
-        fine.PaidAt = paidAt;
+        fine.PaidAt = DateTime.SpecifyKind(paidAt, DateTimeKind.Utc);
         fine.PaymentMethod = paymentMethod;
         fine.ModifiedAt = DateTime.UtcNow;
 

@@ -68,13 +68,14 @@ import { SearchSelectComponent } from '../../../shared/components/search-select/
                     />
                   </td>
                   <td class="actions">
-                    <button
-                      *hasRole="['Admin','FleetManager']"
-                      class="btn-icon"
-                      title="Mark as Paid"
-                      [disabled]="row.isPaid"
-                      (click)="openPayModal(row)"
-                    ><lucide-icon [img]="icons.CreditCard" [size]="15" [strokeWidth]="2"></lucide-icon></button>
+                    @if (!row.isPaid) {
+                      <button
+                        *hasRole="['Admin','FleetManager']"
+                        class="btn-icon"
+                        title="Mark as Paid"
+                        (click)="openPayModal(row)"
+                      ><lucide-icon [img]="icons.CreditCard" [size]="15" [strokeWidth]="2"></lucide-icon></button>
+                    }
                     <button *hasRole="['Admin','FleetManager']" class="btn-icon" title="Edit" (click)="startEdit(row)"><lucide-icon [img]="icons.Pencil" [size]="15" [strokeWidth]="2"></lucide-icon></button>
                     <button *hasRole="'Admin'" class="btn-icon danger" title="Delete" (click)="confirmDelete(row)"><lucide-icon [img]="icons.Trash2" [size]="15" [strokeWidth]="2"></lucide-icon></button>
                   </td>

@@ -143,35 +143,36 @@ public class DashboardService : IDashboardService
     // ── Query 4: KM this month via odometer logs ─────────────────────────────
     private static async Task<int> ReadKmThisMonthAsync(NpgsqlConnection conn)
     {
+        // Get this month's logs + each vehicle's latest log before this month as baseline
         const string sql = """
-            SELECT vehicle_id, odometer_km, log_date
-            FROM fleet.odometer_log
-            WHERE log_date >= (date_trunc('month', now()) - interval '1 month')::date
-            ORDER BY vehicle_id, log_date
+            WITH month_logs AS (
+              SELECT o.vehicle_id, o.odometer_km, o.log_date
+              FROM fleet.odometer_log o
+              JOIN fleet.vehicle v ON v.vehicle_id = o.vehicle_id
+              WHERE o.log_date >= date_trunc('month', now())::date
+                AND NOT v.is_deleted
+            ),
+            baselines AS (
+              SELECT DISTINCT ON (o.vehicle_id) o.vehicle_id, o.odometer_km
+              FROM fleet.odometer_log o
+              JOIN fleet.vehicle v ON v.vehicle_id = o.vehicle_id
+              WHERE o.log_date < date_trunc('month', now())::date
+                AND NOT v.is_deleted
+              ORDER BY o.vehicle_id, o.log_date DESC
+            )
+            SELECT
+              m.vehicle_id,
+              MAX(m.odometer_km) - COALESCE(b.odometer_km, MIN(m.odometer_km)) AS km
+            FROM month_logs m
+            LEFT JOIN baselines b ON b.vehicle_id = m.vehicle_id
+            GROUP BY m.vehicle_id, b.odometer_km
             """;
 
-        var rows = new List<(int vehicleId, int odometerKm, DateOnly logDate)>();
+        int total = 0;
         await using var cmd = new NpgsqlCommand(sql, conn);
         await using var r = await cmd.ExecuteReaderAsync();
         while (await r.ReadAsync())
-            rows.Add((r.GetInt32(0), r.GetInt32(1), r.GetFieldValue<DateOnly>(2)));
-
-        var monthStart = DateOnly.FromDateTime(new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1));
-        int total = 0;
-        foreach (var group in rows.GroupBy(o => o.vehicleId))
-        {
-            var sorted = group.OrderBy(o => o.logDate).ToList();
-            var thisMonth = sorted.Where(o => o.logDate >= monthStart).ToList();
-            if (thisMonth.Count == 0) continue;
-
-            var maxThisMonth = thisMonth.Max(o => o.odometerKm);
-            var beforeMonth = sorted.Where(o => o.logDate < monthStart).ToList();
-            var baseline = beforeMonth.Count > 0
-                ? beforeMonth.Last().odometerKm
-                : thisMonth.Min(o => o.odometerKm);
-
-            total += Math.Max(0, maxThisMonth - baseline);
-        }
+            total += Math.Max(0, r.GetInt32(1));
         return total;
     }
 

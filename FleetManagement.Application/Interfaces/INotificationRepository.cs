@@ -8,4 +8,6 @@ public interface INotificationRepository
     Task<int> GetUnreadCountAsync(int userId);
     Task MarkAsReadAsync(int notificationId, int userId);
     Task MarkAllAsReadAsync(int userId);
+    Task CreateManyAsync(IEnumerable<Notification> notifications);
+    Task<bool> ExistsRecentAsync(string relatedEntityType, int relatedEntityId, string title, DateTime since);
 }

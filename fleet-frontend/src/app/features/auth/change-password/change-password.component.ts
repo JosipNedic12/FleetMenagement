@@ -10,7 +10,7 @@ import { AuthService } from '../../../core/auth/auth.service';
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="page">
+    <div class="cp-page">
       <!-- Animated background blobs -->
       <div class="bg-blob blob-1"></div>
       <div class="bg-blob blob-2"></div>
@@ -218,7 +218,7 @@ import { AuthService } from '../../../core/auth/auth.service';
   `,
   styles: [`
     /* ─── Page ─────────────────────────────────────────────────────── */
-    .page {
+    .cp-page {
       min-height: 100vh;
       min-height: 100dvh;
       background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);

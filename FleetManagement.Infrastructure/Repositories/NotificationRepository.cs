@@ -46,4 +46,19 @@ public class NotificationRepository : INotificationRepository
             .Where(n => n.UserId == userId && !n.IsRead)
             .ExecuteUpdateAsync(s => s.SetProperty(n => n.IsRead, true));
     }
+
+    public async Task CreateManyAsync(IEnumerable<Notification> notifications)
+    {
+        _context.Notifications.AddRange(notifications);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<bool> ExistsRecentAsync(string relatedEntityType, int relatedEntityId, string title, DateTime since)
+    {
+        return await _context.Notifications.AnyAsync(n =>
+            n.RelatedEntityType == relatedEntityType &&
+            n.RelatedEntityId == relatedEntityId &&
+            n.Title == title &&
+            n.CreatedAt >= since);
+    }
 }
