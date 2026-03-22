@@ -12,6 +12,25 @@ using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// --- PORT binding (Railway injects PORT env var) ---
+var port = Environment.GetEnvironmentVariable("PORT");
+if (port != null)
+    builder.WebHost.UseUrls($"http://+:{port}");
+
+// --- CORS ---
+var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
+    ?? new[] { "http://localhost:4200" };
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins(allowedOrigins)
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 // --- Database ---
 builder.Services.AddDbContext<FleetDbContext>(options =>
     options.UseNpgsql(
@@ -111,8 +130,19 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+if (app.Environment.IsDevelopment())
+    app.UseHttpsRedirection();
+
+app.UseCors();
 app.UseAuthentication(); // must be before UseAuthorization
 app.UseAuthorization();
 app.MapControllers();
+
+// Auto-run EF migrations on startup
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<FleetDbContext>();
+    db.Database.Migrate();
+}
+
 app.Run();

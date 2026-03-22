@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://localhost:7203/api'
+  apiUrl: 'https://YOUR-API-SERVICE.up.railway.app/api' // TODO: Replace with your actual Railway API domain
 };
