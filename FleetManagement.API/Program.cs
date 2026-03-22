@@ -124,11 +124,10 @@ var app = builder.Build();
 Directory.CreateDirectory(app.Configuration["FileStorage:UploadPath"] ?? "uploads");
 
 if (app.Environment.IsDevelopment())
-{
     app.UseDeveloperExceptionPage();
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 if (app.Environment.IsDevelopment())
     app.UseHttpsRedirection();
