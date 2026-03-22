@@ -12,11 +12,6 @@ using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// --- PORT binding (Railway injects PORT env var) ---
-var port = Environment.GetEnvironmentVariable("PORT");
-if (port != null)
-    builder.WebHost.UseUrls($"http://+:{port}");
-
 // --- CORS ---
 var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
     ?? new[] { "http://localhost:4200" };
