@@ -90,7 +90,7 @@ import { SearchSelectComponent } from '../../../shared/components/search-select/
             <div class="form-group">
               <label>Vehicle *</label>
               <app-search-select
-                [items]="vehicles()"
+                [items]="assignableVehicles()"
                 [displayFn]="vehicleDisplayFn"
                 valueField="vehicleId"
                 placeholder="Select vehicle…"
@@ -181,6 +181,9 @@ export class AssignmentsListComponent implements OnInit {
 
   assignments = signal<VehicleAssignment[]>([]);
   vehicles    = signal<Vehicle[]>([]);
+  assignableVehicles = computed(() =>
+    this.vehicles().filter(v => v.status !== 'retired' && v.status !== 'sold')
+  );
   drivers     = signal<Driver[]>([]);
   loading = signal(true); saving = signal(false); formError = signal('');
   search = signal(''); showCreate = false; showEdit = false;

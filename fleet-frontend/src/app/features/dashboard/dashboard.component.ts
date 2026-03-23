@@ -123,7 +123,7 @@ interface StatCard {
                       <td>
                         <span class="type-chip type-chip--{{ item.type | lowercase }}">{{ item.type }}</span>
                       </td>
-                      <td>{{ item.expiresAt | date:'dd MMM yyyy' }}</td>
+                      <td>{{ item.expiresAt | date:'dd.MM.yyyy' }}</td>
                       <td>
                         <span [class]="item.daysLeft < 0 ? 'days-badge days-badge--expired' : 'days-badge days-badge--soon'">
                           {{ item.daysLeft < 0 ? (item.daysLeft * -1) + 'd ago' : item.daysLeft + 'd' }}

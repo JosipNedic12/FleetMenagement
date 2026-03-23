@@ -64,7 +64,7 @@ import { DatePipe } from '@angular/common';
               <div class="account-meta">
                 <span class="role-badge role-{{ auth.role()?.toLowerCase() }}">{{ auth.role() }}</span>
                 @if (sessionExpiry()) {
-                  <span class="session-expiry">Session expires {{ sessionExpiry() | date:'mediumDate' }}</span>
+                  <span class="session-expiry">Session expires {{ sessionExpiry() | date:'dd.MM.yyyy' }}</span>
                 }
               </div>
             </div>

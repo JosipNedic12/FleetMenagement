@@ -262,7 +262,7 @@ interface ComplianceRow {
                     <td><span class="badge badge-{{ row.status }}">{{ row.status }}</span></td>
                     <td class="num bold">{{ row.kmThisMonth | number:'1.0-0' }}</td>
                     <td class="num">{{ row.kmTotal | number:'1.0-0' }}</td>
-                    <td class="muted">{{ row.lastLogDate ? (row.lastLogDate | date:'dd MMM yyyy') : '—' }}</td>
+                    <td class="muted">{{ row.lastLogDate ? (row.lastLogDate | date:'dd.MM.yyyy') : '—' }}</td>
                   </tr>
                 }
               </tbody>
@@ -316,7 +316,7 @@ interface ComplianceRow {
                       <div class="cell-sub">{{ row.makeModel }}</div>
                     </td>
                     <td>{{ row.type }}</td>
-                    <td>{{ row.expiresAt | date:'dd MMM yyyy' }}</td>
+                    <td>{{ row.expiresAt | date:'dd.MM.yyyy' }}</td>
                     <td class="num">{{ row.daysLeft }}</td>
                     <td><span class="badge badge-{{ row.status }}">{{ row.status }}</span></td>
                   </tr>
