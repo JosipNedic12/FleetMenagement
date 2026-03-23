@@ -1,4 +1,5 @@
 using System.Text;
+using FleetManagement.API.Middleware;
 using FleetManagement.Application.Interfaces;
 using FleetManagement.Infrastructure.Data;
 using FleetManagement.Infrastructure.Repositories;
@@ -118,23 +119,40 @@ builder.Services.AddScoped<IAccidentRepository, AccidentRepository>();
 builder.Services.AddScoped<IInspectionRepository, InspectionRepository>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+
+// --- Application Services ---
+builder.Services.AddScoped<IVehicleService, VehicleService>();
+builder.Services.AddScoped<IAccidentService, AccidentService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IDriverService, DriverService>();
+builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+builder.Services.AddScoped<IFineService, FineService>();
+builder.Services.AddScoped<IFuelCardService, FuelCardService>();
+builder.Services.AddScoped<IFuelTransactionService, FuelTransactionService>();
+builder.Services.AddScoped<IInspectionService, InspectionService>();
+builder.Services.AddScoped<IInsurancePolicyService, InsurancePolicyService>();
+builder.Services.AddScoped<ILookupService, LookupService>();
+builder.Services.AddScoped<IMaintenanceOrderService, MaintenanceOrderService>();
+builder.Services.AddScoped<IOdometerLogService, OdometerLogService>();
+builder.Services.AddScoped<IRegistrationRecordService, RegistrationRecordService>();
+builder.Services.AddScoped<IVehicleAssignmentService, VehicleAssignmentService>();
+builder.Services.AddScoped<IVendorService, VendorService>();
+
 builder.Services.AddMemoryCache();
 builder.Services.AddHostedService<NotificationGeneratorService>();
 var app = builder.Build();
 
 // Ensure uploads folder exists
 Directory.CreateDirectory(app.Configuration["FileStorage:UploadPath"] ?? "uploads");
-
-app.UseDeveloperExceptionPage(); // TODO: remove after debugging Railway 500
-
 app.UseSwagger();
 app.UseSwaggerUI();
 
 if (app.Environment.IsDevelopment())
     app.UseHttpsRedirection();
 
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseCors();
-app.UseAuthentication(); // must be before UseAuthorization
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
