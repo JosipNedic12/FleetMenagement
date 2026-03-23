@@ -15,13 +15,15 @@ import {
 } from '../../../core/models/models';
 import { BadgeComponent } from '../../../shared/components/badge/badge.component';
 import { FileUploadComponent } from '../../../shared/components/file-upload/file-upload.component';
+import { VehicleLabelComponent } from '../../../shared/components/vehicle-label/vehicle-label.component';
+import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
 
 type Tab = 'overview' | 'assignments' | 'fines' | 'accidents' | 'documents';
 
 @Component({
   selector: 'app-driver-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, BadgeComponent, LucideAngularModule, FileUploadComponent],
+  imports: [CommonModule, RouterModule, BadgeComponent, LucideAngularModule, FileUploadComponent, VehicleLabelComponent, EuNumberPipe],
   template: `
     <div class="page">
 
@@ -153,7 +155,7 @@ type Tab = 'overview' | 'assignments' | 'fines' | 'accidents' | 'documents';
                 <tbody>
                   @for (r of assignments(); track r.assignmentId) {
                     <tr>
-                      <td><a [routerLink]="['/vehicles', r.vehicleId]" class="link">{{ r.registrationNumber }}</a></td>
+                      <td><a [routerLink]="['/vehicles', r.vehicleId]" class="link"><app-vehicle-label [make]="r.vehicleMake" [model]="r.vehicleModel" [registration]="r.registrationNumber" /></a></td>
                       <td>{{ r.assignedFrom | date:'dd.MM.yyyy' }}</td>
                       <td>{{ r.assignedTo ? (r.assignedTo | date:'dd.MM.yyyy') : '—' }}</td>
                       <td>{{ r.notes || '—' }}</td>
@@ -178,9 +180,9 @@ type Tab = 'overview' | 'assignments' | 'fines' | 'accidents' | 'documents';
                   @for (r of fines(); track r.fineId) {
                     <tr>
                       <td>{{ r.occurredAt | date:'dd.MM.yyyy' }}</td>
-                      <td><a [routerLink]="['/vehicles', r.vehicleId]" class="link">{{ r.registrationNumber }}</a></td>
+                      <td><a [routerLink]="['/vehicles', r.vehicleId]" class="link"><app-vehicle-label [make]="r.vehicleMake" [model]="r.vehicleModel" [registration]="r.registrationNumber" /></a></td>
                       <td>{{ r.reason }}</td>
-                      <td>{{ r.amount | number:'1.2-2' }} €</td>
+                      <td>{{ r.amount | euNumber:'1.2-2' }} €</td>
                       <td><app-badge [label]="r.isPaid ? 'Paid' : 'Unpaid'" [variant]="r.isPaid ? 'success' : 'danger'" /></td>
                     </tr>
                   }
@@ -202,10 +204,10 @@ type Tab = 'overview' | 'assignments' | 'fines' | 'accidents' | 'documents';
                   @for (r of accidents(); track r.accidentId) {
                     <tr>
                       <td>{{ r.occurredAt | date:'dd.MM.yyyy' }}</td>
-                      <td><a [routerLink]="['/vehicles', r.vehicleId]" class="link">{{ r.registrationNumber }}</a></td>
+                      <td><a [routerLink]="['/vehicles', r.vehicleId]" class="link"><app-vehicle-label [make]="r.vehicleMake" [model]="r.vehicleModel" [registration]="r.registrationNumber" /></a></td>
                       <td><app-badge [label]="r.severity"
                         [variant]="r.severity === 'minor' ? 'warning' : r.severity === 'major' ? 'danger' : 'neutral'" /></td>
-                      <td>{{ r.damageEstimate != null ? (r.damageEstimate | number:'1.2-2') + ' €' : '—' }}</td>
+                      <td>{{ r.damageEstimate != null ? (r.damageEstimate | euNumber:'1.2-2') + ' €' : '—' }}</td>
                       <td>{{ r.policeReport || '—' }}</td>
                       <td>{{ r.description }}</td>
                     </tr>

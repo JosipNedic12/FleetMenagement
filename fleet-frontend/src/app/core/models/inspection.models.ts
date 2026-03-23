@@ -2,6 +2,8 @@ export interface Inspection {
   inspectionId: number;
   vehicleId: number;
   registrationNumber: string;
+  vehicleMake: string;
+  vehicleModel: string;
   inspectedAt: string;
   validTo?: string;
   result: 'passed' | 'failed' | 'conditional';

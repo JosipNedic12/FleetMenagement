@@ -10,11 +10,13 @@ import { BadgeComponent } from '../../../shared/components/badge/badge.component
 import { ConfirmModalComponent } from '../../../shared/components/modal/confirm-modal.component';
 import { HasRoleDirective } from '../../../shared/directives/has-role.directive';
 import { SearchSelectComponent } from '../../../shared/components/search-select/search-select.component';
+import { VehicleLabelComponent } from '../../../shared/components/vehicle-label/vehicle-label.component';
+import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
 
 @Component({
   selector: 'app-accidents-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, BadgeComponent, ConfirmModalComponent, HasRoleDirective, LucideAngularModule, SearchSelectComponent],
+  imports: [CommonModule, FormsModule, BadgeComponent, ConfirmModalComponent, HasRoleDirective, LucideAngularModule, SearchSelectComponent, VehicleLabelComponent, EuNumberPipe],
   template: `
     <div class="page">
       <div class="page-header">
@@ -55,7 +57,7 @@ import { SearchSelectComponent } from '../../../shared/components/search-select/
             <tbody>
               @for (row of filtered(); track row.accidentId) {
                 <tr (click)="goToDetail(row)">
-                  <td><strong>{{ row.registrationNumber }}</strong></td>
+                  <td><app-vehicle-label [make]="row.vehicleMake" [model]="row.vehicleModel" [registration]="row.registrationNumber" /></td>
                   <td>{{ row.driverName ?? '—' }}</td>
                   <td>{{ row.occurredAt | date:'dd.MM.yyyy' }}</td>
                   <td>
@@ -65,7 +67,7 @@ import { SearchSelectComponent } from '../../../shared/components/search-select/
                     />
                   </td>
                   <td class="notes-cell">{{ row.description }}</td>
-                  <td>{{ row.damageEstimate != null ? (row.damageEstimate | currency:'EUR':'symbol':'1.2-2') : '—' }}</td>
+                  <td>{{ row.damageEstimate != null ? (row.damageEstimate | euNumber:'1.2-2') + ' €' : '—' }}</td>
                   <td class="mono">{{ row.policeReport ?? '—' }}</td>
                   <td class="actions">
                     <button *hasRole="['Admin','FleetManager']" class="btn-icon" (click)="$event.stopPropagation(); startEdit(row)"><lucide-icon [img]="icons.Pencil" [size]="15" [strokeWidth]="2"></lucide-icon></button>
@@ -170,7 +172,7 @@ import { SearchSelectComponent } from '../../../shared/components/search-select/
 })
 export class AccidentsListComponent implements OnInit {
   readonly icons = { Eye, Pencil, Trash2, TriangleAlert };
-  readonly vehicleDisplayFn = (v: Vehicle) => v.registrationNumber;
+  readonly vehicleDisplayFn = (v: Vehicle) => `${v.make} ${v.model} – ${v.registrationNumber}`;
   readonly driverDisplayFn  = (d: Driver)  => d.fullName;
   accidents = signal<Accident[]>([]);
   vehicles  = signal<Vehicle[]>([]);

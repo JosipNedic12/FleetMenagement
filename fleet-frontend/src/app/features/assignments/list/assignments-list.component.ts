@@ -10,11 +10,12 @@ import { BadgeComponent } from '../../../shared/components/badge/badge.component
 import { ConfirmModalComponent } from '../../../shared/components/modal/confirm-modal.component';
 import { HasRoleDirective } from '../../../shared/directives/has-role.directive';
 import { SearchSelectComponent } from '../../../shared/components/search-select/search-select.component';
+import { VehicleLabelComponent } from '../../../shared/components/vehicle-label/vehicle-label.component';
 
 @Component({
   selector: 'app-assignments-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, BadgeComponent, ConfirmModalComponent, HasRoleDirective, LucideAngularModule, SearchSelectComponent],
+  imports: [CommonModule, FormsModule, BadgeComponent, ConfirmModalComponent, HasRoleDirective, LucideAngularModule, SearchSelectComponent, VehicleLabelComponent],
   template: `
     <div class="page">
       <div class="page-header">
@@ -54,7 +55,7 @@ import { SearchSelectComponent } from '../../../shared/components/search-select/
             <tbody>
               @for (row of filtered(); track row.assignmentId) {
                 <tr (click)="goToDetail(row)">
-                  <td><strong class="mono">{{ row.registrationNumber }}</strong><br><small>{{ row.vehicleMake }} {{ row.vehicleModel }}</small></td>
+                  <td><app-vehicle-label [make]="row.vehicleMake" [model]="row.vehicleModel" [registration]="row.registrationNumber" /></td>
                   <td>{{ row.driverFullName }}</td>
                   <td>{{ row.department ?? '—' }}</td>
                   <td>{{ row.assignedFrom | date:'dd.MM.yyyy' }}</td>
@@ -171,7 +172,7 @@ import { SearchSelectComponent } from '../../../shared/components/search-select/
 })
 export class AssignmentsListComponent implements OnInit {
   readonly icons = { Eye, Pencil, Trash2 };
-  readonly vehicleDisplayFn = (v: Vehicle) => `${v.registrationNumber} – ${v.make} ${v.model}`;
+  readonly vehicleDisplayFn = (v: Vehicle) => `${v.make} ${v.model} – ${v.registrationNumber}`;
   readonly driverDisplayFn  = (d: Driver)  => d.fullName;
   private api = inject(VehicleAssignmentApiService);
   private vehicleApi = inject(VehicleApiService);

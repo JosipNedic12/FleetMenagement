@@ -12,11 +12,13 @@ import { HasRoleDirective } from '../../../shared/directives/has-role.directive'
 import { SearchSelectComponent } from '../../../shared/components/search-select/search-select.component';
 import { FileUploadComponent } from '../../../shared/components/file-upload/file-upload.component';
 import { DocumentListComponent } from '../../../shared/components/document-list/document-list.component';
+import { VehicleLabelComponent } from '../../../shared/components/vehicle-label/vehicle-label.component';
+import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
 
 @Component({
   selector: 'app-inspections-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, BadgeComponent, ConfirmModalComponent, HasRoleDirective, LucideAngularModule, SearchSelectComponent, FileUploadComponent, DocumentListComponent],
+  imports: [CommonModule, FormsModule, BadgeComponent, ConfirmModalComponent, HasRoleDirective, LucideAngularModule, SearchSelectComponent, FileUploadComponent, DocumentListComponent, VehicleLabelComponent, EuNumberPipe],
   template: `
     <div class="page">
       <div class="page-header">
@@ -56,7 +58,7 @@ import { DocumentListComponent } from '../../../shared/components/document-list/
             <tbody>
               @for (row of filtered(); track row.inspectionId) {
                 <tr (click)="goToDetail(row)">
-                  <td><strong>{{ row.registrationNumber }}</strong></td>
+                  <td><app-vehicle-label [make]="row.vehicleMake" [model]="row.vehicleModel" [registration]="row.registrationNumber" /></td>
                   <td>{{ row.inspectedAt | date:'dd.MM.yyyy' }}</td>
                   <td>{{ row.validTo ? (row.validTo | date:'dd.MM.yyyy') : '—' }}</td>
                   <td>
@@ -65,7 +67,7 @@ import { DocumentListComponent } from '../../../shared/components/document-list/
                       [variant]="row.result === 'passed' ? 'success' : row.result === 'failed' ? 'danger' : 'warning'"
                     />
                   </td>
-                  <td>{{ row.odometerKm != null ? (row.odometerKm | number) : '—' }}</td>
+                  <td>{{ row.odometerKm != null ? (row.odometerKm | euNumber) : '—' }}</td>
                   <td class="notes-cell">{{ row.notes ?? '—' }}</td>
                   <td class="actions">
                     <button class="btn-icon" title="Documents" (click)="$event.stopPropagation(); openDocs(row)"><lucide-icon [img]="icons.Paperclip" [size]="15" [strokeWidth]="2"></lucide-icon></button>
@@ -161,7 +163,7 @@ import { DocumentListComponent } from '../../../shared/components/document-list/
 })
 export class InspectionsListComponent implements OnInit {
   readonly icons = { Eye, Pencil, Trash2, Paperclip };
-  readonly vehicleDisplayFn = (v: Vehicle) => v.registrationNumber;
+  readonly vehicleDisplayFn = (v: Vehicle) => `${v.make} ${v.model} – ${v.registrationNumber}`;
   @ViewChild('docList') docList!: DocumentListComponent;
   docsTarget: Inspection | null = null;
   inspections = signal<Inspection[]>([]);

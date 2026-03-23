@@ -5,6 +5,8 @@ public class FineDto
     public int FineId { get; set; }
     public int VehicleId { get; set; }
     public string RegistrationNumber { get; set; } = string.Empty;
+    public string VehicleMake { get; set; } = string.Empty;
+    public string VehicleModel { get; set; } = string.Empty;
     public int? DriverId { get; set; }
     public string? DriverName { get; set; } // FirstName + LastName from Employee
     public DateTime OccurredAt { get; set; }

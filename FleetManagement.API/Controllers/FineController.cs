@@ -89,6 +89,8 @@ public class FineController : ControllerBase
         FineId = f.FineId,
         VehicleId = f.VehicleId,
         RegistrationNumber = f.Vehicle?.RegistrationNumber ?? string.Empty,
+        VehicleMake = f.Vehicle?.Make?.Name ?? string.Empty,
+        VehicleModel = f.Vehicle?.Model?.Name ?? string.Empty,
         DriverId = f.DriverId,
         DriverName = f.Driver?.Employee != null
             ? $"{f.Driver.Employee.FirstName} {f.Driver.Employee.LastName}"

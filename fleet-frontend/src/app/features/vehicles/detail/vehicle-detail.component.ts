@@ -23,13 +23,14 @@ import {
 } from '../../../core/models/models';
 import { BadgeComponent } from '../../../shared/components/badge/badge.component';
 import { FileUploadComponent } from '../../../shared/components/file-upload/file-upload.component';
+import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
 
 type Tab = 'overview' | 'maintenance' | 'fuel' | 'assignments' | 'insurance' | 'inspections' | 'fines' | 'accidents' | 'documents';
 
 @Component({
   selector: 'app-vehicle-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, BadgeComponent, LucideAngularModule, FileUploadComponent],
+  imports: [CommonModule, RouterModule, BadgeComponent, LucideAngularModule, FileUploadComponent, EuNumberPipe],
   template: `
     <div class="page">
 
@@ -90,17 +91,9 @@ type Tab = 'overview' | 'maintenance' | 'fuel' | 'assignments' | 'insurance' | '
             <div class="info-group">
               <div class="info-group-title">Vehicle Info</div>
               <div class="kv-grid">
-                <div class="kv-row">
-                  <span class="kv-label">Registration Number</span>
-                  <span class="kv-value mono">{{ vehicle()!.registrationNumber }}</span>
-                </div>
-                <div class="kv-row">
-                  <span class="kv-label">Make</span>
-                  <span class="kv-value">{{ vehicle()!.make }}</span>
-                </div>
-                <div class="kv-row">
-                  <span class="kv-label">Model</span>
-                  <span class="kv-value">{{ vehicle()!.model }}</span>
+                <div class="kv-row kv-full">
+                  <span class="kv-label">Vehicle</span>
+                  <span class="kv-value">{{ vehicle()!.make }} {{ vehicle()!.model }}<br><span class="mono" style="font-size:12px; color:var(--text-muted)">{{ vehicle()!.registrationNumber }}</span></span>
                 </div>
                 <div class="kv-row">
                   <span class="kv-label">Year</span>
@@ -128,7 +121,7 @@ type Tab = 'overview' | 'maintenance' | 'fuel' | 'assignments' | 'insurance' | '
                 </div>
                 <div class="kv-row">
                   <span class="kv-label">Odometer</span>
-                  <span class="kv-value">{{ vehicle()!.currentOdometerKm | number }} km</span>
+                  <span class="kv-value">{{ vehicle()!.currentOdometerKm | euNumber }} km</span>
                 </div>
                 <div class="kv-row">
                   <span class="kv-label">Color</span>
@@ -173,7 +166,7 @@ type Tab = 'overview' | 'maintenance' | 'fuel' | 'assignments' | 'insurance' | '
                       <td>{{ r.reportedAt | date:'dd.MM.yyyy' }}</td>
                       <td>{{ r.vendorName || '—' }}</td>
                       <td>{{ r.description || '—' }}</td>
-                      <td>{{ r.totalCost != null ? (r.totalCost | number:'1.2-2') + ' €' : '—' }}</td>
+                      <td>{{ r.totalCost != null ? (r.totalCost | euNumber:'1.2-2') + ' €' : '—' }}</td>
                       <td><app-badge [label]="r.status"
                         [variant]="r.status === 'closed' ? 'success' : r.status === 'in_progress' ? 'warning' : 'neutral'" /></td>
                     </tr>
@@ -196,10 +189,10 @@ type Tab = 'overview' | 'maintenance' | 'fuel' | 'assignments' | 'insurance' | '
                   @for (r of fuel(); track r.transactionId) {
                     <tr>
                       <td>{{ r.postedAt | date:'dd.MM.yyyy' }}</td>
-                      <td>{{ r.liters != null ? (r.liters | number:'1.2-2') : '—' }}</td>
-                      <td>{{ r.pricePerLiter != null ? (r.pricePerLiter | number:'1.3-3') : '—' }}</td>
-                      <td>{{ r.totalCost | number:'1.2-2' }} €</td>
-                      <td>{{ r.odometerKm != null ? (r.odometerKm | number) + ' km' : '—' }}</td>
+                      <td>{{ r.liters != null ? (r.liters | euNumber:'1.2-2') : '—' }}</td>
+                      <td>{{ r.pricePerLiter != null ? (r.pricePerLiter | euNumber:'1.3-3') : '—' }}</td>
+                      <td>{{ r.totalCost | euNumber:'1.2-2' }} €</td>
+                      <td>{{ r.odometerKm != null ? (r.odometerKm | euNumber) + ' km' : '—' }}</td>
                       <td>{{ r.fuelTypeName }}</td>
                     </tr>
                   }
@@ -248,7 +241,7 @@ type Tab = 'overview' | 'maintenance' | 'fuel' | 'assignments' | 'insurance' | '
                       <td>{{ r.insurer }}</td>
                       <td>{{ r.validFrom | date:'dd.MM.yyyy' }}</td>
                       <td>{{ r.validTo | date:'dd.MM.yyyy' }}</td>
-                      <td>{{ r.premium | number:'1.2-2' }} €</td>
+                      <td>{{ r.premium | euNumber:'1.2-2' }} €</td>
                       <td>{{ r.coverageNotes || '—' }}</td>
                       <td><app-badge [label]="r.isActive ? 'Active' : 'Expired'" [variant]="r.isActive ? 'success' : 'neutral'" /></td>
                     </tr>
@@ -274,7 +267,7 @@ type Tab = 'overview' | 'maintenance' | 'fuel' | 'assignments' | 'insurance' | '
                       <td><app-badge [label]="r.result"
                         [variant]="r.result === 'passed' ? 'success' : r.result === 'failed' ? 'danger' : 'warning'" /></td>
                       <td>{{ r.validTo ? (r.validTo | date:'dd.MM.yyyy') : '—' }}</td>
-                      <td>{{ r.odometerKm != null ? (r.odometerKm | number) + ' km' : '—' }}</td>
+                      <td>{{ r.odometerKm != null ? (r.odometerKm | euNumber) + ' km' : '—' }}</td>
                       <td>{{ r.notes || '—' }}</td>
                       <td><app-badge [label]="r.isValid ? 'Valid' : 'Expired'" [variant]="r.isValid ? 'success' : 'neutral'" /></td>
                     </tr>
@@ -299,7 +292,7 @@ type Tab = 'overview' | 'maintenance' | 'fuel' | 'assignments' | 'insurance' | '
                       <td>{{ r.occurredAt | date:'dd.MM.yyyy' }}</td>
                       <td>{{ r.driverName || '—' }}</td>
                       <td>{{ r.reason }}</td>
-                      <td>{{ r.amount | number:'1.2-2' }} €</td>
+                      <td>{{ r.amount | euNumber:'1.2-2' }} €</td>
                       <td><app-badge [label]="r.isPaid ? 'Paid' : 'Unpaid'" [variant]="r.isPaid ? 'success' : 'danger'" /></td>
                     </tr>
                   }
@@ -324,7 +317,7 @@ type Tab = 'overview' | 'maintenance' | 'fuel' | 'assignments' | 'insurance' | '
                       <td>{{ r.driverName || '—' }}</td>
                       <td><app-badge [label]="r.severity"
                         [variant]="r.severity === 'minor' ? 'warning' : r.severity === 'major' ? 'danger' : 'neutral'" /></td>
-                      <td>{{ r.damageEstimate != null ? (r.damageEstimate | number:'1.2-2') + ' €' : '—' }}</td>
+                      <td>{{ r.damageEstimate != null ? (r.damageEstimate | euNumber:'1.2-2') + ' €' : '—' }}</td>
                       <td>{{ r.policeReport || '—' }}</td>
                       <td>{{ r.description }}</td>
                     </tr>

@@ -4,6 +4,8 @@ export interface FuelCard {
   provider?: string;
   assignedVehicleId?: number;
   registrationNumber?: string;
+  vehicleMake?: string;
+  vehicleModel?: string;
   validFrom?: string;
   validTo?: string;
   isActive: boolean;
@@ -32,6 +34,8 @@ export interface FuelTransaction {
   transactionId: number;
   vehicleId: number;
   registrationNumber: string;
+  vehicleMake: string;
+  vehicleModel: string;
   fuelCardId?: number;
   cardNumber?: string;
   fuelTypeId: number;

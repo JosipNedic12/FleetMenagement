@@ -5,6 +5,8 @@ public class InsurancePolicyDto
     public int PolicyId { get; set; }
     public int VehicleId { get; set; }
     public string RegistrationNumber { get; set; } = string.Empty; // from join
+    public string VehicleMake { get; set; } = string.Empty;
+    public string VehicleModel { get; set; } = string.Empty;
     public string PolicyNumber { get; set; } = string.Empty;
     public string Insurer { get; set; } = string.Empty;
     public DateOnly ValidFrom { get; set; }

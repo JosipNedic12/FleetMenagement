@@ -15,13 +15,15 @@ import { BadgeComponent } from '../../../shared/components/badge/badge.component
 import { ConfirmModalComponent } from '../../../shared/components/modal/confirm-modal.component';
 import { HasRoleDirective } from '../../../shared/directives/has-role.directive';
 import { SearchSelectComponent } from '../../../shared/components/search-select/search-select.component';
+import { VehicleLabelComponent } from '../../../shared/components/vehicle-label/vehicle-label.component';
+import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
 
 type OrderStatus = 'open' | 'in_progress' | 'closed' | 'cancelled';
 
 @Component({
   selector: 'app-maintenance-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, BadgeComponent, ConfirmModalComponent, HasRoleDirective, LucideAngularModule, SearchSelectComponent],
+  imports: [CommonModule, FormsModule, BadgeComponent, ConfirmModalComponent, HasRoleDirective, LucideAngularModule, SearchSelectComponent, VehicleLabelComponent, EuNumberPipe],
   template: `
     <div class="page">
       <div class="page-header">
@@ -84,7 +86,7 @@ type OrderStatus = 'open' | 'in_progress' | 'closed' | 'cancelled';
             <tbody>
               @for (row of sorted(); track row.orderId) {
                 <tr (click)="goToDetail(row)">
-                  <td><strong class="mono">{{ row.registrationNumber }}</strong></td>
+                  <td><app-vehicle-label [make]="row.vehicleMake" [model]="row.vehicleModel" [registration]="row.registrationNumber" /></td>
                   <td>{{ row.vendorName ?? '—' }}</td>
                   <td>
                     <app-badge [label]="statusLabel(row.status)" [variant]="statusVariant(row.status)" />
@@ -92,7 +94,7 @@ type OrderStatus = 'open' | 'in_progress' | 'closed' | 'cancelled';
                   <td>{{ row.reportedAt | date:'dd.MM.yyyy' }}</td>
                   <td>{{ row.scheduledAt ? (row.scheduledAt | date:'dd.MM.yyyy') : '—' }}</td>
                   <td>{{ row.items.length }}</td>
-                  <td>{{ row.totalCost != null ? (row.totalCost | currency:'EUR':'symbol':'1.2-2') : '—' }}</td>
+                  <td>{{ row.totalCost != null ? (row.totalCost | euNumber:'1.2-2') + ' €' : '—' }}</td>
                   <td class="actions">
                     <button *hasRole="['Admin','FleetManager']" class="btn-icon" title="Edit" (click)="$event.stopPropagation(); startEdit(row)"><lucide-icon [img]="icons.Pencil" [size]="15" [strokeWidth]="2"></lucide-icon></button>
                     @if (row.status === 'open') {
@@ -114,7 +116,7 @@ type OrderStatus = 'open' | 'in_progress' | 'closed' | 'cancelled';
                         @for (item of row.items; track item.itemId) {
                           <span class="item-chip">
                             {{ item.maintenanceTypeName }}
-                            ({{ item.totalCost | currency:'EUR':'symbol':'1.0-0' }})
+                            ({{ item.totalCost | euNumber:'1.0-0' }} €)
                             <button *hasRole="['Admin','FleetManager']" class="item-del" title="Remove" (click)="$event.stopPropagation(); deleteItem(item)">×</button>
                           </span>
                         }
@@ -314,7 +316,7 @@ type OrderStatus = 'open' | 'in_progress' | 'closed' | 'cancelled';
 })
 export class MaintenanceListComponent implements OnInit {
   readonly icons = { Eye, Pencil, Trash2, Check, X, Play, Plus, WrenchIcon };
-  readonly vehicleDisplayFn = (v: Vehicle) => `${v.registrationNumber} – ${v.make} ${v.model}`;
+  readonly vehicleDisplayFn = (v: Vehicle) => `${v.make} ${v.model} – ${v.registrationNumber}`;
   readonly vendorDisplayFn  = (v: Vendor)  => v.name;
   private api = inject(MaintenanceOrderApiService);
   private vehicleApi = inject(VehicleApiService);

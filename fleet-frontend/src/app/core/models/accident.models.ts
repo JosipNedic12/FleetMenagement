@@ -2,6 +2,8 @@ export interface Accident {
   accidentId: number;
   vehicleId: number;
   registrationNumber: string;
+  vehicleMake: string;
+  vehicleModel: string;
   driverId?: number;
   driverName?: string;
   occurredAt: string;

@@ -78,6 +78,8 @@ public class InsurancePolicyController : ControllerBase
         PolicyId = p.PolicyId,
         VehicleId = p.VehicleId,
         RegistrationNumber = p.Vehicle?.RegistrationNumber ?? string.Empty,
+        VehicleMake = p.Vehicle?.Make?.Name ?? string.Empty,
+        VehicleModel = p.Vehicle?.Model?.Name ?? string.Empty,
         PolicyNumber = p.PolicyNumber,
         Insurer = p.Insurer,
         ValidFrom = p.ValidFrom,

@@ -12,7 +12,8 @@ public class MaintenanceOrderRepository : IMaintenanceOrderRepository
 
     private IQueryable<MaintenanceOrder> BaseQuery() =>
         _context.MaintenanceOrders
-            .Include(o => o.Vehicle)
+            .Include(o => o.Vehicle).ThenInclude(v => v.Make)
+            .Include(o => o.Vehicle).ThenInclude(v => v.Model)
             .Include(o => o.Vendor)
             .Include(o => o.Items);
 

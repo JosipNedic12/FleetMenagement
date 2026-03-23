@@ -8,11 +8,12 @@ import { FuelTransaction } from '../../../core/models/models';
 import { UpdateFuelTransactionDto } from '../../../core/models/fuel.models';
 import { BadgeComponent } from '../../../shared/components/badge/badge.component';
 import { HasRoleDirective } from '../../../shared/directives/has-role.directive';
+import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
 
 @Component({
   selector: 'app-fuel-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, BadgeComponent, LucideAngularModule, HasRoleDirective],
+  imports: [CommonModule, RouterModule, FormsModule, BadgeComponent, LucideAngularModule, HasRoleDirective, EuNumberPipe],
   template: `
     <div class="page">
 
@@ -33,8 +34,8 @@ import { HasRoleDirective } from '../../../shared/directives/has-role.directive'
           </button>
           <div>
             @if (tx()) {
-              <h1 class="page-title">Fuel Transaction #{{ tx()!.transactionId }} · <span class="mono">{{ tx()!.registrationNumber }}</span></h1>
-              <p class="page-subtitle">{{ tx()!.postedAt | date:'dd.MM.yyyy' }} · {{ tx()!.fuelTypeName }} · {{ tx()!.totalCost | number:'1.2-2' }} €</p>
+              <h1 class="page-title">Fuel Transaction #{{ tx()!.transactionId }} · {{ tx()!.vehicleMake }} {{ tx()!.vehicleModel }}</h1>
+              <p class="page-subtitle"><span class="mono">{{ tx()!.registrationNumber }}</span> · {{ tx()!.postedAt | date:'dd.MM.yyyy' }} · {{ tx()!.fuelTypeName }} · {{ tx()!.totalCost | euNumber:'1.2-2' }} €</p>
             } @else {
               <h1 class="page-title">Fuel Transaction Detail</h1>
             }
@@ -74,7 +75,7 @@ import { HasRoleDirective } from '../../../shared/directives/has-role.directive'
               </div>
               <div class="kv-row">
                 <span class="kv-label">Vehicle</span>
-                <span class="kv-value mono">{{ tx()!.registrationNumber }}</span>
+                <span class="kv-value">{{ tx()!.vehicleMake }} {{ tx()!.vehicleModel }}<br><span class="mono" style="font-size:12px; color:var(--text-muted)">{{ tx()!.registrationNumber }}</span></span>
               </div>
               <div class="kv-row">
                 <span class="kv-label">Fuel Type</span>
@@ -102,27 +103,27 @@ import { HasRoleDirective } from '../../../shared/directives/has-role.directive'
             <div class="kv-grid">
               <div class="kv-row">
                 <span class="kv-label">Litres</span>
-                <span class="kv-value">{{ tx()!.liters != null ? (tx()!.liters | number:'1.2-2') : '—' }}</span>
+                <span class="kv-value">{{ tx()!.liters != null ? (tx()!.liters | euNumber:'1.2-2') : '—' }}</span>
               </div>
               <div class="kv-row">
                 <span class="kv-label">Price / Litre</span>
-                <span class="kv-value">{{ tx()!.pricePerLiter != null ? (tx()!.pricePerLiter | number:'1.3-3') + ' €' : '—' }}</span>
+                <span class="kv-value">{{ tx()!.pricePerLiter != null ? (tx()!.pricePerLiter | euNumber:'1.3-3') + ' €' : '—' }}</span>
               </div>
               <div class="kv-row">
                 <span class="kv-label">Energy (kWh)</span>
-                <span class="kv-value">{{ tx()!.energyKwh != null ? (tx()!.energyKwh | number:'1.2-2') : '—' }}</span>
+                <span class="kv-value">{{ tx()!.energyKwh != null ? (tx()!.energyKwh | euNumber:'1.2-2') : '—' }}</span>
               </div>
               <div class="kv-row">
                 <span class="kv-label">Price / kWh</span>
-                <span class="kv-value">{{ tx()!.pricePerKwh != null ? (tx()!.pricePerKwh | number:'1.3-3') + ' €' : '—' }}</span>
+                <span class="kv-value">{{ tx()!.pricePerKwh != null ? (tx()!.pricePerKwh | euNumber:'1.3-3') + ' €' : '—' }}</span>
               </div>
               <div class="kv-row">
                 <span class="kv-label">Total Cost</span>
-                <span class="kv-value">{{ tx()!.totalCost | number:'1.2-2' }} €</span>
+                <span class="kv-value">{{ tx()!.totalCost | euNumber:'1.2-2' }} €</span>
               </div>
               <div class="kv-row">
                 <span class="kv-label">Odometer</span>
-                <span class="kv-value">{{ tx()!.odometerKm != null ? (tx()!.odometerKm | number) + ' km' : '—' }}</span>
+                <span class="kv-value">{{ tx()!.odometerKm != null ? (tx()!.odometerKm | euNumber) + ' km' : '—' }}</span>
               </div>
             </div>
           </div>

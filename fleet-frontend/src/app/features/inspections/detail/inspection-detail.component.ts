@@ -8,11 +8,12 @@ import { Inspection } from '../../../core/models/models';
 import { CreateInspectionDto } from '../../../core/models/inspection.models';
 import { BadgeComponent } from '../../../shared/components/badge/badge.component';
 import { HasRoleDirective } from '../../../shared/directives/has-role.directive';
+import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
 
 @Component({
   selector: 'app-inspection-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, BadgeComponent, LucideAngularModule, HasRoleDirective],
+  imports: [CommonModule, RouterModule, FormsModule, BadgeComponent, LucideAngularModule, HasRoleDirective, EuNumberPipe],
   template: `
     <div class="page">
 
@@ -33,8 +34,8 @@ import { HasRoleDirective } from '../../../shared/directives/has-role.directive'
           </button>
           <div>
             @if (inspection()) {
-              <h1 class="page-title">Inspection · <span class="mono">{{ inspection()!.registrationNumber }}</span></h1>
-              <p class="page-subtitle">Inspected {{ inspection()!.inspectedAt | date:'dd.MM.yyyy' }}{{ inspection()!.validTo ? ' · Valid to ' + (inspection()!.validTo | date:'dd.MM.yyyy') : '' }}</p>
+              <h1 class="page-title">Inspection · {{ inspection()!.vehicleMake }} {{ inspection()!.vehicleModel }}</h1>
+              <p class="page-subtitle"><span class="mono">{{ inspection()!.registrationNumber }}</span> · Inspected {{ inspection()!.inspectedAt | date:'dd.MM.yyyy' }}{{ inspection()!.validTo ? ' · Valid to ' + (inspection()!.validTo | date:'dd.MM.yyyy') : '' }}</p>
             } @else {
               <h1 class="page-title">Inspection Detail</h1>
             }
@@ -73,7 +74,7 @@ import { HasRoleDirective } from '../../../shared/directives/has-role.directive'
               </div>
               <div class="kv-row">
                 <span class="kv-label">Vehicle</span>
-                <span class="kv-value mono">{{ inspection()!.registrationNumber }}</span>
+                <span class="kv-value">{{ inspection()!.vehicleMake }} {{ inspection()!.vehicleModel }}<br><span class="mono" style="font-size:12px; color:var(--text-muted)">{{ inspection()!.registrationNumber }}</span></span>
               </div>
               <div class="kv-row">
                 <span class="kv-label">Result</span>
@@ -104,7 +105,7 @@ import { HasRoleDirective } from '../../../shared/directives/has-role.directive'
               </div>
               <div class="kv-row">
                 <span class="kv-label">Odometer</span>
-                <span class="kv-value">{{ inspection()!.odometerKm != null ? (inspection()!.odometerKm | number) + ' km' : '—' }}</span>
+                <span class="kv-value">{{ inspection()!.odometerKm != null ? (inspection()!.odometerKm | euNumber) + ' km' : '—' }}</span>
               </div>
               <div class="kv-row kv-full">
                 <span class="kv-label">Notes</span>

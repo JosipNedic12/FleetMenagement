@@ -73,6 +73,8 @@ public class MaintenanceOrderDto
     public int OrderId { get; set; }
     public int VehicleId { get; set; }
     public string RegistrationNumber { get; set; } = string.Empty;
+    public string VehicleMake { get; set; } = string.Empty;
+    public string VehicleModel { get; set; } = string.Empty;
     public int? VendorId { get; set; }
     public string? VendorName { get; set; }
     public string Status { get; set; } = string.Empty;

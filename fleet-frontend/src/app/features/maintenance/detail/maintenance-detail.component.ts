@@ -9,11 +9,12 @@ import { UpdateMaintenanceOrderDto } from '../../../core/models/maintenance.mode
 import { BadgeComponent } from '../../../shared/components/badge/badge.component';
 import { HasRoleDirective } from '../../../shared/directives/has-role.directive';
 import { SearchSelectComponent } from '../../../shared/components/search-select/search-select.component';
+import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
 
 @Component({
   selector: 'app-maintenance-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, BadgeComponent, LucideAngularModule, HasRoleDirective, SearchSelectComponent],
+  imports: [CommonModule, RouterModule, FormsModule, BadgeComponent, LucideAngularModule, HasRoleDirective, SearchSelectComponent, EuNumberPipe],
   template: `
     <div class="page">
 
@@ -34,8 +35,8 @@ import { SearchSelectComponent } from '../../../shared/components/search-select/
           </button>
           <div>
             @if (order()) {
-              <h1 class="page-title">Maintenance Order #{{ order()!.orderId }} · <span class="mono">{{ order()!.registrationNumber }}</span></h1>
-              <p class="page-subtitle">Reported {{ order()!.reportedAt | date:'dd.MM.yyyy' }}{{ order()!.vendorName ? ' · ' + order()!.vendorName : '' }}</p>
+              <h1 class="page-title">Maintenance Order #{{ order()!.orderId }} · {{ order()!.vehicleMake }} {{ order()!.vehicleModel }}</h1>
+              <p class="page-subtitle"><span class="mono">{{ order()!.registrationNumber }}</span> · Reported {{ order()!.reportedAt | date:'dd.MM.yyyy' }}{{ order()!.vendorName ? ' · ' + order()!.vendorName : '' }}</p>
             } @else {
               <h1 class="page-title">Maintenance Detail</h1>
             }
@@ -80,7 +81,7 @@ import { SearchSelectComponent } from '../../../shared/components/search-select/
               </div>
               <div class="kv-row">
                 <span class="kv-label">Vehicle</span>
-                <span class="kv-value mono">{{ order()!.registrationNumber }}</span>
+                <span class="kv-value">{{ order()!.vehicleMake }} {{ order()!.vehicleModel }}<br><span class="mono" style="font-size:12px; color:var(--text-muted)">{{ order()!.registrationNumber }}</span></span>
               </div>
               <div class="kv-row">
                 <span class="kv-label">Vendor</span>
@@ -111,11 +112,11 @@ import { SearchSelectComponent } from '../../../shared/components/search-select/
               </div>
               <div class="kv-row">
                 <span class="kv-label">Odometer</span>
-                <span class="kv-value">{{ order()!.odometerKm != null ? (order()!.odometerKm | number) + ' km' : '—' }}</span>
+                <span class="kv-value">{{ order()!.odometerKm != null ? (order()!.odometerKm | euNumber) + ' km' : '—' }}</span>
               </div>
               <div class="kv-row">
                 <span class="kv-label">Total Cost</span>
-                <span class="kv-value">{{ order()!.totalCost != null ? (order()!.totalCost | number:'1.2-2') + ' €' : '—' }}</span>
+                <span class="kv-value">{{ order()!.totalCost != null ? (order()!.totalCost | euNumber:'1.2-2') + ' €' : '—' }}</span>
               </div>
               <div class="kv-row">
                 <span class="kv-label">Cancel Reason</span>
@@ -142,9 +143,9 @@ import { SearchSelectComponent } from '../../../shared/components/search-select/
                   @for (item of order()!.items; track item.itemId) {
                     <tr>
                       <td>{{ item.maintenanceTypeName }}</td>
-                      <td>{{ item.partsCost | number:'1.2-2' }} €</td>
-                      <td>{{ item.laborCost | number:'1.2-2' }} €</td>
-                      <td>{{ item.totalCost | number:'1.2-2' }} €</td>
+                      <td>{{ item.partsCost | euNumber:'1.2-2' }} €</td>
+                      <td>{{ item.laborCost | euNumber:'1.2-2' }} €</td>
+                      <td>{{ item.totalCost | euNumber:'1.2-2' }} €</td>
                       <td>{{ item.notes || '—' }}</td>
                     </tr>
                   }

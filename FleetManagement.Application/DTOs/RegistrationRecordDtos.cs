@@ -5,6 +5,8 @@ public class RegistrationRecordDto
     public int RegistrationId { get; set; }
     public int VehicleId { get; set; }
     public string VehicleRegistrationNumber { get; set; } = string.Empty; // vehicle plate
+    public string VehicleMake { get; set; } = string.Empty;
+    public string VehicleModel { get; set; } = string.Empty;
     public string RegistrationNumber { get; set; } = string.Empty;        // reg doc number
     public DateOnly ValidFrom { get; set; }
     public DateOnly ValidTo { get; set; }

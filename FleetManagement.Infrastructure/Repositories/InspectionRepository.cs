@@ -11,7 +11,9 @@ public class InspectionRepository : IInspectionRepository
     public InspectionRepository(FleetDbContext context) => _context = context;
 
     private IQueryable<Inspection> BaseQuery() =>
-        _context.Inspections.Include(i => i.Vehicle);
+        _context.Inspections
+            .Include(i => i.Vehicle).ThenInclude(v => v.Make)
+            .Include(i => i.Vehicle).ThenInclude(v => v.Model);
 
     public async Task<IEnumerable<Inspection>> GetAllAsync() =>
         await BaseQuery().OrderByDescending(i => i.InspectedAt).ToListAsync();

@@ -11,7 +11,9 @@ public class RegistrationRecordRepository : IRegistrationRecordRepository
     public RegistrationRecordRepository(FleetDbContext context) => _context = context;
 
     private IQueryable<RegistrationRecord> BaseQuery() =>
-        _context.RegistrationRecords.Include(r => r.Vehicle);
+        _context.RegistrationRecords
+            .Include(r => r.Vehicle).ThenInclude(v => v.Make)
+            .Include(r => r.Vehicle).ThenInclude(v => v.Model);
 
     public async Task<IEnumerable<RegistrationRecord>> GetAllAsync() =>
         await BaseQuery().OrderByDescending(r => r.ValidTo).ToListAsync();

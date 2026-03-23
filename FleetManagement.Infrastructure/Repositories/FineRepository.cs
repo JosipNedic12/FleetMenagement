@@ -12,7 +12,8 @@ public class FineRepository : IFineRepository
 
     private IQueryable<Fine> BaseQuery() =>
         _context.Fines
-            .Include(f => f.Vehicle)
+            .Include(f => f.Vehicle).ThenInclude(v => v.Make)
+            .Include(f => f.Vehicle).ThenInclude(v => v.Model)
             .Include(f => f.Driver).ThenInclude(d => d!.Employee);
 
     public async Task<IEnumerable<Fine>> GetAllAsync() =>

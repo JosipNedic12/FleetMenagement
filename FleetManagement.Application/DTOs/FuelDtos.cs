@@ -10,6 +10,8 @@ public class FuelCardDto
     public string? Provider { get; set; }
     public int? AssignedVehicleId { get; set; }
     public string? RegistrationNumber { get; set; }
+    public string? VehicleMake { get; set; }
+    public string? VehicleModel { get; set; }
     public DateOnly? ValidFrom { get; set; }
     public DateOnly? ValidTo { get; set; }
     public bool IsActive { get; set; }
@@ -44,6 +46,8 @@ public class FuelTransactionDto
     public int TransactionId { get; set; }
     public int VehicleId { get; set; }
     public string RegistrationNumber { get; set; } = string.Empty;
+    public string VehicleMake { get; set; } = string.Empty;
+    public string VehicleModel { get; set; } = string.Empty;
     public int? FuelCardId { get; set; }
     public string? CardNumber { get; set; }
     public int FuelTypeId { get; set; }

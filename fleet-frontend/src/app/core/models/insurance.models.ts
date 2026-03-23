@@ -2,6 +2,8 @@ export interface InsurancePolicy {
   policyId: number;
   vehicleId: number;
   registrationNumber: string;
+  vehicleMake: string;
+  vehicleModel: string;
   policyNumber: string;
   insurer: string;
   validFrom: string;

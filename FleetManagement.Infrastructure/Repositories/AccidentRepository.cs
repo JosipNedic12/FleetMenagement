@@ -12,7 +12,8 @@ public class AccidentRepository : IAccidentRepository
 
     private IQueryable<Accident> BaseQuery() =>
         _context.Accidents
-            .Include(a => a.Vehicle)
+            .Include(a => a.Vehicle).ThenInclude(v => v.Make)
+            .Include(a => a.Vehicle).ThenInclude(v => v.Model)
             .Include(a => a.Driver).ThenInclude(d => d!.Employee);
 
     public async Task<IEnumerable<Accident>> GetAllAsync() =>

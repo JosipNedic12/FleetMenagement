@@ -82,6 +82,8 @@ public class RegistrationRecordController : ControllerBase
             RegistrationId = r.RegistrationId,
             VehicleId = r.VehicleId,
             VehicleRegistrationNumber = r.Vehicle?.RegistrationNumber ?? string.Empty,
+            VehicleMake = r.Vehicle?.Make?.Name ?? string.Empty,
+            VehicleModel = r.Vehicle?.Model?.Name ?? string.Empty,
             RegistrationNumber = r.RegistrationNumber,
             ValidFrom = r.ValidFrom,
             ValidTo = r.ValidTo,

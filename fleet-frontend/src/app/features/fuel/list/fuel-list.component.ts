@@ -14,11 +14,13 @@ import { BadgeComponent } from '../../../shared/components/badge/badge.component
 import { ConfirmModalComponent } from '../../../shared/components/modal/confirm-modal.component';
 import { HasRoleDirective } from '../../../shared/directives/has-role.directive';
 import { SearchSelectComponent } from '../../../shared/components/search-select/search-select.component';
+import { VehicleLabelComponent } from '../../../shared/components/vehicle-label/vehicle-label.component';
+import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
 
 @Component({
   selector: 'app-fuel-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, BadgeComponent, ConfirmModalComponent, HasRoleDirective, LucideAngularModule, SearchSelectComponent],
+  imports: [CommonModule, FormsModule, BadgeComponent, ConfirmModalComponent, HasRoleDirective, LucideAngularModule, SearchSelectComponent, VehicleLabelComponent, EuNumberPipe],
   template: `
     <div class="page">
       <div class="page-header">
@@ -60,7 +62,7 @@ import { SearchSelectComponent } from '../../../shared/components/search-select/
                   <tr>
                     <td class="mono">{{ row.cardNumber }}</td>
                     <td>{{ row.provider ?? '—' }}</td>
-                    <td>{{ row.registrationNumber ?? '—' }}</td>
+                    <td>@if (row.registrationNumber) { <app-vehicle-label [make]="row.vehicleMake ?? ''" [model]="row.vehicleModel ?? ''" [registration]="row.registrationNumber" /> } @else { — }</td>
                     <td>{{ row.validFrom ? (row.validFrom | date:'dd.MM.yyyy') : '—' }}</td>
                     <td>{{ row.validTo ? (row.validTo | date:'dd.MM.yyyy') : '—' }}</td>
                     <td>
@@ -103,14 +105,14 @@ import { SearchSelectComponent } from '../../../shared/components/search-select/
               <tbody>
                 @for (row of filteredTx(); track row.transactionId) {
                   <tr [class.suspicious-row]="row.isSuspicious" (click)="goToDetail(row)">
-                    <td><strong class="mono">{{ row.registrationNumber }}</strong></td>
+                    <td><app-vehicle-label [make]="row.vehicleMake" [model]="row.vehicleModel" [registration]="row.registrationNumber" /></td>
                     <td>{{ row.postedAt | date:'dd.MM.yyyy' }}</td>
                     <td>{{ row.fuelTypeName }}</td>
                     <td>
-                      @if (row.liters != null) { {{ row.liters | number:'1.2-2' }} L }
-                      @else if (row.energyKwh != null) { {{ row.energyKwh | number:'1.2-2' }} kWh }
+                      @if (row.liters != null) { {{ row.liters | euNumber:'1.2-2' }} L }
+                      @else if (row.energyKwh != null) { {{ row.energyKwh | euNumber:'1.2-2' }} kWh }
                     </td>
-                    <td><strong>{{ row.totalCost | currency:'EUR':'symbol':'1.2-2' }}</strong></td>
+                    <td><strong>{{ row.totalCost | euNumber:'1.2-2' }} €</strong></td>
                     <td>{{ row.stationName ?? '—' }}</td>
                     <td class="actions">
                       @if (!row.isSuspicious) {
@@ -303,7 +305,7 @@ import { SearchSelectComponent } from '../../../shared/components/search-select/
 })
 export class FuelListComponent implements OnInit {
   readonly icons = { Eye, Pencil, Trash2, TriangleAlert };
-  readonly vehicleDisplayFn  = (v: Vehicle)  => v.registrationNumber;
+  readonly vehicleDisplayFn  = (v: Vehicle)  => `${v.make} ${v.model} – ${v.registrationNumber}`;
   readonly fuelCardDisplayFn = (c: FuelCard) => c.cardNumber;
   private cardApi = inject(FuelCardApiService);
   private txApi = inject(FuelTransactionApiService);

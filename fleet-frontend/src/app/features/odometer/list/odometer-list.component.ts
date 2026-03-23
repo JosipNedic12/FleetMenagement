@@ -8,11 +8,12 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { ConfirmModalComponent } from '../../../shared/components/modal/confirm-modal.component';
 import { HasRoleDirective } from '../../../shared/directives/has-role.directive';
 import { SearchSelectComponent } from '../../../shared/components/search-select/search-select.component';
+import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
 
 @Component({
   selector: 'app-odometer-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, ConfirmModalComponent, HasRoleDirective, LucideAngularModule, SearchSelectComponent],
+  imports: [CommonModule, FormsModule, ConfirmModalComponent, HasRoleDirective, LucideAngularModule, SearchSelectComponent, EuNumberPipe],
   template: `
     <div class="page">
       <div class="page-header">
@@ -56,7 +57,7 @@ import { SearchSelectComponent } from '../../../shared/components/search-select/
                 @for (row of sortedLogs(); track row.logId) {
                   <tr>
                     <td>{{ row.logDate | date:'dd.MM.yyyy' }}</td>
-                    <td><strong>{{ row.odometerKm | number }} km</strong></td>
+                    <td><strong>{{ row.odometerKm | euNumber }} km</strong></td>
                     <td class="notes-cell">{{ row.notes ?? '—' }}</td>
                     <td>{{ row.createdAt | date:'dd.MM.yyyy HH:mm' }}</td>
                     <td class="actions">
@@ -77,7 +78,7 @@ import { SearchSelectComponent } from '../../../shared/components/search-select/
         <div class="modal-box" style="max-width:420px" (click)="$event.stopPropagation()">
           <h2 class="modal-title">Add Odometer Reading</h2>
           <p class="modal-sub">
-            Current reading: <strong>{{ selectedVehicle()?.currentOdometerKm | number }} km</strong>
+            Current reading: <strong>{{ selectedVehicle()?.currentOdometerKm | euNumber }} km</strong>
           </p>
           <div class="form-grid" style="grid-template-columns:1fr">
             <div class="form-group">
@@ -118,7 +119,7 @@ import { SearchSelectComponent } from '../../../shared/components/search-select/
 })
 export class OdometerListComponent implements OnInit {
   readonly icons = { Eye, Pencil, Trash2 };
-  readonly vehicleDisplayFn = (v: Vehicle) => `${v.registrationNumber} – ${v.make} ${v.model} (${v.currentOdometerKm?.toLocaleString()} km)`;
+  readonly vehicleDisplayFn = (v: Vehicle) => `${v.make} ${v.model} – ${v.registrationNumber} (${v.currentOdometerKm?.toLocaleString()} km)`;
   private api = inject(OdometerLogApiService);
   private vehicleApi = inject(VehicleApiService);
   auth = inject(AuthService);

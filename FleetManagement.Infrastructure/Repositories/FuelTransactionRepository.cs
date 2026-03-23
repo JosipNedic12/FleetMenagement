@@ -12,7 +12,8 @@ public class FuelTransactionRepository : IFuelTransactionRepository
 
     private IQueryable<FuelTransaction> BaseQuery() =>
         _context.FuelTransactions
-            .Include(t => t.Vehicle)
+            .Include(t => t.Vehicle).ThenInclude(v => v.Make)
+            .Include(t => t.Vehicle).ThenInclude(v => v.Model)
             .Include(t => t.FuelCard)
             .Include(t => t.FuelType);
 

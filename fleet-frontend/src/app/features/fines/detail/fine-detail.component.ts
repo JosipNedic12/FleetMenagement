@@ -9,11 +9,12 @@ import { CreateFineDto } from '../../../core/models/fine.models';
 import { BadgeComponent } from '../../../shared/components/badge/badge.component';
 import { HasRoleDirective } from '../../../shared/directives/has-role.directive';
 import { SearchSelectComponent } from '../../../shared/components/search-select/search-select.component';
+import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
 
 @Component({
   selector: 'app-fine-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, BadgeComponent, LucideAngularModule, HasRoleDirective, SearchSelectComponent],
+  imports: [CommonModule, RouterModule, FormsModule, BadgeComponent, LucideAngularModule, HasRoleDirective, SearchSelectComponent, EuNumberPipe],
   template: `
     <div class="page">
 
@@ -34,8 +35,8 @@ import { SearchSelectComponent } from '../../../shared/components/search-select/
           </button>
           <div>
             @if (fine()) {
-              <h1 class="page-title">Fine #{{ fine()!.fineId }} · <span class="mono">{{ fine()!.registrationNumber }}</span></h1>
-              <p class="page-subtitle">{{ fine()!.reason }} · {{ fine()!.occurredAt | date:'dd.MM.yyyy' }}</p>
+              <h1 class="page-title">Fine #{{ fine()!.fineId }} · {{ fine()!.vehicleMake }} {{ fine()!.vehicleModel }}</h1>
+              <p class="page-subtitle"><span class="mono">{{ fine()!.registrationNumber }}</span> · {{ fine()!.reason }} · {{ fine()!.occurredAt | date:'dd.MM.yyyy' }}</p>
             } @else {
               <h1 class="page-title">Fine Detail</h1>
             }
@@ -69,8 +70,8 @@ import { SearchSelectComponent } from '../../../shared/components/search-select/
             <div class="info-group-title">Vehicle & Driver</div>
             <div class="kv-grid">
               <div class="kv-row">
-                <span class="kv-label">Registration</span>
-                <span class="kv-value mono">{{ fine()!.registrationNumber }}</span>
+                <span class="kv-label">Vehicle</span>
+                <span class="kv-value">{{ fine()!.vehicleMake }} {{ fine()!.vehicleModel }}<br><span class="mono" style="font-size:12px; color:var(--text-muted)">{{ fine()!.registrationNumber }}</span></span>
               </div>
               <div class="kv-row">
                 <span class="kv-label">Driver</span>
@@ -85,7 +86,7 @@ import { SearchSelectComponent } from '../../../shared/components/search-select/
             <div class="kv-grid">
               <div class="kv-row">
                 <span class="kv-label">Amount</span>
-                <span class="kv-value">{{ fine()!.amount | currency:'EUR':'symbol':'1.2-2' }}</span>
+                <span class="kv-value">{{ fine()!.amount | euNumber:'1.2-2' }} €</span>
               </div>
               <div class="kv-row">
                 <span class="kv-label">Violation</span>

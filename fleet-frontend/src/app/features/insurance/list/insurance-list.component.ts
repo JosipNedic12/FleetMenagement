@@ -12,11 +12,13 @@ import { HasRoleDirective } from '../../../shared/directives/has-role.directive'
 import { SearchSelectComponent } from '../../../shared/components/search-select/search-select.component';
 import { FileUploadComponent } from '../../../shared/components/file-upload/file-upload.component';
 import { DocumentListComponent } from '../../../shared/components/document-list/document-list.component';
+import { VehicleLabelComponent } from '../../../shared/components/vehicle-label/vehicle-label.component';
+import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
 
 @Component({
   selector: 'app-insurance-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, BadgeComponent, ConfirmModalComponent, HasRoleDirective, LucideAngularModule, SearchSelectComponent, FileUploadComponent, DocumentListComponent],
+  imports: [CommonModule, FormsModule, BadgeComponent, ConfirmModalComponent, HasRoleDirective, LucideAngularModule, SearchSelectComponent, FileUploadComponent, DocumentListComponent, VehicleLabelComponent, EuNumberPipe],
   template: `
     <div class="page">
       <!-- Header -->
@@ -63,12 +65,12 @@ import { DocumentListComponent } from '../../../shared/components/document-list/
             <tbody>
               @for (row of filtered(); track row.policyId) {
                 <tr (click)="goToDetail(row)">
-                  <td><strong>{{ row.registrationNumber }}</strong></td>
+                  <td><app-vehicle-label [make]="row.vehicleMake" [model]="row.vehicleModel" [registration]="row.registrationNumber" /></td>
                   <td class="mono">{{ row.policyNumber }}</td>
                   <td>{{ row.insurer }}</td>
                   <td>{{ row.validFrom | date:'dd.MM.yyyy' }}</td>
                   <td>{{ row.validTo | date:'dd.MM.yyyy' }}</td>
-                  <td>{{ row.premium | currency:'EUR':'symbol':'1.2-2' }}</td>
+                  <td>{{ row.premium | euNumber:'1.2-2' }} €</td>
                   <td>
                     <app-badge
                       [label]="row.isActive ? 'Active' : 'Expired'"
@@ -185,7 +187,7 @@ import { DocumentListComponent } from '../../../shared/components/document-list/
 })
 export class InsuranceListComponent implements OnInit {
   readonly icons = { Eye, Pencil, Trash2, Paperclip };
-  readonly vehicleDisplayFn = (v: Vehicle) => `${v.registrationNumber} – ${v.make} ${v.model}`;
+  readonly vehicleDisplayFn = (v: Vehicle) => `${v.make} ${v.model} – ${v.registrationNumber}`;
   @ViewChild('docList') docList!: DocumentListComponent;
   docsTarget: InsurancePolicy | null = null;
   private api = inject(InsurancePolicyApiService);

@@ -32,8 +32,8 @@ import { HasRoleDirective } from '../../../shared/directives/has-role.directive'
           </button>
           <div>
             @if (assignment()) {
-              <h1 class="page-title">{{ assignment()!.driverFullName }} · <span class="mono">{{ assignment()!.registrationNumber }}</span></h1>
-              <p class="page-subtitle">{{ assignment()!.vehicleMake }} {{ assignment()!.vehicleModel }} · From {{ assignment()!.assignedFrom | date:'dd.MM.yyyy' }}</p>
+              <h1 class="page-title">{{ assignment()!.driverFullName }} · {{ assignment()!.vehicleMake }} {{ assignment()!.vehicleModel }}</h1>
+              <p class="page-subtitle"><span class="mono">{{ assignment()!.registrationNumber }}</span> · From {{ assignment()!.assignedFrom | date:'dd.MM.yyyy' }}</p>
             } @else {
               <h1 class="page-title">Assignment Detail</h1>
             }
@@ -81,13 +81,9 @@ import { HasRoleDirective } from '../../../shared/directives/has-role.directive'
           <div class="info-group">
             <div class="info-group-title">Vehicle Info</div>
             <div class="kv-grid">
-              <div class="kv-row">
-                <span class="kv-label">Registration</span>
-                <span class="kv-value mono">{{ assignment()!.registrationNumber }}</span>
-              </div>
-              <div class="kv-row">
+              <div class="kv-row kv-full">
                 <span class="kv-label">Vehicle</span>
-                <span class="kv-value">{{ assignment()!.vehicleMake }} {{ assignment()!.vehicleModel }}</span>
+                <span class="kv-value">{{ assignment()!.vehicleMake }} {{ assignment()!.vehicleModel }}<br><span class="mono" style="font-size:12px; color:var(--text-muted)">{{ assignment()!.registrationNumber }}</span></span>
               </div>
             </div>
           </div>

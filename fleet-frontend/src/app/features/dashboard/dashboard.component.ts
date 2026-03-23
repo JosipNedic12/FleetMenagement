@@ -11,12 +11,13 @@ import {
 import {
   DashboardApiService, DashboardData, ComplianceReminder,
 } from '../../core/auth/feature-api.services';
+import { formatEu } from '../../shared/pipes/eu-number.pipe';
 
 Chart.register(...registerables);
 
 interface StatCard {
   label: string;
-  value: number;
+  value: string;
   sub: string;
   route: string;
   icon: LucideIconData;
@@ -571,7 +572,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     },
     scales: {
       x: { grid: { display: false }, ticks: { font: { size: 12 } } },
-      y: { grid: { color: () => getComputedStyle(document.documentElement).getPropertyValue('--border').trim() || '#e2e8f0' }, ticks: { font: { size: 11 } } }
+      y: { grid: { color: () => getComputedStyle(document.documentElement).getPropertyValue('--border').trim() || '#e2e8f0' }, ticks: { font: { size: 11 }, callback: (v) => (v as number).toLocaleString('de-DE') } }
     }
   };
 
@@ -644,14 +645,14 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 
         // ── Stat cards ─────────────────────────────────────────────
         this.cards.set([
-          { label: 'Vehicles', value: data.activeVehicles, sub: `${data.activeVehicles} active`, route: '/vehicles', icon: Car, accent: '#10b981' },
-          { label: 'Open Orders', value: data.openMaintenanceOrders, sub: 'Maintenance in progress', route: '/maintenance', icon: Wrench, accent: '#f97316' },
-          { label: 'KM This Month', value: data.kmThisMonth, sub: 'From odometer logs', route: '/odometer', icon: MapPin, accent: '#6366f1' },
-          { label: 'Expired Insurance', value: data.expiredInsurance, sub: 'Policies expired', route: '/insurance', icon: Shield, accent: '#3b82f6' },
-          { label: 'Inspections Due', value: data.inspectionsDue, sub: 'Within 30 days', route: '/inspections', icon: Search, accent: '#06b6d4' },
-          { label: 'Fines', value: data.unpaidFines, sub: 'Unpaid fines', route: '/fines', icon: TriangleAlert, accent: '#f59e0b' },
-          { label: 'Accidents', value: data.accidentCount, sub: 'Reported incidents', route: '/accidents', icon: Siren, accent: '#ef4444' },
-          { label: 'Fuel Cost This Month', value: Math.round(data.fuelCostThisMonth), sub: 'EUR spent on fuel', route: '/fuel', icon: Fuel, accent: '#14b8a6' },
+          { label: 'Vehicles', value: formatEu(data.activeVehicles), sub: `${data.activeVehicles} active`, route: '/vehicles', icon: Car, accent: '#10b981' },
+          { label: 'Open Orders', value: formatEu(data.openMaintenanceOrders), sub: 'Maintenance in progress', route: '/maintenance', icon: Wrench, accent: '#f97316' },
+          { label: 'KM This Month', value: formatEu(data.kmThisMonth), sub: 'From odometer logs', route: '/odometer', icon: MapPin, accent: '#6366f1' },
+          { label: 'Expired Insurance', value: formatEu(data.expiredInsurance), sub: 'Policies expired', route: '/insurance', icon: Shield, accent: '#3b82f6' },
+          { label: 'Inspections Due', value: formatEu(data.inspectionsDue), sub: 'Within 30 days', route: '/inspections', icon: Search, accent: '#06b6d4' },
+          { label: 'Fines', value: formatEu(data.unpaidFines), sub: 'Unpaid fines', route: '/fines', icon: TriangleAlert, accent: '#f59e0b' },
+          { label: 'Accidents', value: formatEu(data.accidentCount), sub: 'Reported incidents', route: '/accidents', icon: Siren, accent: '#ef4444' },
+          { label: 'Fuel Cost This Month', value: formatEu(data.fuelCostThisMonth), sub: 'EUR spent on fuel', route: '/fuel', icon: Fuel, accent: '#14b8a6' },
         ]);
 
         // ── Compliance widget ──────────────────────────────────────

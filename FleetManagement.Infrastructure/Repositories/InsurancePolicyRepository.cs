@@ -11,7 +11,9 @@ public class InsurancePolicyRepository : IInsurancePolicyRepository
     public InsurancePolicyRepository(FleetDbContext context) => _context = context;
 
     private IQueryable<InsurancePolicy> BaseQuery() =>
-        _context.InsurancePolicies.Include(p => p.Vehicle);
+        _context.InsurancePolicies
+            .Include(p => p.Vehicle).ThenInclude(v => v.Make)
+            .Include(p => p.Vehicle).ThenInclude(v => v.Model);
 
     public async Task<IEnumerable<InsurancePolicy>> GetAllAsync() =>
         await BaseQuery().OrderByDescending(p => p.ValidTo).ToListAsync();

@@ -96,6 +96,8 @@ public class InspectionController : ControllerBase
             InspectionId = i.InspectionId,
             VehicleId = i.VehicleId,
             RegistrationNumber = i.Vehicle?.RegistrationNumber ?? string.Empty,
+            VehicleMake = i.Vehicle?.Make?.Name ?? string.Empty,
+            VehicleModel = i.Vehicle?.Model?.Name ?? string.Empty,
             InspectedAt = i.InspectedAt,
             ValidTo = i.ValidTo,
             Result = i.Result,

@@ -8,11 +8,12 @@ import { RegistrationRecord } from '../../../core/models/models';
 import { CreateRegistrationRecordDto } from '../../../core/models/registration.models';
 import { BadgeComponent } from '../../../shared/components/badge/badge.component';
 import { HasRoleDirective } from '../../../shared/directives/has-role.directive';
+import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
 
 @Component({
   selector: 'app-registration-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, BadgeComponent, LucideAngularModule, HasRoleDirective],
+  imports: [CommonModule, RouterModule, FormsModule, BadgeComponent, LucideAngularModule, HasRoleDirective, EuNumberPipe],
   template: `
     <div class="page">
 
@@ -33,8 +34,8 @@ import { HasRoleDirective } from '../../../shared/directives/has-role.directive'
           </button>
           <div>
             @if (record()) {
-              <h1 class="page-title">Registration {{ record()!.registrationNumber }} · <span class="mono">{{ record()!.vehicleRegistrationNumber }}</span></h1>
-              <p class="page-subtitle">Valid {{ record()!.validFrom | date:'dd.MM.yyyy' }} – {{ record()!.validTo | date:'dd.MM.yyyy' }}</p>
+              <h1 class="page-title">Registration {{ record()!.registrationNumber }} · {{ record()!.vehicleMake }} {{ record()!.vehicleModel }}</h1>
+              <p class="page-subtitle"><span class="mono">{{ record()!.vehicleRegistrationNumber }}</span> · Valid {{ record()!.validFrom | date:'dd.MM.yyyy' }} – {{ record()!.validTo | date:'dd.MM.yyyy' }}</p>
             } @else {
               <h1 class="page-title">Registration Detail</h1>
             }
@@ -77,7 +78,7 @@ import { HasRoleDirective } from '../../../shared/directives/has-role.directive'
               </div>
               <div class="kv-row">
                 <span class="kv-label">Vehicle</span>
-                <span class="kv-value mono">{{ record()!.vehicleRegistrationNumber }}</span>
+                <span class="kv-value">{{ record()!.vehicleMake }} {{ record()!.vehicleModel }}<br><span class="mono" style="font-size:12px; color:var(--text-muted)">{{ record()!.vehicleRegistrationNumber }}</span></span>
               </div>
               <div class="kv-row">
                 <span class="kv-label">Status</span>
@@ -102,7 +103,7 @@ import { HasRoleDirective } from '../../../shared/directives/has-role.directive'
               </div>
               <div class="kv-row">
                 <span class="kv-label">Fee</span>
-                <span class="kv-value">{{ record()!.fee != null ? (record()!.fee | number:'1.2-2') + ' €' : '—' }}</span>
+                <span class="kv-value">{{ record()!.fee != null ? (record()!.fee | euNumber:'1.2-2') + ' €' : '—' }}</span>
               </div>
               <div class="kv-row kv-full">
                 <span class="kv-label">Notes</span>

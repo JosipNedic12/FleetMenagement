@@ -1,4 +1,4 @@
-﻿using FleetManagement.Application.Interfaces;
+using FleetManagement.Application.Interfaces;
 using FleetManagement.Domain.Entities;
 using FleetManagement.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -9,20 +9,22 @@ public class FuelCardRepository : IFuelCardRepository
     private readonly FleetDbContext _context;
     public FuelCardRepository(FleetDbContext context) => _context = context;
 
+    private IQueryable<FuelCard> BaseQuery() =>
+        _context.FuelCards
+            .Include(c => c.AssignedVehicle).ThenInclude(v => v!.Make)
+            .Include(c => c.AssignedVehicle).ThenInclude(v => v!.Model);
+
     public async Task<IEnumerable<FuelCard>> GetAllAsync() =>
-        await _context.FuelCards
-            .Include(c => c.AssignedVehicle)
+        await BaseQuery()
             .OrderBy(c => c.CardNumber)
             .ToListAsync();
 
     public async Task<FuelCard?> GetByIdAsync(int id) =>
-        await _context.FuelCards
-            .Include(c => c.AssignedVehicle)
+        await BaseQuery()
             .FirstOrDefaultAsync(c => c.FuelCardId == id);
 
     public async Task<IEnumerable<FuelCard>> GetByVehicleIdAsync(int vehicleId) =>
-        await _context.FuelCards
-            .Include(c => c.AssignedVehicle)
+        await BaseQuery()
             .Where(c => c.AssignedVehicleId == vehicleId)
             .ToListAsync();
 
@@ -31,9 +33,7 @@ public class FuelCardRepository : IFuelCardRepository
         card.CreatedAt = DateTime.UtcNow;
         _context.FuelCards.Add(card);
         await _context.SaveChangesAsync();
-        return await _context.FuelCards
-            .Include(c => c.AssignedVehicle)
-            .FirstAsync(c => c.FuelCardId == card.FuelCardId);
+        return await BaseQuery().FirstAsync(c => c.FuelCardId == card.FuelCardId);
     }
 
     public async Task<FuelCard?> UpdateAsync(int id, FuelCard updated)
@@ -50,9 +50,7 @@ public class FuelCardRepository : IFuelCardRepository
         card.ModifiedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
-        return await _context.FuelCards
-            .Include(c => c.AssignedVehicle)
-            .FirstAsync(c => c.FuelCardId == id);
+        return await BaseQuery().FirstAsync(c => c.FuelCardId == id);
     }
 
     public async Task<bool> DeleteAsync(int id)

@@ -9,13 +9,14 @@ import { CreateAccidentDto } from '../../../core/models/accident.models';
 import { BadgeComponent } from '../../../shared/components/badge/badge.component';
 import { HasRoleDirective } from '../../../shared/directives/has-role.directive';
 import { SearchSelectComponent } from '../../../shared/components/search-select/search-select.component';
+import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
 
 type BadgeVariant = 'success' | 'warning' | 'danger' | 'neutral';
 
 @Component({
   selector: 'app-accident-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, BadgeComponent, LucideAngularModule, HasRoleDirective, SearchSelectComponent],
+  imports: [CommonModule, RouterModule, FormsModule, BadgeComponent, LucideAngularModule, HasRoleDirective, SearchSelectComponent, EuNumberPipe],
   template: `
     <div class="page">
 
@@ -36,8 +37,8 @@ type BadgeVariant = 'success' | 'warning' | 'danger' | 'neutral';
           </button>
           <div>
             @if (accident()) {
-              <h1 class="page-title">Accident #{{ accident()!.accidentId }} · <span class="mono">{{ accident()!.registrationNumber }}</span></h1>
-              <p class="page-subtitle">{{ accident()!.occurredAt | date:'dd.MM.yyyy HH:mm' }} · {{ accident()!.severity | titlecase }}</p>
+              <h1 class="page-title">Accident #{{ accident()!.accidentId }} · {{ accident()!.vehicleMake }} {{ accident()!.vehicleModel }}</h1>
+              <p class="page-subtitle"><span class="mono">{{ accident()!.registrationNumber }}</span> · {{ accident()!.occurredAt | date:'dd.MM.yyyy HH:mm' }} · {{ accident()!.severity | titlecase }}</p>
             } @else {
               <h1 class="page-title">Accident Detail</h1>
             }
@@ -71,8 +72,8 @@ type BadgeVariant = 'success' | 'warning' | 'danger' | 'neutral';
             <div class="info-group-title">Vehicle & Driver</div>
             <div class="kv-grid">
               <div class="kv-row">
-                <span class="kv-label">Registration</span>
-                <span class="kv-value mono">{{ accident()!.registrationNumber }}</span>
+                <span class="kv-label">Vehicle</span>
+                <span class="kv-value">{{ accident()!.vehicleMake }} {{ accident()!.vehicleModel }}<br><span class="mono" style="font-size:12px; color:var(--text-muted)">{{ accident()!.registrationNumber }}</span></span>
               </div>
               <div class="kv-row">
                 <span class="kv-label">Driver</span>
@@ -96,7 +97,7 @@ type BadgeVariant = 'success' | 'warning' | 'danger' | 'neutral';
               </div>
               <div class="kv-row">
                 <span class="kv-label">Damage Estimate</span>
-                <span class="kv-value">{{ accident()!.damageEstimate != null ? (accident()!.damageEstimate | currency:'EUR':'symbol':'1.2-2') : '—' }}</span>
+                <span class="kv-value">{{ accident()!.damageEstimate != null ? (accident()!.damageEstimate | euNumber:'1.2-2') + ' €' : '—' }}</span>
               </div>
             </div>
           </div>

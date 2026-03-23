@@ -10,11 +10,13 @@ import { BadgeComponent } from '../../../shared/components/badge/badge.component
 import { ConfirmModalComponent } from '../../../shared/components/modal/confirm-modal.component';
 import { HasRoleDirective } from '../../../shared/directives/has-role.directive';
 import { SearchSelectComponent } from '../../../shared/components/search-select/search-select.component';
+import { VehicleLabelComponent } from '../../../shared/components/vehicle-label/vehicle-label.component';
+import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
 
 @Component({
   selector: 'app-fines-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, BadgeComponent, ConfirmModalComponent, HasRoleDirective, LucideAngularModule, SearchSelectComponent],
+  imports: [CommonModule, FormsModule, BadgeComponent, ConfirmModalComponent, HasRoleDirective, LucideAngularModule, SearchSelectComponent, VehicleLabelComponent, EuNumberPipe],
   template: `
     <div class="page">
       <div class="page-header">
@@ -57,11 +59,11 @@ import { SearchSelectComponent } from '../../../shared/components/search-select/
             <tbody>
               @for (row of filtered(); track row.fineId) {
                 <tr (click)="goToDetail(row)">
-                  <td><strong>{{ row.registrationNumber }}</strong></td>
+                  <td><app-vehicle-label [make]="row.vehicleMake" [model]="row.vehicleModel" [registration]="row.registrationNumber" /></td>
                   <td>{{ row.driverName ?? '—' }}</td>
                   <td>{{ row.occurredAt | date:'dd.MM.yyyy' }}</td>
                   <td>{{ row.reason }}</td>
-                  <td><strong>{{ row.amount | currency:'EUR':'symbol':'1.2-2' }}</strong></td>
+                  <td><strong>{{ row.amount | euNumber:'1.2-2' }} €</strong></td>
                   <td>
                     <app-badge
                       [label]="row.isPaid ? 'Paid' : 'Unpaid'"
@@ -183,7 +185,7 @@ import { SearchSelectComponent } from '../../../shared/components/search-select/
 })
 export class FinesListComponent implements OnInit {
   readonly icons = { Eye, Pencil, Trash2, CreditCard };
-  readonly vehicleDisplayFn = (v: Vehicle) => v.registrationNumber;
+  readonly vehicleDisplayFn = (v: Vehicle) => `${v.make} ${v.model} – ${v.registrationNumber}`;
   readonly driverDisplayFn  = (d: Driver)  => d.fullName;
   fines    = signal<Fine[]>([]);
   vehicles = signal<Vehicle[]>([]);

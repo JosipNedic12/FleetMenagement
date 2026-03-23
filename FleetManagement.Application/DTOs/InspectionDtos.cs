@@ -5,6 +5,8 @@ public class InspectionDto
     public int InspectionId { get; set; }
     public int VehicleId { get; set; }
     public string RegistrationNumber { get; set; } = string.Empty;
+    public string VehicleMake { get; set; } = string.Empty;
+    public string VehicleModel { get; set; } = string.Empty;
     public DateOnly InspectedAt { get; set; }
     public DateOnly? ValidTo { get; set; }
     public string Result { get; set; } = string.Empty;

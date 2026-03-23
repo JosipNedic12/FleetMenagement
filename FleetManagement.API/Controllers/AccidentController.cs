@@ -87,6 +87,8 @@ public class AccidentController : ControllerBase
         AccidentId = a.AccidentId,
         VehicleId = a.VehicleId,
         RegistrationNumber = a.Vehicle?.RegistrationNumber ?? string.Empty,
+        VehicleMake = a.Vehicle?.Make?.Name ?? string.Empty,
+        VehicleModel = a.Vehicle?.Model?.Name ?? string.Empty,
         DriverId = a.DriverId,
         DriverName = a.Driver?.Employee != null
             ? $"{a.Driver.Employee.FirstName} {a.Driver.Employee.LastName}" : null,

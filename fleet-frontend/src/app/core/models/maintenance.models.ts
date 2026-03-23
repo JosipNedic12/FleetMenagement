@@ -46,6 +46,8 @@ export interface MaintenanceOrder {
   orderId: number;
   vehicleId: number;
   registrationNumber: string;
+  vehicleMake: string;
+  vehicleModel: string;
   vendorId?: number;
   vendorName?: string;
   status: 'open' | 'in_progress' | 'closed' | 'cancelled';

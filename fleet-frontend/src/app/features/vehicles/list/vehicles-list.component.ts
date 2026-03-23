@@ -9,13 +9,15 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { BadgeComponent } from '../../../shared/components/badge/badge.component';
 import { ConfirmModalComponent } from '../../../shared/components/modal/confirm-modal.component';
 import { HasRoleDirective } from '../../../shared/directives/has-role.directive';
+import { VehicleLabelComponent } from '../../../shared/components/vehicle-label/vehicle-label.component';
+import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
 
 type VehicleStatus = 'active' | 'service' | 'retired' | 'sold';
 
 @Component({
   selector: 'app-vehicles-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, BadgeComponent, ConfirmModalComponent, HasRoleDirective, LucideAngularModule],
+  imports: [CommonModule, FormsModule, RouterModule, BadgeComponent, ConfirmModalComponent, HasRoleDirective, LucideAngularModule, VehicleLabelComponent, EuNumberPipe],
   template: `
     <div class="page">
       <div class="page-header">
@@ -65,8 +67,7 @@ type VehicleStatus = 'active' | 'service' | 'retired' | 'sold';
           <table class="table">
             <thead>
               <tr>
-                <th class="sortable" [class.sort-asc]="sortCol()==='reg'&&sortDir()==='asc'" [class.sort-desc]="sortCol()==='reg'&&sortDir()==='desc'" (click)="sort('reg')">Reg#</th>
-                <th class="sortable" [class.sort-asc]="sortCol()==='make'&&sortDir()==='asc'" [class.sort-desc]="sortCol()==='make'&&sortDir()==='desc'" (click)="sort('make')">Make / Model</th>
+                <th class="sortable" [class.sort-asc]="sortCol()==='make'&&sortDir()==='asc'" [class.sort-desc]="sortCol()==='make'&&sortDir()==='desc'" (click)="sort('make')">Vehicle</th>
                 <th class="sortable" [class.sort-asc]="sortCol()==='year'&&sortDir()==='asc'" [class.sort-desc]="sortCol()==='year'&&sortDir()==='desc'" (click)="sort('year')">Year</th>
                 <th>Category</th>
                 <th>Fuel</th>
@@ -78,12 +79,11 @@ type VehicleStatus = 'active' | 'service' | 'retired' | 'sold';
             <tbody>
               @for (row of sorted(); track row.vehicleId) {
                 <tr>
-                  <td><strong class="mono">{{ row.registrationNumber }}</strong></td>
-                  <td>{{ row.make }} {{ row.model }}</td>
+                  <td><app-vehicle-label [make]="row.make" [model]="row.model" [registration]="row.registrationNumber" /></td>
                   <td>{{ row.year }}</td>
                   <td>{{ row.category }}</td>
                   <td>{{ row.fuelType }}</td>
-                  <td>{{ row.currentOdometerKm | number }} km</td>
+                  <td>{{ row.currentOdometerKm | euNumber }} km</td>
                   <td>
                     <app-badge
                       [label]="row.status"
