@@ -17,32 +17,32 @@ import { HasRoleDirective } from '../../../shared/directives/has-role.directive'
 
       <!-- Breadcrumb -->
       <nav class="breadcrumb">
-        <a routerLink="/dashboard">Dashboard</a>
+        <a routerLink="/dashboard" i18n="@@assignments.detail.breadcrumbDashboard">Dashboard</a>
         <span class="bc-sep">›</span>
-        <a routerLink="/assignments">Assignments</a>
+        <a routerLink="/assignments" i18n="@@assignments.detail.breadcrumbAssignments">Assignments</a>
         <span class="bc-sep">›</span>
-        <span>Assignment #{{ assignment()?.assignmentId ?? 'Detail' }}</span>
+        <span i18n="@@assignments.detail.breadcrumbCurrent">Assignment #{{ assignment()?.assignmentId ?? 'Detail' }}</span>
       </nav>
 
       <div class="page-header">
         <div style="display:flex; align-items:center; gap:12px">
           <button class="back-btn" (click)="goBack()">
             <lucide-icon [img]="icons.ArrowLeft" [size]="16" [strokeWidth]="2"></lucide-icon>
-            Assignments
+            <ng-container i18n="@@assignments.detail.backBtn">Assignments</ng-container>
           </button>
           <div>
             @if (assignment()) {
               <h1 class="page-title">{{ assignment()!.driverFullName }} · {{ assignment()!.vehicleMake }} {{ assignment()!.vehicleModel }}</h1>
               <p class="page-subtitle"><span class="mono">{{ assignment()!.registrationNumber }}</span> · From {{ assignment()!.assignedFrom | date:'dd.MM.yyyy' }}</p>
             } @else {
-              <h1 class="page-title">Assignment Detail</h1>
+              <h1 class="page-title" i18n="@@assignments.detail.titleFallback">Assignment Detail</h1>
             }
           </div>
         </div>
         <div style="display:flex; align-items:center; gap:10px">
           <button *hasRole="['Admin','FleetManager']" class="btn btn-secondary" (click)="startEdit()" [disabled]="!assignment()">
             <lucide-icon [img]="icons.Pencil" [size]="15" [strokeWidth]="2"></lucide-icon>
-            Edit
+            <ng-container i18n="@@assignments.detail.editBtn">Edit</ng-container>
           </button>
           @if (assignment()) {
             <app-badge
@@ -54,24 +54,24 @@ import { HasRoleDirective } from '../../../shared/directives/has-role.directive'
       </div>
 
       @if (loading()) {
-        <div class="table-loading">Loading…</div>
+        <div class="table-loading" i18n="@@assignments.detail.loading">Loading…</div>
       } @else if (error()) {
         <div class="table-empty">{{ error() }}</div>
       } @else if (!assignment()) {
-        <div class="table-empty">Assignment not found.</div>
+        <div class="table-empty" i18n="@@assignments.detail.notFound">Assignment not found.</div>
       } @else {
         <div class="overview-grid">
 
           <!-- Driver Info -->
           <div class="info-group">
-            <div class="info-group-title">Driver Info</div>
+            <div class="info-group-title" i18n="@@assignments.detail.sectionDriver">Driver Info</div>
             <div class="kv-grid">
               <div class="kv-row">
-                <span class="kv-label">Driver</span>
+                <span class="kv-label" i18n="@@assignments.detail.labelDriver">Driver</span>
                 <span class="kv-value">{{ assignment()!.driverFullName }}</span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Department</span>
+                <span class="kv-label" i18n="@@assignments.detail.labelDepartment">Department</span>
                 <span class="kv-value">{{ assignment()!.department || '—' }}</span>
               </div>
             </div>
@@ -79,10 +79,10 @@ import { HasRoleDirective } from '../../../shared/directives/has-role.directive'
 
           <!-- Vehicle Info -->
           <div class="info-group">
-            <div class="info-group-title">Vehicle Info</div>
+            <div class="info-group-title" i18n="@@assignments.detail.sectionVehicle">Vehicle Info</div>
             <div class="kv-grid">
               <div class="kv-row kv-full">
-                <span class="kv-label">Vehicle</span>
+                <span class="kv-label" i18n="@@assignments.detail.labelVehicle">Vehicle</span>
                 <span class="kv-value">{{ assignment()!.vehicleMake }} {{ assignment()!.vehicleModel }}<br><span class="mono" style="font-size:12px; color:var(--text-muted)">{{ assignment()!.registrationNumber }}</span></span>
               </div>
             </div>
@@ -90,14 +90,14 @@ import { HasRoleDirective } from '../../../shared/directives/has-role.directive'
 
           <!-- Assignment Details -->
           <div class="info-group info-group--full">
-            <div class="info-group-title">Assignment Details</div>
+            <div class="info-group-title" i18n="@@assignments.detail.sectionDetails">Assignment Details</div>
             <div class="kv-grid">
               <div class="kv-row">
-                <span class="kv-label">Assignment ID</span>
+                <span class="kv-label" i18n="@@assignments.detail.labelId">Assignment ID</span>
                 <span class="kv-value mono">{{ assignment()!.assignmentId }}</span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Status</span>
+                <span class="kv-label" i18n="@@assignments.detail.labelStatus">Status</span>
                 <span class="kv-value">
                   <app-badge
                     [label]="assignment()!.isActive ? 'Active' : 'Ended'"
@@ -106,15 +106,15 @@ import { HasRoleDirective } from '../../../shared/directives/has-role.directive'
                 </span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Assigned From</span>
+                <span class="kv-label" i18n="@@assignments.detail.labelAssignedFrom">Assigned From</span>
                 <span class="kv-value">{{ assignment()!.assignedFrom | date:'dd.MM.yyyy' }}</span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Assigned To</span>
+                <span class="kv-label" i18n="@@assignments.detail.labelAssignedTo">Assigned To</span>
                 <span class="kv-value">{{ assignment()!.assignedTo ? (assignment()!.assignedTo | date:'dd.MM.yyyy') : '—' }}</span>
               </div>
               <div class="kv-row kv-full">
-                <span class="kv-label">Notes</span>
+                <span class="kv-label" i18n="@@assignments.detail.labelNotes">Notes</span>
                 <span class="kv-value">{{ assignment()!.notes || '—' }}</span>
               </div>
             </div>
@@ -128,22 +128,22 @@ import { HasRoleDirective } from '../../../shared/directives/has-role.directive'
     @if (showEdit) {
       <div class="modal-overlay" (click)="closeEdit()">
         <div class="modal-box" style="max-width:400px" (click)="$event.stopPropagation()">
-          <h2 class="modal-title">Edit Assignment</h2>
+          <h2 class="modal-title" i18n="@@assignments.edit.title">Edit Assignment</h2>
           <div class="form-grid" style="grid-template-columns:1fr">
             <div class="form-group">
-              <label>End Date</label>
+              <label i18n="@@assignments.edit.labelEndDate">End Date</label>
               <input type="date" [(ngModel)]="editForm.assignedTo" />
             </div>
             <div class="form-group">
-              <label>Notes</label>
+              <label i18n="@@assignments.edit.labelNotes">Notes</label>
               <textarea [(ngModel)]="editForm.notes" rows="2"></textarea>
             </div>
           </div>
           @if (formError()) { <div class="form-error">{{ formError() }}</div> }
           <div class="modal-actions">
-            <button class="btn btn-secondary" (click)="closeEdit()">Cancel</button>
+            <button class="btn btn-secondary" (click)="closeEdit()" i18n="@@assignments.edit.cancelBtn">Cancel</button>
             <button class="btn btn-primary" [disabled]="saving()" (click)="saveEdit()">
-              @if (saving()) { <span class="btn-spinner"></span> Saving… } @else { Update }
+              @if (saving()) { <span class="btn-spinner"></span><ng-container i18n="@@assignments.edit.savingBtn"> Saving…</ng-container> } @else { <ng-container i18n="@@assignments.edit.updateBtn">Update</ng-container> }
             </button>
           </div>
         </div>

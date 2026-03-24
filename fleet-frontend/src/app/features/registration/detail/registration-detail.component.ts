@@ -19,32 +19,36 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
 
       <!-- Breadcrumb -->
       <nav class="breadcrumb">
-        <a routerLink="/dashboard">Dashboard</a>
+        <a routerLink="/dashboard" i18n="@@registration.detail.breadcrumbDashboard">Dashboard</a>
         <span class="bc-sep">›</span>
-        <a routerLink="/registration">Registration</a>
+        <a routerLink="/registration" i18n="@@registration.detail.breadcrumbList">Registration</a>
         <span class="bc-sep">›</span>
-        <span>{{ record()?.registrationNumber ?? 'Detail' }}</span>
+        @if (record()) {
+          <span>{{ record()!.registrationNumber }}</span>
+        } @else {
+          <span i18n="@@registration.detail.breadcrumbDetail">Detail</span>
+        }
       </nav>
 
       <div class="page-header">
         <div style="display:flex; align-items:center; gap:12px">
           <button class="back-btn" (click)="goBack()">
             <lucide-icon [img]="icons.ArrowLeft" [size]="16" [strokeWidth]="2"></lucide-icon>
-            Registration
+            <ng-container i18n="@@registration.detail.backButton">Registration</ng-container>
           </button>
           <div>
             @if (record()) {
               <h1 class="page-title">Registration {{ record()!.registrationNumber }} · {{ record()!.vehicleMake }} {{ record()!.vehicleModel }}</h1>
               <p class="page-subtitle"><span class="mono">{{ record()!.vehicleRegistrationNumber }}</span> · Valid {{ record()!.validFrom | date:'dd.MM.yyyy' }} – {{ record()!.validTo | date:'dd.MM.yyyy' }}</p>
             } @else {
-              <h1 class="page-title">Registration Detail</h1>
+              <h1 class="page-title" i18n="@@registration.detail.titleFallback">Registration Detail</h1>
             }
           </div>
         </div>
         <div style="display:flex; align-items:center; gap:10px">
           <button *hasRole="['Admin','FleetManager']" class="btn btn-secondary" (click)="startEdit()" [disabled]="!record()">
             <lucide-icon [img]="icons.Pencil" [size]="15" [strokeWidth]="2"></lucide-icon>
-            Edit
+            <ng-container i18n="@@registration.detail.editButton">Edit</ng-container>
           </button>
           @if (record()) {
             <app-badge
@@ -56,32 +60,32 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
       </div>
 
       @if (loading()) {
-        <div class="table-loading">Loading…</div>
+        <div class="table-loading" i18n="@@registration.detail.loading">Loading…</div>
       } @else if (error()) {
         <div class="table-empty">{{ error() }}</div>
       } @else if (!record()) {
-        <div class="table-empty">Registration record not found.</div>
+        <div class="table-empty" i18n="@@registration.detail.notFound">Registration record not found.</div>
       } @else {
         <div class="overview-grid">
 
           <!-- Registration Info -->
           <div class="info-group">
-            <div class="info-group-title">Registration Info</div>
+            <div class="info-group-title" i18n="@@registration.detail.sectionInfo">Registration Info</div>
             <div class="kv-grid">
               <div class="kv-row">
-                <span class="kv-label">Registration ID</span>
+                <span class="kv-label" i18n="@@registration.detail.registrationId">Registration ID</span>
                 <span class="kv-value mono">{{ record()!.registrationId }}</span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Registration Number</span>
+                <span class="kv-label" i18n="@@registration.detail.registrationNumber">Registration Number</span>
                 <span class="kv-value mono">{{ record()!.registrationNumber }}</span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Vehicle</span>
+                <span class="kv-label" i18n="@@registration.detail.vehicle">Vehicle</span>
                 <span class="kv-value">{{ record()!.vehicleMake }} {{ record()!.vehicleModel }}<br><span class="mono" style="font-size:12px; color:var(--text-muted)">{{ record()!.vehicleRegistrationNumber }}</span></span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Status</span>
+                <span class="kv-label" i18n="@@registration.detail.status">Status</span>
                 <span class="kv-value">
                   <app-badge [label]="statusLabel()" [variant]="statusVariant()" />
                 </span>
@@ -91,22 +95,22 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
 
           <!-- Validity & Cost -->
           <div class="info-group">
-            <div class="info-group-title">Validity &amp; Cost</div>
+            <div class="info-group-title" i18n="@@registration.detail.sectionValidity">Validity &amp; Cost</div>
             <div class="kv-grid">
               <div class="kv-row">
-                <span class="kv-label">Valid From</span>
+                <span class="kv-label" i18n="@@registration.detail.validFrom">Valid From</span>
                 <span class="kv-value">{{ record()!.validFrom | date:'dd.MM.yyyy' }}</span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Valid To</span>
+                <span class="kv-label" i18n="@@registration.detail.validTo">Valid To</span>
                 <span class="kv-value">{{ record()!.validTo | date:'dd.MM.yyyy' }}</span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Fee</span>
+                <span class="kv-label" i18n="@@registration.detail.fee">Fee</span>
                 <span class="kv-value">{{ record()!.fee != null ? (record()!.fee | euNumber:'1.2-2') + ' €' : '—' }}</span>
               </div>
               <div class="kv-row kv-full">
-                <span class="kv-label">Notes</span>
+                <span class="kv-label" i18n="@@registration.detail.notes">Notes</span>
                 <span class="kv-value">{{ record()!.notes || '—' }}</span>
               </div>
             </div>
@@ -120,34 +124,34 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
     @if (showEdit) {
       <div class="modal-overlay" (click)="closeEdit()">
         <div class="modal-box" (click)="$event.stopPropagation()">
-          <h2 class="modal-title">Edit Registration</h2>
+          <h2 class="modal-title" i18n="@@registration.detail.editTitle">Edit Registration</h2>
           <div class="form-grid">
             <div class="form-group">
-              <label>Registration # *</label>
-              <input [(ngModel)]="editForm.registrationNumber" placeholder="PD-2025-ZG1234AB" />
+              <label i18n="@@registration.form.registrationNumberLabel">Registration # *</label>
+              <input [(ngModel)]="editForm.registrationNumber" placeholder="PD-2025-ZG1234AB" i18n-placeholder="@@registration.form.registrationNumberPlaceholder" />
             </div>
             <div class="form-group">
-              <label>Valid From *</label>
+              <label i18n="@@registration.form.validFromLabel">Valid From *</label>
               <input type="date" [(ngModel)]="editForm.validFrom" />
             </div>
             <div class="form-group">
-              <label>Valid To *</label>
+              <label i18n="@@registration.form.validToLabel">Valid To *</label>
               <input type="date" [(ngModel)]="editForm.validTo" />
             </div>
             <div class="form-group">
-              <label>Fee (EUR)</label>
+              <label i18n="@@registration.form.feeLabel">Fee (EUR)</label>
               <input type="number" [(ngModel)]="editForm.fee" min="0" />
             </div>
             <div class="form-group span-2">
-              <label>Notes</label>
-              <input [(ngModel)]="editForm.notes" placeholder="Optional notes" />
+              <label i18n="@@registration.form.notesLabel">Notes</label>
+              <input [(ngModel)]="editForm.notes" placeholder="Optional notes" i18n-placeholder="@@registration.form.notesPlaceholder" />
             </div>
           </div>
           @if (formError()) { <div class="form-error">{{ formError() }}</div> }
           <div class="modal-actions">
-            <button class="btn btn-secondary" (click)="closeEdit()">Cancel</button>
+            <button class="btn btn-secondary" (click)="closeEdit()" i18n="@@registration.form.cancel">Cancel</button>
             <button class="btn btn-primary" [disabled]="saving()" (click)="saveEdit()">
-              @if (saving()) { <span class="btn-spinner"></span> Saving… } @else { Update }
+              @if (saving()) { <span class="btn-spinner"></span><ng-container i18n="@@registration.form.saving"> Saving…</ng-container> } @else { <ng-container i18n="@@registration.form.update">Update</ng-container> }
             </button>
           </div>
         </div>

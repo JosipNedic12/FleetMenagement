@@ -28,21 +28,21 @@ type OrderStatus = 'open' | 'in_progress' | 'closed' | 'cancelled';
     <div class="page">
       <div class="page-header">
         <div>
-          <h1 class="page-title">Maintenance Orders</h1>
-          <p class="page-subtitle">{{ filtered().length }} orders · {{ openCount() }} open</p>
+          <h1 class="page-title" i18n="@@maintenance.list.title">Maintenance Orders</h1>
+          <p class="page-subtitle" i18n="@@maintenance.list.subtitle">{{ filtered().length }} orders · {{ openCount() }} open</p>
         </div>
         <div class="header-actions">
-          <input class="search-input" [ngModel]="search()" (ngModelChange)="search.set($event)" placeholder="Search vehicle, vendor…" />
-          <button *hasRole="['Admin','FleetManager']" class="btn btn-primary" (click)="openCreate()">+ New Order</button>
+          <input class="search-input" [ngModel]="search()" (ngModelChange)="search.set($event)" placeholder="Search vehicle, vendor…" i18n-placeholder="@@maintenance.list.searchPlaceholder" />
+          <button *hasRole="['Admin','FleetManager']" class="btn btn-primary" (click)="openCreate()" i18n="@@maintenance.list.btnNewOrder">+ New Order</button>
         </div>
       </div>
 
       <div class="filter-tabs">
-        <button [class.active]="filter() === 'all'"         (click)="filter.set('all')">All</button>
-        <button [class.active]="filter() === 'open'"        (click)="filter.set('open')">Open</button>
-        <button [class.active]="filter() === 'in_progress'" (click)="filter.set('in_progress')">In Progress</button>
-        <button [class.active]="filter() === 'closed'"      (click)="filter.set('closed')">Closed</button>
-        <button [class.active]="filter() === 'cancelled'"   (click)="filter.set('cancelled')">Cancelled</button>
+        <button [class.active]="filter() === 'all'"         (click)="filter.set('all')"         i18n="@@maintenance.filter.all">All</button>
+        <button [class.active]="filter() === 'open'"        (click)="filter.set('open')"        i18n="@@maintenance.filter.open">Open</button>
+        <button [class.active]="filter() === 'in_progress'" (click)="filter.set('in_progress')" i18n="@@maintenance.filter.inProgress">In Progress</button>
+        <button [class.active]="filter() === 'closed'"      (click)="filter.set('closed')"      i18n="@@maintenance.filter.closed">Closed</button>
+        <button [class.active]="filter() === 'cancelled'"   (click)="filter.set('cancelled')"   i18n="@@maintenance.filter.cancelled">Cancelled</button>
       </div>
 
       <div class="table-card">
@@ -65,22 +65,22 @@ type OrderStatus = 'open' | 'in_progress' | 'closed' | 'cancelled';
             <div class="empty-icon">
               <lucide-icon [img]="icons.WrenchIcon" [size]="44" [strokeWidth]="1.3"></lucide-icon>
             </div>
-            <h3>No maintenance orders found</h3>
-            <p>Try adjusting your search or filter, or create a new order.</p>
-            <button *hasRole="['Admin','FleetManager']" class="btn btn-primary" (click)="openCreate()">+ New Order</button>
+            <h3 i18n="@@maintenance.list.emptyTitle">No maintenance orders found</h3>
+            <p i18n="@@maintenance.list.emptyHint">Try adjusting your search or filter, or create a new order.</p>
+            <button *hasRole="['Admin','FleetManager']" class="btn btn-primary" (click)="openCreate()" i18n="@@maintenance.list.btnNewOrder">+ New Order</button>
           </div>
         } @else {
           <table class="table">
             <thead>
               <tr>
-                <th class="sortable" [class.sort-asc]="sortCol()==='reg'&&sortDir()==='asc'" [class.sort-desc]="sortCol()==='reg'&&sortDir()==='desc'" (click)="sort('reg')">Vehicle</th>
-                <th class="sortable" [class.sort-asc]="sortCol()==='vendor'&&sortDir()==='asc'" [class.sort-desc]="sortCol()==='vendor'&&sortDir()==='desc'" (click)="sort('vendor')">Vendor</th>
-                <th>Status</th>
-                <th class="sortable" [class.sort-asc]="sortCol()==='reported'&&sortDir()==='asc'" [class.sort-desc]="sortCol()==='reported'&&sortDir()==='desc'" (click)="sort('reported')">Reported</th>
-                <th>Scheduled</th>
-                <th>Items</th>
-                <th class="sortable" [class.sort-asc]="sortCol()==='cost'&&sortDir()==='asc'" [class.sort-desc]="sortCol()==='cost'&&sortDir()==='desc'" (click)="sort('cost')">Total</th>
-                <th>Actions</th>
+                <th class="sortable" [class.sort-asc]="sortCol()==='reg'&&sortDir()==='asc'" [class.sort-desc]="sortCol()==='reg'&&sortDir()==='desc'" (click)="sort('reg')" i18n="@@maintenance.col.vehicle">Vehicle</th>
+                <th class="sortable" [class.sort-asc]="sortCol()==='vendor'&&sortDir()==='asc'" [class.sort-desc]="sortCol()==='vendor'&&sortDir()==='desc'" (click)="sort('vendor')" i18n="@@maintenance.col.vendor">Vendor</th>
+                <th i18n="@@maintenance.col.status">Status</th>
+                <th class="sortable" [class.sort-asc]="sortCol()==='reported'&&sortDir()==='asc'" [class.sort-desc]="sortCol()==='reported'&&sortDir()==='desc'" (click)="sort('reported')" i18n="@@maintenance.col.reported">Reported</th>
+                <th i18n="@@maintenance.col.scheduled">Scheduled</th>
+                <th i18n="@@maintenance.col.items">Items</th>
+                <th class="sortable" [class.sort-asc]="sortCol()==='cost'&&sortDir()==='asc'" [class.sort-desc]="sortCol()==='cost'&&sortDir()==='desc'" (click)="sort('cost')" i18n="@@maintenance.col.total">Total</th>
+                <th i18n="@@maintenance.col.actions">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -96,16 +96,16 @@ type OrderStatus = 'open' | 'in_progress' | 'closed' | 'cancelled';
                   <td>{{ row.items.length }}</td>
                   <td>{{ row.totalCost != null ? (row.totalCost | euNumber:'1.2-2') + ' €' : '—' }}</td>
                   <td class="actions">
-                    <button *hasRole="['Admin','FleetManager']" class="btn-icon" title="Edit" (click)="$event.stopPropagation(); startEdit(row)"><lucide-icon [img]="icons.Pencil" [size]="15" [strokeWidth]="2"></lucide-icon></button>
+                    <button *hasRole="['Admin','FleetManager']" class="btn-icon" title="Edit" i18n-title="@@maintenance.action.edit" (click)="$event.stopPropagation(); startEdit(row)"><lucide-icon [img]="icons.Pencil" [size]="15" [strokeWidth]="2"></lucide-icon></button>
                     @if (row.status === 'open') {
-                      <button *hasRole="['Admin','FleetManager']" class="btn-icon start-btn" title="Start order" (click)="$event.stopPropagation(); startOrder(row)"><lucide-icon [img]="icons.Play" [size]="14" [strokeWidth]="2"></lucide-icon></button>
+                      <button *hasRole="['Admin','FleetManager']" class="btn-icon start-btn" title="Start order" i18n-title="@@maintenance.action.startOrder" (click)="$event.stopPropagation(); startOrder(row)"><lucide-icon [img]="icons.Play" [size]="14" [strokeWidth]="2"></lucide-icon></button>
                     }
                     @if (row.status === 'in_progress') {
-                      <button *hasRole="['Admin','FleetManager']" class="btn-icon close-btn" title="Close order" (click)="$event.stopPropagation(); openClose(row)"><lucide-icon [img]="icons.Check" [size]="15" [strokeWidth]="2.5"></lucide-icon></button>
-                      <button *hasRole="['Admin','FleetManager']" class="btn-icon warning-btn" title="Cancel order" (click)="$event.stopPropagation(); openCancel(row)"><lucide-icon [img]="icons.X" [size]="15" [strokeWidth]="2.5"></lucide-icon></button>
+                      <button *hasRole="['Admin','FleetManager']" class="btn-icon close-btn" title="Close order" i18n-title="@@maintenance.action.closeOrder" (click)="$event.stopPropagation(); openClose(row)"><lucide-icon [img]="icons.Check" [size]="15" [strokeWidth]="2.5"></lucide-icon></button>
+                      <button *hasRole="['Admin','FleetManager']" class="btn-icon warning-btn" title="Cancel order" i18n-title="@@maintenance.action.cancelOrder" (click)="$event.stopPropagation(); openCancel(row)"><lucide-icon [img]="icons.X" [size]="15" [strokeWidth]="2.5"></lucide-icon></button>
                     }
                     @if (row.status === 'open' || row.status === 'in_progress') {
-                      <button *hasRole="['Admin','FleetManager']" class="btn-icon" title="Add item" (click)="$event.stopPropagation(); openAddItem(row)"><lucide-icon [img]="icons.Plus" [size]="15" [strokeWidth]="2.5"></lucide-icon></button>
+                      <button *hasRole="['Admin','FleetManager']" class="btn-icon" title="Add item" i18n-title="@@maintenance.action.addItem" (click)="$event.stopPropagation(); openAddItem(row)"><lucide-icon [img]="icons.Plus" [size]="15" [strokeWidth]="2.5"></lucide-icon></button>
                     }
                   </td>
                 </tr>
@@ -117,7 +117,7 @@ type OrderStatus = 'open' | 'in_progress' | 'closed' | 'cancelled';
                           <span class="item-chip">
                             {{ item.maintenanceTypeName }}
                             ({{ item.totalCost | euNumber:'1.0-0' }} €)
-                            <button *hasRole="['Admin','FleetManager']" class="item-del" title="Remove" (click)="$event.stopPropagation(); deleteItem(item)">×</button>
+                            <button *hasRole="['Admin','FleetManager']" class="item-del" title="Remove" i18n-title="@@maintenance.action.removeItem" (click)="$event.stopPropagation(); deleteItem(item)">×</button>
                           </span>
                         }
                       </div>
@@ -135,47 +135,47 @@ type OrderStatus = 'open' | 'in_progress' | 'closed' | 'cancelled';
     @if (showCreate) {
       <div class="modal-overlay" (click)="closeCreate()">
         <div class="modal-box" (click)="$event.stopPropagation()">
-          <h2 class="modal-title">New Maintenance Order</h2>
+          <h2 class="modal-title" i18n="@@maintenance.create.title">New Maintenance Order</h2>
           <div class="form-grid">
             <div class="form-group">
-              <label>Vehicle *</label>
+              <label i18n="@@maintenance.form.vehicle">Vehicle *</label>
               <app-search-select
                 [items]="vehicles()"
                 [displayFn]="vehicleDisplayFn"
                 valueField="vehicleId"
-                placeholder="Select vehicle…"
+                placeholder="Select vehicle…" i18n-placeholder="@@maintenance.form.vehiclePlaceholder"
                 [(ngModel)]="createForm.vehicleId"
                 (ngModelChange)="onCreateVehicleChange($event)">
               </app-search-select>
             </div>
             <div class="form-group">
-              <label>Vendor *</label>
+              <label i18n="@@maintenance.form.vendor">Vendor *</label>
               <app-search-select
                 [items]="vendors()"
                 [displayFn]="vendorDisplayFn"
                 valueField="vendorId"
-                placeholder="Select vendor…"
+                placeholder="Select vendor…" i18n-placeholder="@@maintenance.form.vendorPlaceholder"
                 [(ngModel)]="createForm.vendorId">
               </app-search-select>
             </div>
             <div class="form-group">
-              <label>Scheduled At *</label>
+              <label i18n="@@maintenance.form.scheduledAt">Scheduled At *</label>
               <input type="datetime-local" [(ngModel)]="createForm.scheduledAt" />
             </div>
             <div class="form-group">
-              <label>Odometer (km)</label>
+              <label i18n="@@maintenance.form.odometer">Odometer (km)</label>
               <input type="number" [(ngModel)]="createForm.odometerKm" [readonly]="true" />
             </div>
             <div class="form-group span-2">
-              <label>Description *</label>
-              <textarea [(ngModel)]="createForm.description" rows="3" placeholder="Describe the maintenance needed…"></textarea>
+              <label i18n="@@maintenance.form.description">Description *</label>
+              <textarea [(ngModel)]="createForm.description" rows="3" placeholder="Describe the maintenance needed…" i18n-placeholder="@@maintenance.form.descriptionPlaceholder"></textarea>
             </div>
           </div>
           @if (formError()) { <div class="form-error">{{ formError() }}</div> }
           <div class="modal-actions">
-            <button class="btn btn-secondary" (click)="closeCreate()">Cancel</button>
+            <button class="btn btn-secondary" (click)="closeCreate()" i18n="@@maintenance.btn.cancel">Cancel</button>
             <button class="btn btn-primary" [disabled]="saving()" (click)="saveCreate()">
-              @if (saving()) { <span class="btn-spinner"></span> Saving… } @else { Create Order }
+              @if (saving()) { <span class="btn-spinner"></span><ng-container i18n="@@maintenance.btn.saving"> Saving…</ng-container> } @else { <ng-container i18n="@@maintenance.create.btnSubmit">Create Order</ng-container> }
             </button>
           </div>
         </div>
@@ -186,32 +186,33 @@ type OrderStatus = 'open' | 'in_progress' | 'closed' | 'cancelled';
     @if (showEdit) {
       <div class="modal-overlay" (click)="closeEdit()">
         <div class="modal-box" (click)="$event.stopPropagation()">
-          <h2 class="modal-title">Edit Order</h2>
+          <h2 class="modal-title" i18n="@@maintenance.edit.title">Edit Order</h2>
           <div class="form-grid">
             <div class="form-group">
-              <label>Vendor</label>
+              <label i18n="@@maintenance.form.vendorOptional">Vendor</label>
               <app-search-select
                 [items]="vendors()"
                 [displayFn]="vendorDisplayFn"
                 valueField="vendorId"
                 placeholder="No vendor"
+                i18n-placeholder="@@maintenance.form.noVendor"
                 [(ngModel)]="editForm.vendorId">
               </app-search-select>
             </div>
             <div class="form-group">
-              <label>Scheduled At</label>
+              <label i18n="@@maintenance.form.scheduledAtOptional">Scheduled At</label>
               <input type="datetime-local" [(ngModel)]="editForm.scheduledAt" />
             </div>
             <div class="form-group span-2">
-              <label>Description</label>
+              <label i18n="@@maintenance.form.descriptionOptional">Description</label>
               <textarea [(ngModel)]="editForm.description" rows="3"></textarea>
             </div>
           </div>
           @if (formError()) { <div class="form-error">{{ formError() }}</div> }
           <div class="modal-actions">
-            <button class="btn btn-secondary" (click)="closeEdit()">Cancel</button>
+            <button class="btn btn-secondary" (click)="closeEdit()" i18n="@@maintenance.btn.cancel">Cancel</button>
             <button class="btn btn-primary" [disabled]="saving()" (click)="saveEdit()">
-              @if (saving()) { <span class="btn-spinner"></span> Saving… } @else { Update }
+              @if (saving()) { <span class="btn-spinner"></span><ng-container i18n="@@maintenance.btn.saving"> Saving…</ng-container> } @else { <ng-container i18n="@@maintenance.btn.update">Update</ng-container> }
             </button>
           </div>
         </div>
@@ -222,15 +223,15 @@ type OrderStatus = 'open' | 'in_progress' | 'closed' | 'cancelled';
     @if (showClose) {
       <div class="modal-overlay" (click)="showClose = false">
         <div class="modal-box" style="max-width:360px" (click)="$event.stopPropagation()">
-          <h2 class="modal-title">Close Order</h2>
+          <h2 class="modal-title" i18n="@@maintenance.close.title">Close Order</h2>
           <div class="form-group">
-            <label>Odometer at close (km)</label>
+            <label i18n="@@maintenance.form.odometerAtClose">Odometer at close (km)</label>
             <input type="number" [(ngModel)]="closeForm.odometerKm" min="0" />
           </div>
           <div class="modal-actions">
-            <button class="btn btn-secondary" (click)="showClose = false">Cancel</button>
+            <button class="btn btn-secondary" (click)="showClose = false" i18n="@@maintenance.btn.cancel">Cancel</button>
             <button class="btn btn-primary" [disabled]="saving()" (click)="saveClose()">
-              @if (saving()) { <span class="btn-spinner"></span> Saving… } @else { Close Order }
+              @if (saving()) { <span class="btn-spinner"></span><ng-container i18n="@@maintenance.btn.saving"> Saving…</ng-container> } @else { <ng-container i18n="@@maintenance.close.btnSubmit">Close Order</ng-container> }
             </button>
           </div>
         </div>
@@ -241,15 +242,15 @@ type OrderStatus = 'open' | 'in_progress' | 'closed' | 'cancelled';
     @if (showCancel) {
       <div class="modal-overlay" (click)="showCancel = false">
         <div class="modal-box" style="max-width:360px" (click)="$event.stopPropagation()">
-          <h2 class="modal-title">Cancel Order</h2>
+          <h2 class="modal-title" i18n="@@maintenance.cancel.title">Cancel Order</h2>
           <div class="form-group">
-            <label>Reason *</label>
-            <textarea [(ngModel)]="cancelForm.cancelReason" rows="3" placeholder="Explain why the order is cancelled…"></textarea>
+            <label i18n="@@maintenance.form.cancelReason">Reason *</label>
+            <textarea [(ngModel)]="cancelForm.cancelReason" rows="3" placeholder="Explain why the order is cancelled…" i18n-placeholder="@@maintenance.form.cancelReasonPlaceholder"></textarea>
           </div>
           <div class="modal-actions">
-            <button class="btn btn-secondary" (click)="showCancel = false">Back</button>
+            <button class="btn btn-secondary" (click)="showCancel = false" i18n="@@maintenance.btn.back">Back</button>
             <button class="btn btn-danger" [disabled]="saving()" (click)="saveCancel()">
-              @if (saving()) { <span class="btn-spinner"></span> Saving… } @else { Cancel Order }
+              @if (saving()) { <span class="btn-spinner"></span><ng-container i18n="@@maintenance.btn.saving"> Saving…</ng-container> } @else { <ng-container i18n="@@maintenance.cancel.btnSubmit">Cancel Order</ng-container> }
             </button>
           </div>
         </div>
@@ -260,34 +261,34 @@ type OrderStatus = 'open' | 'in_progress' | 'closed' | 'cancelled';
     @if (showAddItem) {
       <div class="modal-overlay" (click)="showAddItem = false">
         <div class="modal-box" style="max-width:420px" (click)="$event.stopPropagation()">
-          <h2 class="modal-title">Add Maintenance Item</h2>
+          <h2 class="modal-title" i18n="@@maintenance.addItem.title">Add Maintenance Item</h2>
           <div class="form-grid" style="grid-template-columns:1fr">
             <div class="form-group">
-              <label>Type *</label>
+              <label i18n="@@maintenance.form.type">Type *</label>
               <select [(ngModel)]="itemForm.maintenanceTypeId">
-                <option [ngValue]="0">Select type…</option>
+                <option [ngValue]="0" i18n="@@maintenance.form.typePlaceholder">Select type…</option>
                 @for (t of maintenanceTypes(); track t.maintenanceTypeId) {
                   <option [ngValue]="t.maintenanceTypeId">{{ t.name }}</option>
                 }
               </select>
             </div>
             <div class="form-group">
-              <label>Parts Cost (EUR)</label>
+              <label i18n="@@maintenance.form.partsCost">Parts Cost (EUR)</label>
               <input type="number" [(ngModel)]="itemForm.partsCost" min="0" step="0.01" />
             </div>
             <div class="form-group">
-              <label>Labor Cost (EUR)</label>
+              <label i18n="@@maintenance.form.laborCost">Labor Cost (EUR)</label>
               <input type="number" [(ngModel)]="itemForm.laborCost" min="0" step="0.01" />
             </div>
             <div class="form-group">
-              <label>Notes</label>
+              <label i18n="@@maintenance.form.notes">Notes</label>
               <input [(ngModel)]="itemForm.notes" />
             </div>
           </div>
           <div class="modal-actions">
-            <button class="btn btn-secondary" (click)="showAddItem = false">Cancel</button>
+            <button class="btn btn-secondary" (click)="showAddItem = false" i18n="@@maintenance.btn.cancel">Cancel</button>
             <button class="btn btn-primary" [disabled]="saving()" (click)="saveAddItem()">
-              @if (saving()) { <span class="btn-spinner"></span> Saving… } @else { Add Item }
+              @if (saving()) { <span class="btn-spinner"></span><ng-container i18n="@@maintenance.btn.saving"> Saving…</ng-container> } @else { <ng-container i18n="@@maintenance.addItem.btnSubmit">Add Item</ng-container> }
             </button>
           </div>
         </div>
@@ -297,7 +298,9 @@ type OrderStatus = 'open' | 'in_progress' | 'closed' | 'cancelled';
     <app-confirm-modal
       [visible]="!!deleteTarget"
       title="Delete Order"
+      i18n-title="@@maintenance.delete.title"
       message="Delete this maintenance order? This cannot be undone."
+      i18n-message="@@maintenance.delete.message"
       (confirmed)="doDelete()"
       (cancelled)="deleteTarget = null"
     />

@@ -19,19 +19,19 @@ import { SearchSelectComponent } from '../../../shared/components/search-select/
     <div class="page">
       <div class="page-header">
         <div>
-          <h1 class="page-title">Drivers</h1>
-          <p class="page-subtitle">{{ filtered().length }} drivers · {{ expiredCount() }} expired licenses</p>
+          <h1 class="page-title" i18n="@@drivers.list.title">Drivers</h1>
+          <p class="page-subtitle" i18n="@@drivers.list.subtitle">{{ filtered().length }} drivers · {{ expiredCount() }} expired licenses</p>
         </div>
         <div class="header-actions">
-          <input class="search-input" [ngModel]="search()" (ngModelChange)="search.set($event)" placeholder="Search name, license#…" />
-          <button *hasRole="['Admin','FleetManager']" class="btn btn-primary" (click)="openCreate()">+ Add Driver</button>
+          <input class="search-input" [ngModel]="search()" (ngModelChange)="search.set($event)" placeholder="Search name, license#…" i18n-placeholder="@@drivers.list.searchPlaceholder" />
+          <button *hasRole="['Admin','FleetManager']" class="btn btn-primary" (click)="openCreate()" i18n="@@drivers.list.addDriver">+ Add Driver</button>
         </div>
       </div>
 
       <div class="filter-tabs">
-        <button [class.active]="filter() === 'all'"     (click)="filter.set('all')">All</button>
-        <button [class.active]="filter() === 'valid'"   (click)="filter.set('valid')">Valid License</button>
-        <button [class.active]="filter() === 'expired'" (click)="filter.set('expired')">Expired</button>
+        <button [class.active]="filter() === 'all'"     (click)="filter.set('all')" i18n="@@drivers.list.filterAll">All</button>
+        <button [class.active]="filter() === 'valid'"   (click)="filter.set('valid')" i18n="@@drivers.list.filterValid">Valid License</button>
+        <button [class.active]="filter() === 'expired'" (click)="filter.set('expired')" i18n="@@drivers.list.filterExpired">Expired</button>
       </div>
 
       <div class="table-card">
@@ -52,20 +52,20 @@ import { SearchSelectComponent } from '../../../shared/components/search-select/
             <div class="empty-icon">
               <lucide-icon [img]="icons.UserRoundIcon" [size]="44" [strokeWidth]="1.3"></lucide-icon>
             </div>
-            <h3>No drivers found</h3>
-            <p>Try adjusting your search or filter, or add your first driver.</p>
-            <button *hasRole="['Admin','FleetManager']" class="btn btn-primary" (click)="openCreate()">+ Add Driver</button>
+            <h3 i18n="@@drivers.list.empty.title">No drivers found</h3>
+            <p i18n="@@drivers.list.empty.hint">Try adjusting your search or filter, or add your first driver.</p>
+            <button *hasRole="['Admin','FleetManager']" class="btn btn-primary" (click)="openCreate()" i18n="@@drivers.list.addDriver">+ Add Driver</button>
           </div>
         } @else {
           <table class="table">
             <thead>
               <tr>
-                <th class="sortable" [class.sort-asc]="sortCol()==='name'&&sortDir()==='asc'" [class.sort-desc]="sortCol()==='name'&&sortDir()==='desc'" (click)="sort('name')">Name</th>
-                <th class="sortable" [class.sort-asc]="sortCol()==='dept'&&sortDir()==='asc'" [class.sort-desc]="sortCol()==='dept'&&sortDir()==='desc'" (click)="sort('dept')">Department</th>
-                <th>License #</th>
-                <th class="sortable" [class.sort-asc]="sortCol()==='expiry'&&sortDir()==='asc'" [class.sort-desc]="sortCol()==='expiry'&&sortDir()==='desc'" (click)="sort('expiry')">Expiry</th>
-                <th>Categories</th>
-                <th>Actions</th>
+                <th class="sortable" [class.sort-asc]="sortCol()==='name'&&sortDir()==='asc'" [class.sort-desc]="sortCol()==='name'&&sortDir()==='desc'" (click)="sort('name')" i18n="@@drivers.list.col.name">Name</th>
+                <th class="sortable" [class.sort-asc]="sortCol()==='dept'&&sortDir()==='asc'" [class.sort-desc]="sortCol()==='dept'&&sortDir()==='desc'" (click)="sort('dept')" i18n="@@drivers.list.col.department">Department</th>
+                <th i18n="@@drivers.list.col.licenseNumber">License #</th>
+                <th class="sortable" [class.sort-asc]="sortCol()==='expiry'&&sortDir()==='asc'" [class.sort-desc]="sortCol()==='expiry'&&sortDir()==='desc'" (click)="sort('expiry')" i18n="@@drivers.list.col.expiry">Expiry</th>
+                <th i18n="@@drivers.list.col.categories">Categories</th>
+                <th i18n="@@drivers.list.col.actions">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -88,9 +88,9 @@ import { SearchSelectComponent } from '../../../shared/components/search-select/
                     }
                   </td>
                   <td class="actions">
-                    <a [routerLink]="['/drivers', row.driverId]" class="btn-icon" title="View"><lucide-icon [img]="icons.Eye" [size]="15" [strokeWidth]="2"></lucide-icon></a>
-                    <button *hasRole="['Admin','FleetManager']" class="btn-icon" title="Edit" (click)="startEdit(row)"><lucide-icon [img]="icons.Pencil" [size]="15" [strokeWidth]="2"></lucide-icon></button>
-                    <button *hasRole="'Admin'" class="btn-icon danger" title="Delete" (click)="confirmDelete(row)"><lucide-icon [img]="icons.Trash2" [size]="15" [strokeWidth]="2"></lucide-icon></button>
+                    <a [routerLink]="['/drivers', row.driverId]" class="btn-icon" title="View" i18n-title="@@drivers.list.action.view"><lucide-icon [img]="icons.Eye" [size]="15" [strokeWidth]="2"></lucide-icon></a>
+                    <button *hasRole="['Admin','FleetManager']" class="btn-icon" title="Edit" i18n-title="@@drivers.list.action.edit" (click)="startEdit(row)"><lucide-icon [img]="icons.Pencil" [size]="15" [strokeWidth]="2"></lucide-icon></button>
+                    <button *hasRole="'Admin'" class="btn-icon danger" title="Delete" i18n-title="@@drivers.list.action.delete" (click)="confirmDelete(row)"><lucide-icon [img]="icons.Trash2" [size]="15" [strokeWidth]="2"></lucide-icon></button>
                   </td>
                 </tr>
               }
@@ -104,28 +104,29 @@ import { SearchSelectComponent } from '../../../shared/components/search-select/
     @if (showCreate) {
       <div class="modal-overlay" (click)="closeCreate()">
         <div class="modal-box" (click)="$event.stopPropagation()">
-          <h2 class="modal-title">Add Driver</h2>
+          <h2 class="modal-title" i18n="@@drivers.create.title">Add Driver</h2>
           <div class="form-grid">
             <div class="form-group span-2">
-              <label>Employee *</label>
+              <label i18n="@@drivers.create.employeeLabel">Employee *</label>
               <app-search-select
                 [items]="availableEmployees()"
                 [displayFn]="employeeDisplayFn"
                 valueField="employeeId"
                 placeholder="Select employee…"
+                i18n-placeholder="@@drivers.create.employeePlaceholder"
                 [(ngModel)]="createForm.employeeId">
               </app-search-select>
             </div>
             <div class="form-group">
-              <label>License # *</label>
+              <label i18n="@@drivers.create.licenseNumberLabel">License # *</label>
               <input [(ngModel)]="createForm.licenseNumber" placeholder="HR-1234567" />
             </div>
             <div class="form-group">
-              <label>License Expiry *</label>
+              <label i18n="@@drivers.create.licenseExpiryLabel">License Expiry *</label>
               <input type="date" [(ngModel)]="createForm.licenseExpiry" />
             </div>
             <div class="form-group span-2">
-              <label>License Categories</label>
+              <label i18n="@@drivers.create.licenseCategoriesLabel">License Categories</label>
               <div class="checkbox-group">
                 @for (cat of licenseCategories(); track cat.licenseCategoryId) {
                   <label class="checkbox-label">
@@ -138,15 +139,15 @@ import { SearchSelectComponent } from '../../../shared/components/search-select/
               </div>
             </div>
             <div class="form-group span-2">
-              <label>Notes</label>
+              <label i18n="@@drivers.create.notesLabel">Notes</label>
               <textarea [(ngModel)]="createForm.notes" rows="2"></textarea>
             </div>
           </div>
           @if (formError()) { <div class="form-error">{{ formError() }}</div> }
           <div class="modal-actions">
-            <button class="btn btn-secondary" (click)="closeCreate()">Cancel</button>
+            <button class="btn btn-secondary" (click)="closeCreate()" i18n="@@drivers.modal.cancel">Cancel</button>
             <button class="btn btn-primary" [disabled]="saving()" (click)="saveCreate()">
-              @if (saving()) { <span class="btn-spinner"></span> Saving… } @else { Add Driver }
+              @if (saving()) { <span class="btn-spinner"></span><ng-container i18n="@@drivers.modal.saving">Saving…</ng-container> } @else { <ng-container i18n="@@drivers.create.submit">Add Driver</ng-container> }
             </button>
           </div>
         </div>
@@ -157,18 +158,18 @@ import { SearchSelectComponent } from '../../../shared/components/search-select/
     @if (showEdit) {
       <div class="modal-overlay" (click)="closeEdit()">
         <div class="modal-box" (click)="$event.stopPropagation()">
-          <h2 class="modal-title">Edit Driver</h2>
+          <h2 class="modal-title" i18n="@@drivers.edit.title">Edit Driver</h2>
           <div class="form-grid">
             <div class="form-group">
-              <label>License #</label>
+              <label i18n="@@drivers.create.licenseNumberLabel">License #</label>
               <input [(ngModel)]="editForm.licenseNumber" />
             </div>
             <div class="form-group">
-              <label>License Expiry</label>
+              <label i18n="@@drivers.create.licenseExpiryLabel">License Expiry</label>
               <input type="date" [(ngModel)]="editForm.licenseExpiry" />
             </div>
             <div class="form-group span-2">
-              <label>License Categories</label>
+              <label i18n="@@drivers.create.licenseCategoriesLabel">License Categories</label>
               <div class="checkbox-group">
                 @for (cat of licenseCategories(); track cat.licenseCategoryId) {
                   <label class="checkbox-label">
@@ -181,15 +182,15 @@ import { SearchSelectComponent } from '../../../shared/components/search-select/
               </div>
             </div>
             <div class="form-group span-2">
-              <label>Notes</label>
+              <label i18n="@@drivers.create.notesLabel">Notes</label>
               <textarea [(ngModel)]="editForm.notes" rows="2"></textarea>
             </div>
           </div>
           @if (formError()) { <div class="form-error">{{ formError() }}</div> }
           <div class="modal-actions">
-            <button class="btn btn-secondary" (click)="closeEdit()">Cancel</button>
+            <button class="btn btn-secondary" (click)="closeEdit()" i18n="@@drivers.modal.cancel">Cancel</button>
             <button class="btn btn-primary" [disabled]="saving()" (click)="saveEdit()">
-              @if (saving()) { <span class="btn-spinner"></span> Saving… } @else { Update }
+              @if (saving()) { <span class="btn-spinner"></span><ng-container i18n="@@drivers.modal.saving">Saving…</ng-container> } @else { <ng-container i18n="@@drivers.edit.submit">Update</ng-container> }
             </button>
           </div>
         </div>
@@ -199,7 +200,9 @@ import { SearchSelectComponent } from '../../../shared/components/search-select/
     <app-confirm-modal
       [visible]="!!deleteTarget"
       title="Delete Driver"
+      i18n-title="@@drivers.delete.title"
       message="Delete this driver profile? This cannot be undone."
+      i18n-message="@@drivers.delete.message"
       (confirmed)="doDelete()"
       (cancelled)="deleteTarget = null"
     />

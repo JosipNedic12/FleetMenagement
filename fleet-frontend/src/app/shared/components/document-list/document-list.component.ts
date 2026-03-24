@@ -13,25 +13,25 @@ import { Document } from '../../../core/models/models';
   template: `
     <app-confirm-modal
       [visible]="showConfirm()"
-      title="Delete document"
-      message="This will permanently remove the file. This action cannot be undone."
+      [title]="deleteDocTitle"
+      [message]="deleteDocMessage"
       (confirmed)="confirmDelete()"
       (cancelled)="showConfirm.set(false)"
     />
 
     @if (loading()) {
-      <div class="table-loading">Loading documents…</div>
+      <div class="table-loading" i18n="@@shared.documentList.loading">Loading documents…</div>
     } @else if (documents().length === 0) {
-      <div class="table-empty">No documents attached.</div>
+      <div class="table-empty" i18n="@@shared.documentList.empty">No documents attached.</div>
     } @else {
       <table class="table">
         <thead>
           <tr>
-            <th>File Name</th>
-            <th>Category</th>
-            <th>Size</th>
-            <th>Uploaded</th>
-            <th>Actions</th>
+            <th i18n="@@shared.documentList.colFileName">File Name</th>
+            <th i18n="@@shared.documentList.colCategory">Category</th>
+            <th i18n="@@shared.documentList.colSize">Size</th>
+            <th i18n="@@shared.documentList.colUploaded">Uploaded</th>
+            <th i18n="@@shared.documentList.colActions">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -54,10 +54,10 @@ import { Document } from '../../../core/models/models';
               <td class="muted">{{ doc.uploadedAt | date:'dd.MM.yyyy' }}</td>
               <td>
                 <div class="action-btns">
-                  <button class="action-btn" title="Download" (click)="download(doc.documentId)">
+                  <button class="action-btn" [title]="downloadTitle" (click)="download(doc.documentId)">
                     <lucide-icon [img]="icons.Download" [size]="14" [strokeWidth]="2"></lucide-icon>
                   </button>
-                  <button class="action-btn danger" title="Delete" (click)="promptDelete(doc.documentId)">
+                  <button class="action-btn danger" [title]="deleteTitle" (click)="promptDelete(doc.documentId)">
                     <lucide-icon [img]="icons.Trash2" [size]="14" [strokeWidth]="2"></lucide-icon>
                   </button>
                 </div>
@@ -94,6 +94,11 @@ export class DocumentListComponent implements OnInit {
   @Input() entityId = 0;
 
   readonly icons = { File, FileText, Image, Download, Trash2 };
+
+  readonly deleteDocTitle   = $localize`:@@shared.documentList.confirmDeleteTitle:Delete document`;
+  readonly deleteDocMessage = $localize`:@@shared.documentList.confirmDeleteMessage:This will permanently remove the file. This action cannot be undone.`;
+  readonly downloadTitle    = $localize`:@@shared.documentList.downloadTitle:Download`;
+  readonly deleteTitle      = $localize`:@@shared.documentList.deleteTitle:Delete`;
 
   documents = signal<Document[]>([]);
   loading = signal(true);

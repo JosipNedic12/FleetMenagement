@@ -66,66 +66,66 @@ interface ComplianceRow {
     <div class="page">
       <div class="page-header">
         <div>
-          <h1 class="page-title">Reports</h1>
-          <p class="page-subtitle">Fleet analytics and compliance overview</p>
+          <h1 class="page-title" i18n="@@reports.title">Reports</h1>
+          <p class="page-subtitle" i18n="@@reports.subtitle">Fleet analytics and compliance overview</p>
         </div>
       </div>
 
       <div class="tabs">
         <button class="tab" [class.active]="activeTab() === 'fuel'" (click)="setTab('fuel')">
-          <lucide-icon [img]="icons.Fuel" [size]="14" [strokeWidth]="2"></lucide-icon> Fuel Cost
+          <lucide-icon [img]="icons.Fuel" [size]="14" [strokeWidth]="2"></lucide-icon> <ng-container i18n="@@reports.tab.fuel">Fuel Cost</ng-container>
         </button>
         <button class="tab" [class.active]="activeTab() === 'maintenance'" (click)="setTab('maintenance')">
-          <lucide-icon [img]="icons.Wrench" [size]="14" [strokeWidth]="2"></lucide-icon> Maintenance Spend
+          <lucide-icon [img]="icons.Wrench" [size]="14" [strokeWidth]="2"></lucide-icon> <ng-container i18n="@@reports.tab.maintenance">Maintenance Spend</ng-container>
         </button>
         <button class="tab" [class.active]="activeTab() === 'utilization'" (click)="setTab('utilization')">
-          <lucide-icon [img]="icons.MapPin" [size]="14" [strokeWidth]="2"></lucide-icon> Fleet Utilization
+          <lucide-icon [img]="icons.MapPin" [size]="14" [strokeWidth]="2"></lucide-icon> <ng-container i18n="@@reports.tab.utilization">Fleet Utilization</ng-container>
         </button>
         <button class="tab" [class.active]="activeTab() === 'compliance'" (click)="setTab('compliance')">
-          <lucide-icon [img]="icons.CalendarDays" [size]="14" [strokeWidth]="2"></lucide-icon> Compliance Expiry
+          <lucide-icon [img]="icons.CalendarDays" [size]="14" [strokeWidth]="2"></lucide-icon> <ng-container i18n="@@reports.tab.compliance">Compliance Expiry</ng-container>
         </button>
       </div>
 
       @if (loading()) {
-        <div class="loading">Loading report data…</div>
+        <div class="loading" i18n="@@reports.loading">Loading report data…</div>
       } @else {
 
         <!-- FUEL REPORT -->
         @if (activeTab() === 'fuel') {
           <div class="report-section">
             <div class="section-header">
-              <h2 class="section-title">Fuel Cost Report</h2>
+              <h2 class="section-title" i18n="@@reports.fuel.sectionTitle">Fuel Cost Report</h2>
               <div class="export-actions">
                 <button class="btn-export" (click)="exportFuelCsv()">
-                  <lucide-icon [img]="icons.Download" [size]="12" [strokeWidth]="2"></lucide-icon> CSV
+                  <lucide-icon [img]="icons.Download" [size]="12" [strokeWidth]="2"></lucide-icon> <ng-container i18n="@@reports.export.csv">CSV</ng-container>
                 </button>
                 <button class="btn-export" (click)="exportFuelPdf()">
-                  <lucide-icon [img]="icons.FileText" [size]="12" [strokeWidth]="2"></lucide-icon> PDF
+                  <lucide-icon [img]="icons.FileText" [size]="12" [strokeWidth]="2"></lucide-icon> <ng-container i18n="@@reports.export.pdf">PDF</ng-container>
                 </button>
               </div>
             </div>
             <div class="report-summary">
               <div class="summary-card">
                 <span class="s-value">{{ totalFuelCost() | number:'1.2-2' }} €</span>
-                <span class="s-label">Total Fuel Spend</span>
+                <span class="s-label" i18n="@@reports.fuel.totalSpend">Total Fuel Spend</span>
               </div>
               <div class="summary-card">
                 <span class="s-value">{{ totalFuelLiters() | number:'1.0-0' }} L</span>
-                <span class="s-label">Total Liters</span>
+                <span class="s-label" i18n="@@reports.fuel.totalLiters">Total Liters</span>
               </div>
               <div class="summary-card">
                 <span class="s-value">{{ avgCostPerLiter() | number:'1.3-3' }} €/L</span>
-                <span class="s-label">Avg Price per Liter</span>
+                <span class="s-label" i18n="@@reports.fuel.avgPricePerLiter">Avg Price per Liter</span>
               </div>
             </div>
             <table class="report-table">
               <thead>
                 <tr>
-                  <th>Vehicle</th>
-                  <th class="num">Transactions</th>
-                  <th class="num">Liters</th>
-                  <th class="num">Total Cost (€)</th>
-                  <th class="num">Avg per Fill (€)</th>
+                  <th i18n="@@reports.col.vehicle">Vehicle</th>
+                  <th class="num" i18n="@@reports.fuel.col.transactions">Transactions</th>
+                  <th class="num" i18n="@@reports.fuel.col.liters">Liters</th>
+                  <th class="num" i18n="@@reports.fuel.col.totalCost">Total Cost (€)</th>
+                  <th class="num" i18n="@@reports.fuel.col.avgPerFill">Avg per Fill (€)</th>
                   @for (m of fuelMonths(); track m) {
                     <th class="num">{{ m }}</th>
                   }
@@ -156,43 +156,43 @@ interface ComplianceRow {
         @if (activeTab() === 'maintenance') {
           <div class="report-section">
             <div class="section-header">
-              <h2 class="section-title">Maintenance Spend Report</h2>
+              <h2 class="section-title" i18n="@@reports.maintenance.sectionTitle">Maintenance Spend Report</h2>
               <div class="export-actions">
                 <button class="btn-export" (click)="exportMaintenanceCsv()">
-                  <lucide-icon [img]="icons.Download" [size]="12" [strokeWidth]="2"></lucide-icon> CSV
+                  <lucide-icon [img]="icons.Download" [size]="12" [strokeWidth]="2"></lucide-icon> <ng-container i18n="@@reports.export.csv">CSV</ng-container>
                 </button>
                 <button class="btn-export" (click)="exportMaintenancePdf()">
-                  <lucide-icon [img]="icons.FileText" [size]="12" [strokeWidth]="2"></lucide-icon> PDF
+                  <lucide-icon [img]="icons.FileText" [size]="12" [strokeWidth]="2"></lucide-icon> <ng-container i18n="@@reports.export.pdf">PDF</ng-container>
                 </button>
               </div>
             </div>
             <div class="report-summary">
               <div class="summary-card">
                 <span class="s-value">{{ totalMaintCost() | number:'1.2-2' }} €</span>
-                <span class="s-label">Total Maintenance Spend</span>
+                <span class="s-label" i18n="@@reports.maintenance.totalSpend">Total Maintenance Spend</span>
               </div>
               <div class="summary-card">
                 <span class="s-value">{{ totalMaintOrders() }}</span>
-                <span class="s-label">Closed Orders</span>
+                <span class="s-label" i18n="@@reports.maintenance.closedOrders">Closed Orders</span>
               </div>
               <div class="summary-card">
                 <span class="s-value">{{ totalMaintPartsCost() | number:'1.2-2' }} €</span>
-                <span class="s-label">Parts Cost</span>
+                <span class="s-label" i18n="@@reports.maintenance.partsCost">Parts Cost</span>
               </div>
               <div class="summary-card">
                 <span class="s-value">{{ totalMaintLaborCost() | number:'1.2-2' }} €</span>
-                <span class="s-label">Labor Cost</span>
+                <span class="s-label" i18n="@@reports.maintenance.laborCost">Labor Cost</span>
               </div>
             </div>
             <table class="report-table">
               <thead>
                 <tr>
-                  <th>Vehicle</th>
-                  <th class="num">Orders</th>
-                  <th class="num">Parts (€)</th>
-                  <th class="num">Labor (€)</th>
-                  <th class="num">Total (€)</th>
-                  <th class="num">Avg per Order (€)</th>
+                  <th i18n="@@reports.col.vehicle">Vehicle</th>
+                  <th class="num" i18n="@@reports.maintenance.col.orders">Orders</th>
+                  <th class="num" i18n="@@reports.maintenance.col.parts">Parts (€)</th>
+                  <th class="num" i18n="@@reports.maintenance.col.labor">Labor (€)</th>
+                  <th class="num" i18n="@@reports.maintenance.col.total">Total (€)</th>
+                  <th class="num" i18n="@@reports.maintenance.col.avgPerOrder">Avg per Order (€)</th>
                 </tr>
               </thead>
               <tbody>
@@ -218,38 +218,38 @@ interface ComplianceRow {
         @if (activeTab() === 'utilization') {
           <div class="report-section">
             <div class="section-header">
-              <h2 class="section-title">Fleet Utilization Report</h2>
+              <h2 class="section-title" i18n="@@reports.utilization.sectionTitle">Fleet Utilization Report</h2>
               <div class="export-actions">
                 <button class="btn-export" (click)="exportUtilizationCsv()">
-                  <lucide-icon [img]="icons.Download" [size]="12" [strokeWidth]="2"></lucide-icon> CSV
+                  <lucide-icon [img]="icons.Download" [size]="12" [strokeWidth]="2"></lucide-icon> <ng-container i18n="@@reports.export.csv">CSV</ng-container>
                 </button>
                 <button class="btn-export" (click)="exportUtilizationPdf()">
-                  <lucide-icon [img]="icons.FileText" [size]="12" [strokeWidth]="2"></lucide-icon> PDF
+                  <lucide-icon [img]="icons.FileText" [size]="12" [strokeWidth]="2"></lucide-icon> <ng-container i18n="@@reports.export.pdf">PDF</ng-container>
                 </button>
               </div>
             </div>
             <div class="report-summary">
               <div class="summary-card">
                 <span class="s-value">{{ activeVehicleCount() }}</span>
-                <span class="s-label">Active Vehicles</span>
+                <span class="s-label" i18n="@@reports.utilization.activeVehicles">Active Vehicles</span>
               </div>
               <div class="summary-card">
                 <span class="s-value">{{ totalKmThisMonth() | number:'1.0-0' }} km</span>
-                <span class="s-label">Fleet KM This Month</span>
+                <span class="s-label" i18n="@@reports.utilization.fleetKmThisMonth">Fleet KM This Month</span>
               </div>
               <div class="summary-card">
                 <span class="s-value">{{ avgKmPerVehicle() | number:'1.0-0' }} km</span>
-                <span class="s-label">Avg KM per Active Vehicle</span>
+                <span class="s-label" i18n="@@reports.utilization.avgKmPerVehicle">Avg KM per Active Vehicle</span>
               </div>
             </div>
             <table class="report-table">
               <thead>
                 <tr>
-                  <th>Vehicle</th>
-                  <th>Status</th>
-                  <th class="num">KM This Month</th>
-                  <th class="num">Total Odometer (km)</th>
-                  <th>Last Log</th>
+                  <th i18n="@@reports.col.vehicle">Vehicle</th>
+                  <th i18n="@@reports.utilization.col.status">Status</th>
+                  <th class="num" i18n="@@reports.utilization.col.kmThisMonth">KM This Month</th>
+                  <th class="num" i18n="@@reports.utilization.col.totalOdometer">Total Odometer (km)</th>
+                  <th i18n="@@reports.utilization.col.lastLog">Last Log</th>
                 </tr>
               </thead>
               <tbody>
@@ -274,38 +274,38 @@ interface ComplianceRow {
         @if (activeTab() === 'compliance') {
           <div class="report-section">
             <div class="section-header">
-              <h2 class="section-title">Compliance Expiry Report</h2>
+              <h2 class="section-title" i18n="@@reports.compliance.sectionTitle">Compliance Expiry Report</h2>
               <div class="export-actions">
                 <button class="btn-export" (click)="exportComplianceCsv()">
-                  <lucide-icon [img]="icons.Download" [size]="12" [strokeWidth]="2"></lucide-icon> CSV
+                  <lucide-icon [img]="icons.Download" [size]="12" [strokeWidth]="2"></lucide-icon> <ng-container i18n="@@reports.export.csv">CSV</ng-container>
                 </button>
                 <button class="btn-export" (click)="exportCompliancePdf()">
-                  <lucide-icon [img]="icons.FileText" [size]="12" [strokeWidth]="2"></lucide-icon> PDF
+                  <lucide-icon [img]="icons.FileText" [size]="12" [strokeWidth]="2"></lucide-icon> <ng-container i18n="@@reports.export.pdf">PDF</ng-container>
                 </button>
               </div>
             </div>
             <div class="report-summary">
               <div class="summary-card accent-red">
                 <span class="s-value">{{ expiredCount() }}</span>
-                <span class="s-label">Expired</span>
+                <span class="s-label" i18n="@@reports.compliance.expired">Expired</span>
               </div>
               <div class="summary-card accent-amber">
                 <span class="s-value">{{ expiringCount() }}</span>
-                <span class="s-label">Expiring in 30 days</span>
+                <span class="s-label" i18n="@@reports.compliance.expiringIn30">Expiring in 30 days</span>
               </div>
               <div class="summary-card accent-green">
                 <span class="s-value">{{ okCount() }}</span>
-                <span class="s-label">OK</span>
+                <span class="s-label" i18n="@@reports.compliance.ok">OK</span>
               </div>
             </div>
             <table class="report-table">
               <thead>
                 <tr>
-                  <th>Vehicle</th>
-                  <th>Type</th>
-                  <th>Expires</th>
-                  <th class="num">Days Left</th>
-                  <th>Status</th>
+                  <th i18n="@@reports.col.vehicle">Vehicle</th>
+                  <th i18n="@@reports.compliance.col.type">Type</th>
+                  <th i18n="@@reports.compliance.col.expires">Expires</th>
+                  <th class="num" i18n="@@reports.compliance.col.daysLeft">Days Left</th>
+                  <th i18n="@@reports.compliance.col.status">Status</th>
                 </tr>
               </thead>
               <tbody>

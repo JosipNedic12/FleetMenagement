@@ -19,36 +19,36 @@ interface NavItem { label: string; route: string; icon: LucideIconData; }
   template: `
     <aside class="sidebar" [class.collapsed]="collapsed()" [class.mobile-open]="mobileOpen">
       <!-- Toggle button -->
-      <button class="toggle-btn" (click)="toggle()" [attr.aria-label]="collapsed() ? 'Expand sidebar' : 'Collapse sidebar'">
+      <button class="toggle-btn" (click)="toggle()" [attr.aria-label]="collapsed() ? expandLabel : collapseLabel">
         <lucide-icon [img]="collapsed() ? chevronRight : chevronLeft" [size]="14" [strokeWidth]="2.5"></lucide-icon>
       </button>
 
       <!-- Logo -->
-      <a routerLink="/dashboard" class="sidebar-logo" title="MaxFleet – Go to Dashboard">
-        <img src="maxfleet-logo.png" alt="MaxFleet" class="logo-img" />
-        @if (!collapsed()) { <span class="logo-text">MaxFleet</span> }
+      <a routerLink="/dashboard" class="sidebar-logo" i18n-title="@@shared.sidebar.logoTitle" title="MaxFleet – Go to Dashboard">
+        <img src="maxfleet-logo.png" i18n-alt="@@shared.sidebar.logoAlt" alt="MaxFleet" class="logo-img" />
+        @if (!collapsed()) { <span class="logo-text" i18n="@@shared.sidebar.appName">MaxFleet</span> }
       </a>
 
       <!-- Nav -->
-      <nav class="sidebar-nav" aria-label="Main navigation">
+      <nav class="sidebar-nav" i18n-aria-label="@@shared.sidebar.navAriaLabel" aria-label="Main navigation">
 
         <!-- Overview -->
         <div class="nav-group">
-          @if (!collapsed()) { <div class="nav-section-label">Overview</div> }
+          @if (!collapsed()) { <div class="nav-section-label" i18n="@@shared.sidebar.sectionOverview">Overview</div> }
           @else { <div class="nav-divider"></div> }
-          <a routerLink="/dashboard" routerLinkActive="active" class="nav-item" [attr.data-tooltip]="collapsed() ? 'Dashboard' : null">
+          <a routerLink="/dashboard" routerLinkActive="active" class="nav-item" [attr.data-tooltip]="collapsed() ? dashboardLabel : null">
             <lucide-icon [img]="icons.LayoutDashboard" [size]="17" class="nav-icon" [strokeWidth]="1.8"></lucide-icon>
-            @if (!collapsed()) {<span>Dashboard</span>}
+            @if (!collapsed()) {<span i18n="@@shared.sidebar.navDashboard">Dashboard</span>}
           </a>
-          <a routerLink="/reports" routerLinkActive="active" class="nav-item" [attr.data-tooltip]="collapsed() ? 'Reports' : null">
+          <a routerLink="/reports" routerLinkActive="active" class="nav-item" [attr.data-tooltip]="collapsed() ? reportsLabel : null">
             <lucide-icon [img]="icons.ChartBar" [size]="17" class="nav-icon" [strokeWidth]="1.8"></lucide-icon>
-            @if (!collapsed()) {<span>Reports</span>}
+            @if (!collapsed()) {<span i18n="@@shared.sidebar.navReports">Reports</span>}
           </a>
         </div>
 
         <!-- Fleet -->
         <div class="nav-group">
-          @if (!collapsed()) { <div class="nav-section-label">Fleet</div> }
+          @if (!collapsed()) { <div class="nav-section-label" i18n="@@shared.sidebar.sectionFleet">Fleet</div> }
           @else { <div class="nav-divider"></div> }
           @for (item of fleetItems; track item.route) {
             <a [routerLink]="item.route" routerLinkActive="active" class="nav-item" [attr.data-tooltip]="collapsed() ? item.label : null">
@@ -60,7 +60,7 @@ interface NavItem { label: string; route: string; icon: LucideIconData; }
 
         <!-- Compliance -->
         <div class="nav-group">
-          @if (!collapsed()) { <div class="nav-section-label">Compliance</div> }
+          @if (!collapsed()) { <div class="nav-section-label" i18n="@@shared.sidebar.sectionCompliance">Compliance</div> }
           @else { <div class="nav-divider"></div> }
           @for (item of complianceItems; track item.route) {
             <a [routerLink]="item.route" routerLinkActive="active" class="nav-item" [attr.data-tooltip]="collapsed() ? item.label : null">
@@ -73,11 +73,11 @@ interface NavItem { label: string; route: string; icon: LucideIconData; }
         <!-- Admin -->
         @if (auth.hasRole('Admin')) {
           <div class="nav-group">
-            @if (!collapsed()) { <div class="nav-section-label">Admin</div> }
+            @if (!collapsed()) { <div class="nav-section-label" i18n="@@shared.sidebar.sectionAdmin">Admin</div> }
             @else { <div class="nav-divider"></div> }
-            <a routerLink="/users" routerLinkActive="active" class="nav-item" [attr.data-tooltip]="collapsed() ? 'User Management' : null">
+            <a routerLink="/users" routerLinkActive="active" class="nav-item" [attr.data-tooltip]="collapsed() ? userMgmtLabel : null">
               <lucide-icon [img]="icons.Users" [size]="17" class="nav-icon" [strokeWidth]="1.8"></lucide-icon>
-              @if (!collapsed()) {<span>User Management</span>}
+              @if (!collapsed()) {<span i18n="@@shared.sidebar.navUserManagement">User Management</span>}
             </a>
           </div>
         }
@@ -86,9 +86,9 @@ interface NavItem { label: string; route: string; icon: LucideIconData; }
 
       <!-- Footer -->
       <div class="sidebar-footer">
-        <button class="nav-item logout-btn" (click)="auth.logout()" [attr.data-tooltip]="collapsed() ? 'Logout' : null" aria-label="Logout">
+        <button class="nav-item logout-btn" (click)="auth.logout()" [attr.data-tooltip]="collapsed() ? logoutLabel : null" i18n-aria-label="@@shared.sidebar.logoutAriaLabel" aria-label="Logout">
           <lucide-icon [img]="icons.LogOut" [size]="17" class="nav-icon" [strokeWidth]="1.8"></lucide-icon>
-          @if (!collapsed()) {<span>Logout</span>}
+          @if (!collapsed()) {<span i18n="@@shared.sidebar.navLogout">Logout</span>}
         </button>
       </div>
     </aside>
@@ -259,23 +259,31 @@ export class SidebarComponent {
   readonly chevronLeft = ChevronLeft;
   readonly chevronRight = ChevronRight;
 
+  // i18n string properties for interpolated attribute bindings
+  readonly expandLabel = $localize`:@@shared.sidebar.expandAriaLabel:Expand sidebar`;
+  readonly collapseLabel = $localize`:@@shared.sidebar.collapseAriaLabel:Collapse sidebar`;
+  readonly dashboardLabel = $localize`:@@shared.sidebar.navDashboard:Dashboard`;
+  readonly reportsLabel = $localize`:@@shared.sidebar.navReports:Reports`;
+  readonly userMgmtLabel = $localize`:@@shared.sidebar.navUserManagement:User Management`;
+  readonly logoutLabel = $localize`:@@shared.sidebar.navLogout:Logout`;
+
   toggle() { this.collapsed.update(v => !v); }
 
   fleetItems: NavItem[] = [
-    { label: 'Vehicles',     route: '/vehicles',    icon: Car },
-    { label: 'Drivers',      route: '/drivers',     icon: UserRound },
-    { label: 'Assignments',  route: '/assignments', icon: Link },
-    { label: 'Maintenance',  route: '/maintenance', icon: Wrench },
-    { label: 'Fuel',         route: '/fuel',        icon: Fuel },
-    { label: 'Odometer',     route: '/odometer',    icon: MapPin },
+    { label: $localize`:@@shared.sidebar.navVehicles:Vehicles`,    route: '/vehicles',    icon: Car },
+    { label: $localize`:@@shared.sidebar.navDrivers:Drivers`,      route: '/drivers',     icon: UserRound },
+    { label: $localize`:@@shared.sidebar.navAssignments:Assignments`, route: '/assignments', icon: Link },
+    { label: $localize`:@@shared.sidebar.navMaintenance:Maintenance`, route: '/maintenance', icon: Wrench },
+    { label: $localize`:@@shared.sidebar.navFuel:Fuel`,            route: '/fuel',        icon: Fuel },
+    { label: $localize`:@@shared.sidebar.navOdometer:Odometer`,    route: '/odometer',    icon: MapPin },
   ];
 
   complianceItems: NavItem[] = [
-    { label: 'Insurance',    route: '/insurance',    icon: Shield },
-    { label: 'Registration', route: '/registration', icon: Clipboard },
-    { label: 'Inspections',  route: '/inspections',  icon: Search },
-    { label: 'Fines',        route: '/fines',        icon: TriangleAlert },
-    { label: 'Accidents',    route: '/accidents',    icon: Siren },
+    { label: $localize`:@@shared.sidebar.navInsurance:Insurance`,       route: '/insurance',    icon: Shield },
+    { label: $localize`:@@shared.sidebar.navRegistration:Registration`, route: '/registration', icon: Clipboard },
+    { label: $localize`:@@shared.sidebar.navInspections:Inspections`,   route: '/inspections',  icon: Search },
+    { label: $localize`:@@shared.sidebar.navFines:Fines`,               route: '/fines',        icon: TriangleAlert },
+    { label: $localize`:@@shared.sidebar.navAccidents:Accidents`,       route: '/accidents',    icon: Siren },
   ];
 
 }

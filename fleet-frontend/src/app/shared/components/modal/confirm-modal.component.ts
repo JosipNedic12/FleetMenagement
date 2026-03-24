@@ -11,7 +11,7 @@ import { LucideAngularModule, Trash2, TriangleAlert, X } from 'lucide-angular';
       <div class="modal-overlay" (click)="onCancel()">
         <div class="modal-box confirm-modal-box" (click)="$event.stopPropagation()">
 
-          <button class="modal-close-btn" (click)="onCancel()" aria-label="Close">
+          <button class="modal-close-btn" (click)="onCancel()" i18n-aria-label="@@shared.confirmModal.closeAriaLabel" aria-label="Close">
             <lucide-icon [img]="xIcon" [size]="16" [strokeWidth]="2.5"></lucide-icon>
           </button>
 
@@ -27,7 +27,7 @@ import { LucideAngularModule, Trash2, TriangleAlert, X } from 'lucide-angular';
           <p class="modal-message">{{ message }}</p>
 
           <div class="modal-actions">
-            <button class="btn btn-secondary" (click)="onCancel()">Cancel</button>
+            <button class="btn btn-secondary" (click)="onCancel()" i18n="@@shared.confirmModal.cancelBtn">Cancel</button>
             <button
               class="btn"
               [class.btn-danger]="type === 'destructive'"

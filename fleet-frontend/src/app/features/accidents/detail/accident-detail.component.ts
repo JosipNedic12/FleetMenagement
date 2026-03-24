@@ -22,9 +22,9 @@ type BadgeVariant = 'success' | 'warning' | 'danger' | 'neutral';
 
       <!-- Breadcrumb -->
       <nav class="breadcrumb">
-        <a routerLink="/dashboard">Dashboard</a>
+        <a routerLink="/dashboard" i18n="@@accidents.breadcrumbDashboard">Dashboard</a>
         <span class="bc-sep">›</span>
-        <a routerLink="/accidents">Accidents</a>
+        <a routerLink="/accidents" i18n="@@accidents.breadcrumbAccidents">Accidents</a>
         <span class="bc-sep">›</span>
         <span>Accident #{{ accident()?.accidentId ?? 'Detail' }}</span>
       </nav>
@@ -40,14 +40,14 @@ type BadgeVariant = 'success' | 'warning' | 'danger' | 'neutral';
               <h1 class="page-title">Accident #{{ accident()!.accidentId }} · {{ accident()!.vehicleMake }} {{ accident()!.vehicleModel }}</h1>
               <p class="page-subtitle"><span class="mono">{{ accident()!.registrationNumber }}</span> · {{ accident()!.occurredAt | date:'dd.MM.yyyy HH:mm' }} · {{ accident()!.severity | titlecase }}</p>
             } @else {
-              <h1 class="page-title">Accident Detail</h1>
+              <h1 class="page-title" i18n="@@accidents.detailTitle">Accident Detail</h1>
             }
           </div>
         </div>
         <div style="display:flex; align-items:center; gap:10px">
           <button *hasRole="['Admin','FleetManager']" class="btn btn-secondary" (click)="startEdit()" [disabled]="!accident()">
             <lucide-icon [img]="icons.Pencil" [size]="15" [strokeWidth]="2"></lucide-icon>
-            Edit
+            <span i18n="@@accidents.editBtn">Edit</span>
           </button>
           @if (accident()) {
             <app-badge
@@ -59,24 +59,24 @@ type BadgeVariant = 'success' | 'warning' | 'danger' | 'neutral';
       </div>
 
       @if (loading()) {
-        <div class="table-loading">Loading…</div>
+        <div class="table-loading" i18n="@@accidents.loading">Loading…</div>
       } @else if (error()) {
         <div class="table-empty">{{ error() }}</div>
       } @else if (!accident()) {
-        <div class="table-empty">Accident not found.</div>
+        <div class="table-empty" i18n="@@accidents.notFound">Accident not found.</div>
       } @else {
         <div class="overview-grid">
 
           <!-- Vehicle & Driver -->
           <div class="info-group">
-            <div class="info-group-title">Vehicle & Driver</div>
+            <div class="info-group-title" i18n="@@accidents.groupVehicleDriver">Vehicle & Driver</div>
             <div class="kv-grid">
               <div class="kv-row">
-                <span class="kv-label">Vehicle</span>
+                <span class="kv-label" i18n="@@accidents.labelVehicle">Vehicle</span>
                 <span class="kv-value">{{ accident()!.vehicleMake }} {{ accident()!.vehicleModel }}<br><span class="mono" style="font-size:12px; color:var(--text-muted)">{{ accident()!.registrationNumber }}</span></span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Driver</span>
+                <span class="kv-label" i18n="@@accidents.labelDriver">Driver</span>
                 <span class="kv-value">{{ accident()!.driverName || '—' }}</span>
               </div>
             </div>
@@ -84,10 +84,10 @@ type BadgeVariant = 'success' | 'warning' | 'danger' | 'neutral';
 
           <!-- Severity & Damage -->
           <div class="info-group">
-            <div class="info-group-title">Severity & Damage</div>
+            <div class="info-group-title" i18n="@@accidents.groupSeverityDamage">Severity & Damage</div>
             <div class="kv-grid">
               <div class="kv-row">
-                <span class="kv-label">Severity</span>
+                <span class="kv-label" i18n="@@accidents.labelSeverity">Severity</span>
                 <span class="kv-value">
                   <app-badge
                     [label]="accident()!.severity | titlecase"
@@ -96,7 +96,7 @@ type BadgeVariant = 'success' | 'warning' | 'danger' | 'neutral';
                 </span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Damage Estimate</span>
+                <span class="kv-label" i18n="@@accidents.labelDamageEstimate">Damage Estimate</span>
                 <span class="kv-value">{{ accident()!.damageEstimate != null ? (accident()!.damageEstimate | euNumber:'1.2-2') + ' €' : '—' }}</span>
               </div>
             </div>
@@ -104,26 +104,26 @@ type BadgeVariant = 'success' | 'warning' | 'danger' | 'neutral';
 
           <!-- Details -->
           <div class="info-group info-group--full">
-            <div class="info-group-title">Details</div>
+            <div class="info-group-title" i18n="@@accidents.groupDetails">Details</div>
             <div class="kv-grid">
               <div class="kv-row">
-                <span class="kv-label">Accident ID</span>
+                <span class="kv-label" i18n="@@accidents.labelAccidentId">Accident ID</span>
                 <span class="kv-value mono">{{ accident()!.accidentId }}</span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Date & Time</span>
+                <span class="kv-label" i18n="@@accidents.labelDateTime">Date & Time</span>
                 <span class="kv-value">{{ accident()!.occurredAt | date:'dd.MM.yyyy HH:mm' }}</span>
               </div>
               <div class="kv-row kv-full">
-                <span class="kv-label">Description</span>
+                <span class="kv-label" i18n="@@accidents.labelDescription">Description</span>
                 <span class="kv-value">{{ accident()!.description || '—' }}</span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Police Report</span>
+                <span class="kv-label" i18n="@@accidents.labelPoliceReport">Police Report</span>
                 <span class="kv-value">{{ accident()!.policeReport || '—' }}</span>
               </div>
               <div class="kv-row kv-full">
-                <span class="kv-label">Notes</span>
+                <span class="kv-label" i18n="@@accidents.labelNotes">Notes</span>
                 <span class="kv-value">{{ accident()!.notes || '—' }}</span>
               </div>
             </div>
@@ -137,57 +137,58 @@ type BadgeVariant = 'success' | 'warning' | 'danger' | 'neutral';
     @if (showEdit) {
       <div class="modal-overlay" (click)="closeEdit()">
         <div class="modal-box" (click)="$event.stopPropagation()">
-          <h2 class="modal-title">Edit Accident</h2>
+          <h2 class="modal-title" i18n="@@accidents.editAccident">Edit Accident</h2>
           <div class="form-grid">
             <div class="form-group">
-              <label>Driver</label>
+              <label i18n="@@accidents.formDriver">Driver</label>
               <app-search-select
                 [items]="drivers()"
                 [displayFn]="driverDisplayFn"
                 valueField="driverId"
                 placeholder="Unknown"
+                i18n-placeholder="@@accidents.formDriverPlaceholder"
                 [(ngModel)]="editForm.driverId">
               </app-search-select>
             </div>
             <div class="form-group">
-              <label>Occurred At *</label>
+              <label i18n="@@accidents.formOccurredAt">Occurred At *</label>
               <input type="datetime-local" [(ngModel)]="editForm.occurredAt" />
             </div>
             <div class="form-group">
-              <label>Severity *</label>
+              <label i18n="@@accidents.formSeverity">Severity *</label>
               <select [(ngModel)]="editForm.severity">
-                <option value="minor">Minor</option>
-                <option value="major">Major</option>
-                <option value="total">Total Loss</option>
+                <option value="minor" i18n="@@accidents.severityMinor">Minor</option>
+                <option value="major" i18n="@@accidents.severityMajor">Major</option>
+                <option value="total" i18n="@@accidents.severityTotal">Total Loss</option>
               </select>
             </div>
             <div class="form-group">
-              <label>Damage Estimate (EUR)</label>
+              <label i18n="@@accidents.formDamageEstimate">Damage Estimate (EUR)</label>
               <input type="number" [(ngModel)]="editForm.damageEstimate" min="0" step="0.01" />
             </div>
             @if (editForm.severity === 'total') {
               <div class="form-group span-2 total-warning">
-                <lucide-icon [img]="icons.TriangleAlert" [size]="14" [strokeWidth]="2"></lucide-icon> <strong>Total loss</strong> will automatically retire the vehicle.
+                <lucide-icon [img]="icons.TriangleAlert" [size]="14" [strokeWidth]="2"></lucide-icon> <strong i18n="@@accidents.totalLossWarning">Total loss</strong><span i18n="@@accidents.totalLossWarningDetail"> will automatically retire the vehicle.</span>
               </div>
             }
             <div class="form-group span-2">
-              <label>Description *</label>
-              <textarea [(ngModel)]="editForm.description" rows="3" placeholder="Describe what happened…"></textarea>
+              <label i18n="@@accidents.formDescription">Description *</label>
+              <textarea [(ngModel)]="editForm.description" rows="3" placeholder="Describe what happened…" i18n-placeholder="@@accidents.formDescriptionPlaceholder"></textarea>
             </div>
             <div class="form-group">
-              <label>Police Report #</label>
+              <label i18n="@@accidents.formPoliceReport">Police Report #</label>
               <input [(ngModel)]="editForm.policeReport" placeholder="PP-ZG-2025-0001" />
             </div>
             <div class="form-group span-2">
-              <label>Notes</label>
+              <label i18n="@@accidents.formNotes">Notes</label>
               <textarea [(ngModel)]="editForm.notes" rows="2"></textarea>
             </div>
           </div>
           @if (formError()) { <div class="form-error">{{ formError() }}</div> }
           <div class="modal-actions">
-            <button class="btn btn-secondary" (click)="closeEdit()">Cancel</button>
+            <button class="btn btn-secondary" (click)="closeEdit()" i18n="@@accidents.cancelBtn">Cancel</button>
             <button class="btn btn-primary" [disabled]="saving()" (click)="saveEdit()">
-              @if (saving()) { <span class="btn-spinner"></span> Saving… } @else { Update }
+              @if (saving()) { <span class="btn-spinner"></span> <span i18n="@@accidents.saving">Saving…</span> } @else { <span i18n="@@accidents.update">Update</span> }
             </button>
           </div>
         </div>

@@ -32,20 +32,20 @@ interface StatCard {
     <div class="page">
       <div class="page-header">
         <div>
-          <h1 class="page-title">Dashboard</h1>
-          <p class="page-subtitle">Fleet compliance overview</p>
+          <h1 class="page-title" i18n="@@dashboard.title">Dashboard</h1>
+          <p class="page-subtitle" i18n="@@dashboard.subtitle">Fleet compliance overview</p>
         </div>
         <div class="header-right">
           <span class="last-updated">
             @if (secondsAgo() < 5) {
-              Updated just now
+              <ng-container i18n="@@dashboard.updatedJustNow">Updated just now</ng-container>
             } @else {
-              Last refreshed: {{ secondsAgo() }}s ago
+              <ng-container i18n="@@dashboard.lastRefreshed">Last refreshed: {{ secondsAgo() }}s ago</ng-container>
             }
           </span>
           <button class="refresh-btn" (click)="refresh()" [disabled]="loading()">
             <lucide-icon [img]="refreshIcon" [size]="14" [strokeWidth]="2" [class.spinning]="loading()"></lucide-icon>
-            Refresh
+            <ng-container i18n="@@dashboard.refreshBtn">Refresh</ng-container>
           </button>
         </div>
       </div>
@@ -84,7 +84,7 @@ interface StatCard {
         </div>
 
         <!-- ── Widget Cards ──────────────────────────────────────── -->
-        <div class="section-title">Operational Summary</div>
+        <div class="section-title" i18n="@@dashboard.sectionOperational">Operational Summary</div>
         <div class="widgets-grid">
 
           <!-- Compliance Reminders -->
@@ -94,27 +94,27 @@ interface StatCard {
                 <div class="chart-icon" style="background:#ef44441a; color:#ef4444">
                   <lucide-icon [img]="alertCircleIcon" [size]="14" [strokeWidth]="2"></lucide-icon>
                 </div>
-                <span class="chart-card-title">Compliance Reminders</span>
+                <span class="chart-card-title" i18n="@@dashboard.complianceRemindersTitle">Compliance Reminders</span>
               </div>
               <div class="widget-badges">
                 @if (expiredCount() > 0) {
-                  <span class="badge badge--red">{{ expiredCount() }} expired</span>
+                  <span class="badge badge--red" i18n="@@dashboard.badgeExpired">{{ expiredCount() }} expired</span>
                 }
                 @if (dueSoonCount() > 0) {
-                  <span class="badge badge--amber">{{ dueSoonCount() }} due soon</span>
+                  <span class="badge badge--amber" i18n="@@dashboard.badgeDueSoon">{{ dueSoonCount() }} due soon</span>
                 }
               </div>
             </div>
             @if (complianceReminders().length === 0) {
-              <p class="widget-empty">All compliance items are up to date.</p>
+              <p class="widget-empty" i18n="@@dashboard.complianceEmpty">All compliance items are up to date.</p>
             } @else {
               <table class="compliance-table">
                 <thead>
                   <tr>
-                    <th>Vehicle</th>
-                    <th>Type</th>
-                    <th>Expires</th>
-                    <th>Days</th>
+                    <th i18n="@@dashboard.colVehicle">Vehicle</th>
+                    <th i18n="@@dashboard.colType">Type</th>
+                    <th i18n="@@dashboard.colExpires">Expires</th>
+                    <th i18n="@@dashboard.colDays">Days</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -126,9 +126,8 @@ interface StatCard {
                       </td>
                       <td>{{ item.expiresAt | date:'dd.MM.yyyy' }}</td>
                       <td>
-                        <span [class]="item.daysLeft < 0 ? 'days-badge days-badge--expired' : 'days-badge days-badge--soon'">
-                          {{ item.daysLeft < 0 ? (item.daysLeft * -1) + 'd ago' : item.daysLeft + 'd' }}
-                        </span>
+                        <span [class]="item.daysLeft < 0 ? 'days-badge days-badge--expired' : 'days-badge days-badge--soon'"
+                          i18n="@@dashboard.daysCell">{{ item.daysLeft < 0 ? (item.daysLeft * -1) + 'd ago' : item.daysLeft + 'd' }}</span>
                       </td>
                     </tr>
                   }
@@ -144,19 +143,19 @@ interface StatCard {
                 <div class="chart-icon" style="background:#6366f11a; color:#6366f1">
                   <lucide-icon [img]="usersIcon" [size]="14" [strokeWidth]="2"></lucide-icon>
                 </div>
-                <span class="chart-card-title">Vehicle Assignments</span>
+                <span class="chart-card-title" i18n="@@dashboard.vehicleAssignmentsTitle">Vehicle Assignments</span>
               </div>
-              <span class="chart-card-sub">{{ dashboard()?.assignmentSummary?.totalVehicles ?? 0 }} total</span>
+              <span class="chart-card-sub" i18n="@@dashboard.assignmentTotal">{{ dashboard()?.assignmentSummary?.totalVehicles ?? 0 }} total</span>
             </div>
             <div class="assignment-numbers">
               <div class="assign-block">
                 <span class="assign-value" style="color:#10b981">{{ dashboard()?.assignmentSummary?.assigned ?? 0 }}</span>
-                <span class="assign-label">Assigned</span>
+                <span class="assign-label" i18n="@@dashboard.assignedLabel">Assigned</span>
               </div>
               <div class="assign-divider"></div>
               <div class="assign-block">
                 <span class="assign-value" style="color:#94a3b8">{{ dashboard()?.assignmentSummary?.unassigned ?? 0 }}</span>
-                <span class="assign-label">Unassigned</span>
+                <span class="assign-label" i18n="@@dashboard.unassignedLabel">Unassigned</span>
               </div>
             </div>
             <div class="assign-bar-wrap">
@@ -166,7 +165,7 @@ interface StatCard {
                   style="background:#10b981">
                 </div>
               </div>
-              <span class="assign-pct">{{ assignedPct() }}% assigned</span>
+              <span class="assign-pct" i18n="@@dashboard.assignedPct">{{ assignedPct() }}% assigned</span>
             </div>
           </div>
 
@@ -177,30 +176,30 @@ interface StatCard {
                 <div class="chart-icon" style="background:#f974161a; color:#f97416">
                   <lucide-icon [img]="wrenchIcon" [size]="14" [strokeWidth]="2"></lucide-icon>
                 </div>
-                <span class="chart-card-title">Work Orders</span>
+                <span class="chart-card-title" i18n="@@dashboard.workOrdersTitle">Work Orders</span>
               </div>
-              <a routerLink="/maintenance" class="chart-card-sub widget-link">View all</a>
+              <a routerLink="/maintenance" class="chart-card-sub widget-link" i18n="@@dashboard.workOrdersViewAll">View all</a>
             </div>
             <div class="work-order-stats">
               <div class="wo-stat">
                 <lucide-icon [img]="clockIcon" [size]="16" [strokeWidth]="2" style="color:#f97416"></lucide-icon>
                 <span class="wo-count">{{ dashboard()?.workOrderSummary?.open ?? 0 }}</span>
-                <span class="wo-label">Open</span>
+                <span class="wo-label" i18n="@@dashboard.woOpen">Open</span>
               </div>
               <div class="wo-stat">
                 <lucide-icon [img]="wrenchIcon" [size]="16" [strokeWidth]="2" style="color:#6366f1"></lucide-icon>
                 <span class="wo-count">{{ dashboard()?.workOrderSummary?.inProgress ?? 0 }}</span>
-                <span class="wo-label">In Progress</span>
+                <span class="wo-label" i18n="@@dashboard.woInProgress">In Progress</span>
               </div>
               <div class="wo-stat">
                 <lucide-icon [img]="checkCircleIcon" [size]="16" [strokeWidth]="2" style="color:#10b981"></lucide-icon>
                 <span class="wo-count">{{ dashboard()?.workOrderSummary?.completed ?? 0 }}</span>
-                <span class="wo-label">Completed</span>
+                <span class="wo-label" i18n="@@dashboard.woCompleted">Completed</span>
               </div>
               <div class="wo-stat wo-stat--overdue">
                 <lucide-icon [img]="alertCircleIcon" [size]="16" [strokeWidth]="2" style="color:#ef4444"></lucide-icon>
                 <span class="wo-count" style="color:#ef4444">{{ dashboard()?.workOrderSummary?.overdue ?? 0 }}</span>
-                <span class="wo-label">Overdue</span>
+                <span class="wo-label" i18n="@@dashboard.woOverdue">Overdue</span>
               </div>
             </div>
             <!-- Segmented progress bar -->
@@ -209,22 +208,26 @@ interface StatCard {
                 <div class="wo-bar">
                   <div class="wo-seg wo-seg--open"
                     [style.flex]="dashboard()?.workOrderSummary?.open ?? 0"
+                    i18n-title="@@dashboard.woSegOpenTitle"
                     title="Open: {{ dashboard()?.workOrderSummary?.open ?? 0 }}">
                   </div>
                   <div class="wo-seg wo-seg--progress"
                     [style.flex]="dashboard()?.workOrderSummary?.inProgress ?? 0"
+                    i18n-title="@@dashboard.woSegProgressTitle"
                     title="In Progress: {{ dashboard()?.workOrderSummary?.inProgress ?? 0 }}">
                   </div>
                   <div class="wo-seg wo-seg--done"
                     [style.flex]="dashboard()?.workOrderSummary?.completed ?? 0"
+                    i18n-title="@@dashboard.woSegDoneTitle"
                     title="Completed: {{ dashboard()?.workOrderSummary?.completed ?? 0 }}">
                   </div>
                   <div class="wo-seg wo-seg--overdue"
                     [style.flex]="dashboard()?.workOrderSummary?.overdue ?? 0"
+                    i18n-title="@@dashboard.woSegOverdueTitle"
                     title="Overdue: {{ dashboard()?.workOrderSummary?.overdue ?? 0 }}">
                   </div>
                 </div>
-                <span class="wo-bar-label">{{ woTotal() }} total</span>
+                <span class="wo-bar-label" i18n="@@dashboard.woTotal">{{ woTotal() }} total</span>
               </div>
             }
           </div>
@@ -232,7 +235,7 @@ interface StatCard {
         </div>
 
         <!-- ── Charts ─────────────────────────────────────────────── -->
-        <div class="section-title">Analytics</div>
+        <div class="section-title" i18n="@@dashboard.sectionAnalytics">Analytics</div>
         <div class="charts-grid">
           <div class="chart-card" style="animation-delay:0ms">
             <div class="chart-card-header">
@@ -240,9 +243,9 @@ interface StatCard {
                 <div class="chart-icon" style="background:#14b8a61a; color:#14b8a6">
                   <lucide-icon [img]="fuelIcon" [size]="14" [strokeWidth]="2"></lucide-icon>
                 </div>
-                <span class="chart-card-title">Fuel Cost / Month</span>
+                <span class="chart-card-title" i18n="@@dashboard.fuelCostTitle">Fuel Cost / Month</span>
               </div>
-              <span class="chart-card-sub">Last 6 months (EUR)</span>
+              <span class="chart-card-sub" i18n="@@dashboard.fuelCostSub">Last 6 months (EUR)</span>
             </div>
             <div class="chart-wrap">
               <canvas baseChart
@@ -259,9 +262,9 @@ interface StatCard {
                 <div class="chart-icon" style="background:#f974161a; color:#f97416">
                   <lucide-icon [img]="wrenchIcon" [size]="14" [strokeWidth]="2"></lucide-icon>
                 </div>
-                <span class="chart-card-title">Maintenance Cost / Month</span>
+                <span class="chart-card-title" i18n="@@dashboard.maintCostTitle">Maintenance Cost / Month</span>
               </div>
-              <span class="chart-card-sub">Last 6 months (EUR)</span>
+              <span class="chart-card-sub" i18n="@@dashboard.maintCostSub">Last 6 months (EUR)</span>
             </div>
             <div class="chart-wrap">
               <canvas baseChart
@@ -278,9 +281,9 @@ interface StatCard {
                 <div class="chart-icon" style="background:#10b9811a; color:#10b981">
                   <lucide-icon [img]="carIcon" [size]="14" [strokeWidth]="2"></lucide-icon>
                 </div>
-                <span class="chart-card-title">Vehicle Status</span>
+                <span class="chart-card-title" i18n="@@dashboard.vehicleStatusTitle">Vehicle Status</span>
               </div>
-              <span class="chart-card-sub">Current fleet breakdown</span>
+              <span class="chart-card-sub" i18n="@@dashboard.vehicleStatusSub">Current fleet breakdown</span>
             </div>
             <div class="chart-wrap chart-wrap--doughnut">
               <canvas baseChart
@@ -297,9 +300,9 @@ interface StatCard {
                 <div class="chart-icon" style="background:#ef44441a; color:#ef4444">
                   <lucide-icon [img]="alertIcon" [size]="14" [strokeWidth]="2"></lucide-icon>
                 </div>
-                <span class="chart-card-title">Accidents &amp; Fines</span>
+                <span class="chart-card-title" i18n="@@dashboard.accidentsFinesTitle">Accidents &amp; Fines</span>
               </div>
-              <span class="chart-card-sub">Monthly count – last 6 months</span>
+              <span class="chart-card-sub" i18n="@@dashboard.accidentsFinesSub">Monthly count – last 6 months</span>
             </div>
             <div class="chart-wrap">
               <canvas baseChart

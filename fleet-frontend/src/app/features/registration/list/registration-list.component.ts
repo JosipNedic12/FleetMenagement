@@ -23,35 +23,35 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
     <div class="page">
       <div class="page-header">
         <div>
-          <h1 class="page-title">Registration Records</h1>
-          <p class="page-subtitle">{{ filtered().length }} records</p>
+          <h1 class="page-title" i18n="@@registration.list.title">Registration Records</h1>
+          <p class="page-subtitle" i18n="@@registration.list.subtitle">{{ filtered().length }} records</p>
         </div>
         <div class="header-actions">
-          <input class="search-input" [ngModel]="search()" (ngModelChange)="search.set($event)" placeholder="Search vehicle, reg #…" />
-          <button *hasRole="['Admin','FleetManager']" class="btn btn-primary" (click)="showForm = true">+ New Record</button>
+          <input class="search-input" [ngModel]="search()" (ngModelChange)="search.set($event)" placeholder="Search vehicle, reg #…" i18n-placeholder="@@registration.list.searchPlaceholder" />
+          <button *hasRole="['Admin','FleetManager']" class="btn btn-primary" (click)="showForm = true" i18n="@@registration.list.newRecord">+ New Record</button>
         </div>
       </div>
 
       <div class="filter-tabs">
-        <button [class.active]="filter() === 'all'"    (click)="filter.set('all')">All</button>
-        <button [class.active]="filter() === 'active'" (click)="filter.set('active')">Active</button>
-        <button [class.active]="filter() === 'expired'"(click)="filter.set('expired')">Expired</button>
+        <button [class.active]="filter() === 'all'"    (click)="filter.set('all')" i18n="@@registration.filter.all">All</button>
+        <button [class.active]="filter() === 'active'" (click)="filter.set('active')" i18n="@@registration.filter.active">Active</button>
+        <button [class.active]="filter() === 'expired'"(click)="filter.set('expired')" i18n="@@registration.filter.expired">Expired</button>
       </div>
 
       <div class="table-card">
-        @if (loading()) { <div class="table-loading">Loading…</div> }
-        @else if (filtered().length === 0) { <div class="table-empty">No records found.</div> }
+        @if (loading()) { <div class="table-loading" i18n="@@registration.list.loading">Loading…</div> }
+        @else if (filtered().length === 0) { <div class="table-empty" i18n="@@registration.list.empty">No records found.</div> }
         @else {
           <table class="table">
             <thead>
               <tr>
-                <th>Vehicle</th>
-                <th>Registration #</th>
-                <th>Valid From</th>
-                <th>Valid To</th>
-                <th>Fee</th>
-                <th>Status</th>
-                <th>Actions</th>
+                <th i18n="@@registration.table.vehicle">Vehicle</th>
+                <th i18n="@@registration.table.registrationNumber">Registration #</th>
+                <th i18n="@@registration.table.validFrom">Valid From</th>
+                <th i18n="@@registration.table.validTo">Valid To</th>
+                <th i18n="@@registration.table.fee">Fee</th>
+                <th i18n="@@registration.table.status">Status</th>
+                <th i18n="@@registration.table.actions">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -81,55 +81,65 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
     @if (showForm) {
       <div class="modal-overlay" (click)="closeForm()">
         <div class="modal-box" (click)="$event.stopPropagation()">
-          <h2 class="modal-title">{{ editId ? 'Edit Registration' : 'New Registration Record' }}</h2>
+          @if (editId) {
+            <h2 class="modal-title" i18n="@@registration.form.editTitle">Edit Registration</h2>
+          } @else {
+            <h2 class="modal-title" i18n="@@registration.form.newTitle">New Registration Record</h2>
+          }
           <div class="form-grid">
             <div class="form-group">
-              <label>Vehicle *</label>
+              <label i18n="@@registration.form.vehicleLabel">Vehicle *</label>
               <app-search-select
                 [items]="vehicles()"
                 [displayFn]="vehicleDisplayFn"
                 valueField="vehicleId"
-                placeholder="Select vehicle…"
+                placeholder="Select vehicle…" i18n-placeholder="@@registration.form.vehiclePlaceholder"
                 [disabled]="!!editId"
                 [(ngModel)]="form.vehicleId">
               </app-search-select>
             </div>
             <div class="form-group">
-              <label>Registration # *</label>
-              <input [(ngModel)]="form.registrationNumber" placeholder="PD-2025-ZG1234AB" />
+              <label i18n="@@registration.form.registrationNumberLabel">Registration # *</label>
+              <input [(ngModel)]="form.registrationNumber" placeholder="PD-2025-ZG1234AB" i18n-placeholder="@@registration.form.registrationNumberPlaceholder" />
             </div>
             <div class="form-group">
-              <label>Valid From *</label>
+              <label i18n="@@registration.form.validFromLabel">Valid From *</label>
               <input type="date" [(ngModel)]="form.validFrom" />
             </div>
             <div class="form-group">
-              <label>Valid To *</label>
+              <label i18n="@@registration.form.validToLabel">Valid To *</label>
               <input type="date" [(ngModel)]="form.validTo" />
             </div>
             <div class="form-group">
-              <label>Fee (EUR)</label>
+              <label i18n="@@registration.form.feeLabel">Fee (EUR)</label>
               <input type="number" [(ngModel)]="form.fee" min="0" />
             </div>
             <div class="form-group">
-              <label>Notes</label>
-              <input [(ngModel)]="form.notes" placeholder="Optional notes" />
+              <label i18n="@@registration.form.notesLabel">Notes</label>
+              <input [(ngModel)]="form.notes" placeholder="Optional notes" i18n-placeholder="@@registration.form.notesPlaceholder" />
             </div>
           </div>
           @if (formError()) { <div class="form-error">{{ formError() }}</div> }
           <div class="modal-actions">
-            <button class="btn btn-secondary" (click)="closeForm()">Cancel</button>
-            <button class="btn btn-primary" [disabled]="saving()" (click)="save()">{{ saving() ? 'Saving…' : editId ? 'Update' : 'Create' }}</button>
+            <button class="btn btn-secondary" (click)="closeForm()" i18n="@@registration.form.cancel">Cancel</button>
+            @if (saving()) {
+              <button class="btn btn-primary" [disabled]="true" i18n="@@registration.form.saving">Saving…</button>
+            } @else if (editId) {
+              <button class="btn btn-primary" (click)="save()" i18n="@@registration.form.update">Update</button>
+            } @else {
+              <button class="btn btn-primary" (click)="save()" i18n="@@registration.form.create">Create</button>
+            }
           </div>
         </div>
       </div>
     }
 
-    <app-confirm-modal [visible]="!!deleteTarget" title="Delete Registration Record" message="Delete this registration record?" (confirmed)="doDelete()" (cancelled)="deleteTarget = null" />
+    <app-confirm-modal [visible]="!!deleteTarget" title="Delete Registration Record" i18n-title="@@registration.delete.title" message="Delete this registration record?" i18n-message="@@registration.delete.message" (confirmed)="doDelete()" (cancelled)="deleteTarget = null" />
 
     @if (docsTarget) {
       <div class="modal-overlay" (click)="docsTarget = null">
         <div class="modal-box modal-box--wide" (click)="$event.stopPropagation()">
-          <h2 class="modal-title">Documents — {{ docsTarget.registrationNumber }}</h2>
+          <h2 class="modal-title"><ng-container i18n="@@registration.docs.title">Documents —</ng-container> {{ docsTarget.registrationNumber }}</h2>
           <app-file-upload
             [entityType]="'Registration'"
             [entityId]="docsTarget.registrationId"
@@ -141,7 +151,7 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
             [entityId]="docsTarget.registrationId"
           />
           <div class="modal-actions">
-            <button class="btn btn-secondary" (click)="docsTarget = null">Close</button>
+            <button class="btn btn-secondary" (click)="docsTarget = null" i18n="@@registration.docs.close">Close</button>
           </div>
         </div>
       </div>

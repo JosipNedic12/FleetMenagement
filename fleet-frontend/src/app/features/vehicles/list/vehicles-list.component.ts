@@ -22,21 +22,21 @@ type VehicleStatus = 'active' | 'service' | 'retired' | 'sold';
     <div class="page">
       <div class="page-header">
         <div>
-          <h1 class="page-title">Vehicles</h1>
-          <p class="page-subtitle">{{ filtered().length }} vehicles</p>
+          <h1 class="page-title" i18n="@@vehicles.list.title">Vehicles</h1>
+          <p class="page-subtitle" i18n="@@vehicles.list.subtitle">{{ filtered().length }} vehicles</p>
         </div>
         <div class="header-actions">
-          <input class="search-input" [ngModel]="search()" (ngModelChange)="search.set($event)" placeholder="Search reg#, make, model…" />
-          <button *hasRole="['Admin','FleetManager']" class="btn btn-primary" (click)="openCreate()">+ Add Vehicle</button>
+          <input class="search-input" [ngModel]="search()" (ngModelChange)="search.set($event)" placeholder="Search reg#, make, model…" i18n-placeholder="@@vehicles.list.searchPlaceholder" />
+          <button *hasRole="['Admin','FleetManager']" class="btn btn-primary" (click)="openCreate()" i18n="@@vehicles.list.addButton">+ Add Vehicle</button>
         </div>
       </div>
 
       <div class="filter-tabs">
-        <button [class.active]="filter() === 'all'"     (click)="filter.set('all')">All</button>
-        <button [class.active]="filter() === 'active'"  (click)="filter.set('active')">Active</button>
-        <button [class.active]="filter() === 'service'" (click)="filter.set('service')">Service</button>
-        <button [class.active]="filter() === 'retired'" (click)="filter.set('retired')">Retired</button>
-        <button [class.active]="filter() === 'sold'"    (click)="filter.set('sold')">Sold</button>
+        <button [class.active]="filter() === 'all'"     (click)="filter.set('all')" i18n="@@vehicles.filter.all">All</button>
+        <button [class.active]="filter() === 'active'"  (click)="filter.set('active')" i18n="@@vehicles.filter.active">Active</button>
+        <button [class.active]="filter() === 'service'" (click)="filter.set('service')" i18n="@@vehicles.filter.service">Service</button>
+        <button [class.active]="filter() === 'retired'" (click)="filter.set('retired')" i18n="@@vehicles.filter.retired">Retired</button>
+        <button [class.active]="filter() === 'sold'"    (click)="filter.set('sold')" i18n="@@vehicles.filter.sold">Sold</button>
       </div>
 
       <div class="table-card">
@@ -59,21 +59,21 @@ type VehicleStatus = 'active' | 'service' | 'retired' | 'sold';
             <div class="empty-icon">
               <lucide-icon [img]="icons.CarIcon" [size]="44" [strokeWidth]="1.3"></lucide-icon>
             </div>
-            <h3>No vehicles found</h3>
-            <p>Try adjusting your search or filter, or add your first vehicle.</p>
-            <button *hasRole="['Admin','FleetManager']" class="btn btn-primary" (click)="openCreate()">+ Add Vehicle</button>
+            <h3 i18n="@@vehicles.empty.title">No vehicles found</h3>
+            <p i18n="@@vehicles.empty.hint">Try adjusting your search or filter, or add your first vehicle.</p>
+            <button *hasRole="['Admin','FleetManager']" class="btn btn-primary" (click)="openCreate()" i18n="@@vehicles.list.addButton">+ Add Vehicle</button>
           </div>
         } @else {
           <table class="table">
             <thead>
               <tr>
-                <th class="sortable" [class.sort-asc]="sortCol()==='make'&&sortDir()==='asc'" [class.sort-desc]="sortCol()==='make'&&sortDir()==='desc'" (click)="sort('make')">Vehicle</th>
-                <th class="sortable" [class.sort-asc]="sortCol()==='year'&&sortDir()==='asc'" [class.sort-desc]="sortCol()==='year'&&sortDir()==='desc'" (click)="sort('year')">Year</th>
-                <th>Category</th>
-                <th>Fuel</th>
-                <th class="sortable" [class.sort-asc]="sortCol()==='odo'&&sortDir()==='asc'" [class.sort-desc]="sortCol()==='odo'&&sortDir()==='desc'" (click)="sort('odo')">Odometer</th>
-                <th>Status</th>
-                <th>Actions</th>
+                <th class="sortable" [class.sort-asc]="sortCol()==='make'&&sortDir()==='asc'" [class.sort-desc]="sortCol()==='make'&&sortDir()==='desc'" (click)="sort('make')" i18n="@@vehicles.table.vehicle">Vehicle</th>
+                <th class="sortable" [class.sort-asc]="sortCol()==='year'&&sortDir()==='asc'" [class.sort-desc]="sortCol()==='year'&&sortDir()==='desc'" (click)="sort('year')" i18n="@@vehicles.table.year">Year</th>
+                <th i18n="@@vehicles.table.category">Category</th>
+                <th i18n="@@vehicles.table.fuel">Fuel</th>
+                <th class="sortable" [class.sort-asc]="sortCol()==='odo'&&sortDir()==='asc'" [class.sort-desc]="sortCol()==='odo'&&sortDir()==='desc'" (click)="sort('odo')" i18n="@@vehicles.table.odometer">Odometer</th>
+                <th i18n="@@vehicles.table.status">Status</th>
+                <th i18n="@@vehicles.table.actions">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -91,9 +91,9 @@ type VehicleStatus = 'active' | 'service' | 'retired' | 'sold';
                     />
                   </td>
                   <td class="actions">
-                    <a [routerLink]="['/vehicles', row.vehicleId]" class="btn-icon" title="View"><lucide-icon [img]="icons.Eye" [size]="15" [strokeWidth]="2"></lucide-icon></a>
-                    <button *hasRole="['Admin','FleetManager']" class="btn-icon" title="Edit" (click)="startEdit(row)"><lucide-icon [img]="icons.Pencil" [size]="15" [strokeWidth]="2"></lucide-icon></button>
-                    <button *hasRole="'Admin'" class="btn-icon danger" title="Delete" (click)="confirmDelete(row)"><lucide-icon [img]="icons.Trash2" [size]="15" [strokeWidth]="2"></lucide-icon></button>
+                    <a [routerLink]="['/vehicles', row.vehicleId]" class="btn-icon" title="View" i18n-title="@@vehicles.action.view"><lucide-icon [img]="icons.Eye" [size]="15" [strokeWidth]="2"></lucide-icon></a>
+                    <button *hasRole="['Admin','FleetManager']" class="btn-icon" title="Edit" i18n-title="@@vehicles.action.edit" (click)="startEdit(row)"><lucide-icon [img]="icons.Pencil" [size]="15" [strokeWidth]="2"></lucide-icon></button>
+                    <button *hasRole="'Admin'" class="btn-icon danger" title="Delete" i18n-title="@@vehicles.action.delete" (click)="confirmDelete(row)"><lucide-icon [img]="icons.Trash2" [size]="15" [strokeWidth]="2"></lucide-icon></button>
                   </td>
                 </tr>
               }
@@ -107,70 +107,70 @@ type VehicleStatus = 'active' | 'service' | 'retired' | 'sold';
     @if (showCreate) {
       <div class="modal-overlay" (click)="closeCreate()">
         <div class="modal-box" (click)="$event.stopPropagation()">
-          <h2 class="modal-title">Add Vehicle</h2>
+          <h2 class="modal-title" i18n="@@vehicles.create.title">Add Vehicle</h2>
           <div class="form-grid">
             <div class="form-group">
-              <label>Registration # *</label>
-              <input [(ngModel)]="createForm.registrationNumber" placeholder="ZG-1234-AB" style="text-transform:uppercase" />
+              <label i18n="@@vehicles.create.regNumber">Registration # *</label>
+              <input [(ngModel)]="createForm.registrationNumber" placeholder="ZG-1234-AB" i18n-placeholder="@@vehicles.create.regNumberPlaceholder" style="text-transform:uppercase" />
             </div>
             <div class="form-group">
-              <label>VIN *</label>
-              <input [(ngModel)]="createForm.vin" placeholder="17-char VIN" style="text-transform:uppercase" />
+              <label i18n="@@vehicles.create.vin">VIN *</label>
+              <input [(ngModel)]="createForm.vin" placeholder="17-char VIN" i18n-placeholder="@@vehicles.create.vinPlaceholder" style="text-transform:uppercase" />
             </div>
             <div class="form-group">
-              <label>Make *</label>
+              <label i18n="@@vehicles.create.make">Make *</label>
               <select [(ngModel)]="createForm.makeId" (ngModelChange)="onMakeChange($event)">
-                <option [ngValue]="0">Select make…</option>
+                <option [ngValue]="0" i18n="@@vehicles.create.selectMake">Select make…</option>
                 @for (m of makes(); track m.makeId) {
                   <option [ngValue]="m.makeId">{{ m.name }}</option>
                 }
               </select>
             </div>
             <div class="form-group">
-              <label>Model *</label>
+              <label i18n="@@vehicles.create.model">Model *</label>
               <select [(ngModel)]="createForm.modelId" [disabled]="!createForm.makeId">
-                <option [ngValue]="0">Select model…</option>
+                <option [ngValue]="0" i18n="@@vehicles.create.selectModel">Select model…</option>
                 @for (m of models(); track m.modelId) {
                   <option [ngValue]="m.modelId">{{ m.name }}</option>
                 }
               </select>
             </div>
             <div class="form-group">
-              <label>Category *</label>
+              <label i18n="@@vehicles.create.category">Category *</label>
               <select [(ngModel)]="createForm.categoryId">
-                <option [ngValue]="0">Select category…</option>
+                <option [ngValue]="0" i18n="@@vehicles.create.selectCategory">Select category…</option>
                 @for (c of categories(); track c.categoryId) {
                   <option [ngValue]="c.categoryId">{{ c.name }}</option>
                 }
               </select>
             </div>
             <div class="form-group">
-              <label>Fuel Type *</label>
+              <label i18n="@@vehicles.create.fuelType">Fuel Type *</label>
               <select [(ngModel)]="createForm.fuelTypeId">
-                <option [ngValue]="0">Select fuel type…</option>
+                <option [ngValue]="0" i18n="@@vehicles.create.selectFuelType">Select fuel type…</option>
                 @for (f of fuelTypes(); track f.fuelTypeId) {
                   <option [ngValue]="f.fuelTypeId">{{ f.label }}</option>
                 }
               </select>
             </div>
             <div class="form-group">
-              <label>Year *</label>
+              <label i18n="@@vehicles.create.year">Year *</label>
               <input type="number" [(ngModel)]="createForm.year" min="1990" [max]="currentYear" />
             </div>
             <div class="form-group">
-              <label>Color</label>
-              <input [(ngModel)]="createForm.color" placeholder="White, Black…" />
+              <label i18n="@@vehicles.create.color">Color</label>
+              <input [(ngModel)]="createForm.color" placeholder="White, Black…" i18n-placeholder="@@vehicles.create.colorPlaceholder" />
             </div>
             <div class="form-group span-2">
-              <label>Notes</label>
+              <label i18n="@@vehicles.create.notes">Notes</label>
               <textarea [(ngModel)]="createForm.notes" rows="2"></textarea>
             </div>
           </div>
           @if (formError()) { <div class="form-error">{{ formError() }}</div> }
           <div class="modal-actions">
-            <button class="btn btn-secondary" (click)="closeCreate()">Cancel</button>
+            <button class="btn btn-secondary" (click)="closeCreate()" i18n="@@vehicles.action.cancel">Cancel</button>
             <button class="btn btn-primary" [disabled]="saving()" (click)="saveCreate()">
-              @if (saving()) { <span class="btn-spinner"></span> Saving… } @else { Add Vehicle }
+              @if (saving()) { <span class="btn-spinner"></span><ng-container i18n="@@vehicles.action.saving"> Saving… </ng-container> } @else { <ng-container i18n="@@vehicles.create.submit">Add Vehicle</ng-container> }
             </button>
           </div>
         </div>
@@ -181,31 +181,31 @@ type VehicleStatus = 'active' | 'service' | 'retired' | 'sold';
     @if (showEdit) {
       <div class="modal-overlay" (click)="closeEdit()">
         <div class="modal-box" style="max-width:420px" (click)="$event.stopPropagation()">
-          <h2 class="modal-title">Edit Vehicle</h2>
+          <h2 class="modal-title" i18n="@@vehicles.edit.title">Edit Vehicle</h2>
           <div class="form-grid" style="grid-template-columns:1fr">
             <div class="form-group">
-              <label>Status</label>
+              <label i18n="@@vehicles.edit.status">Status</label>
               <select [(ngModel)]="editForm.status">
-                <option value="active">Active</option>
-                <option value="service">In Service</option>
-                <option value="retired">Retired</option>
-                <option value="sold">Sold</option>
+                <option value="active" i18n="@@vehicles.status.active">Active</option>
+                <option value="service" i18n="@@vehicles.status.service">In Service</option>
+                <option value="retired" i18n="@@vehicles.status.retired">Retired</option>
+                <option value="sold" i18n="@@vehicles.status.sold">Sold</option>
               </select>
             </div>
             <div class="form-group">
-              <label>Color</label>
-              <input [(ngModel)]="editForm.color" placeholder="White, Black…" />
+              <label i18n="@@vehicles.edit.color">Color</label>
+              <input [(ngModel)]="editForm.color" placeholder="White, Black…" i18n-placeholder="@@vehicles.create.colorPlaceholder" />
             </div>
             <div class="form-group">
-              <label>Notes</label>
+              <label i18n="@@vehicles.edit.notes">Notes</label>
               <textarea [(ngModel)]="editForm.notes" rows="2"></textarea>
             </div>
           </div>
           @if (formError()) { <div class="form-error">{{ formError() }}</div> }
           <div class="modal-actions">
-            <button class="btn btn-secondary" (click)="closeEdit()">Cancel</button>
+            <button class="btn btn-secondary" (click)="closeEdit()" i18n="@@vehicles.action.cancel">Cancel</button>
             <button class="btn btn-primary" [disabled]="saving()" (click)="saveEdit()">
-              @if (saving()) { <span class="btn-spinner"></span> Saving… } @else { Update }
+              @if (saving()) { <span class="btn-spinner"></span><ng-container i18n="@@vehicles.action.saving"> Saving… </ng-container> } @else { <ng-container i18n="@@vehicles.edit.submit">Update</ng-container> }
             </button>
           </div>
         </div>

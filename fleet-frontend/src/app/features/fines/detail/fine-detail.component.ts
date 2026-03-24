@@ -20,32 +20,32 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
 
       <!-- Breadcrumb -->
       <nav class="breadcrumb">
-        <a routerLink="/dashboard">Dashboard</a>
+        <a routerLink="/dashboard" i18n="@@fines.detail.breadcrumbDashboard">Dashboard</a>
         <span class="bc-sep">›</span>
-        <a routerLink="/fines">Fines</a>
+        <a routerLink="/fines" i18n="@@fines.detail.breadcrumbFines">Fines</a>
         <span class="bc-sep">›</span>
-        <span>Fine #{{ fine()?.fineId ?? 'Detail' }}</span>
+        <span>Fine #{{ fine()?.fineId ?? detailLabel }}</span>
       </nav>
 
       <div class="page-header">
         <div style="display:flex; align-items:center; gap:12px">
           <button class="back-btn" (click)="goBack()">
             <lucide-icon [img]="icons.ArrowLeft" [size]="16" [strokeWidth]="2"></lucide-icon>
-            Fines
+            <ng-container i18n="@@fines.detail.backBtn">Fines</ng-container>
           </button>
           <div>
             @if (fine()) {
               <h1 class="page-title">Fine #{{ fine()!.fineId }} · {{ fine()!.vehicleMake }} {{ fine()!.vehicleModel }}</h1>
               <p class="page-subtitle"><span class="mono">{{ fine()!.registrationNumber }}</span> · {{ fine()!.reason }} · {{ fine()!.occurredAt | date:'dd.MM.yyyy' }}</p>
             } @else {
-              <h1 class="page-title">Fine Detail</h1>
+              <h1 class="page-title" i18n="@@fines.detail.titleFallback">Fine Detail</h1>
             }
           </div>
         </div>
         <div style="display:flex; align-items:center; gap:10px">
           <button *hasRole="['Admin','FleetManager']" class="btn btn-secondary" (click)="startEdit()" [disabled]="!fine()">
             <lucide-icon [img]="icons.Pencil" [size]="15" [strokeWidth]="2"></lucide-icon>
-            Edit
+            <ng-container i18n="@@fines.detail.editBtn">Edit</ng-container>
           </button>
           @if (fine()) {
             <app-badge
@@ -57,24 +57,24 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
       </div>
 
       @if (loading()) {
-        <div class="table-loading">Loading…</div>
+        <div class="table-loading" i18n="@@fines.detail.loading">Loading…</div>
       } @else if (error()) {
         <div class="table-empty">{{ error() }}</div>
       } @else if (!fine()) {
-        <div class="table-empty">Fine not found.</div>
+        <div class="table-empty" i18n="@@fines.detail.notFound">Fine not found.</div>
       } @else {
         <div class="overview-grid">
 
           <!-- Vehicle & Driver -->
           <div class="info-group">
-            <div class="info-group-title">Vehicle & Driver</div>
+            <div class="info-group-title" i18n="@@fines.detail.sectionVehicleDriver">Vehicle & Driver</div>
             <div class="kv-grid">
               <div class="kv-row">
-                <span class="kv-label">Vehicle</span>
+                <span class="kv-label" i18n="@@fines.detail.labelVehicle">Vehicle</span>
                 <span class="kv-value">{{ fine()!.vehicleMake }} {{ fine()!.vehicleModel }}<br><span class="mono" style="font-size:12px; color:var(--text-muted)">{{ fine()!.registrationNumber }}</span></span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Driver</span>
+                <span class="kv-label" i18n="@@fines.detail.labelDriver">Driver</span>
                 <span class="kv-value">{{ fine()!.driverName || '—' }}</span>
               </div>
             </div>
@@ -82,14 +82,14 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
 
           <!-- Fine Info -->
           <div class="info-group">
-            <div class="info-group-title">Fine Info</div>
+            <div class="info-group-title" i18n="@@fines.detail.sectionFineInfo">Fine Info</div>
             <div class="kv-grid">
               <div class="kv-row">
-                <span class="kv-label">Amount</span>
+                <span class="kv-label" i18n="@@fines.detail.labelAmount">Amount</span>
                 <span class="kv-value">{{ fine()!.amount | euNumber:'1.2-2' }} €</span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Violation</span>
+                <span class="kv-label" i18n="@@fines.detail.labelViolation">Violation</span>
                 <span class="kv-value">{{ fine()!.reason }}</span>
               </div>
             </div>
@@ -97,14 +97,14 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
 
           <!-- Details -->
           <div class="info-group info-group--full">
-            <div class="info-group-title">Details</div>
+            <div class="info-group-title" i18n="@@fines.detail.sectionDetails">Details</div>
             <div class="kv-grid">
               <div class="kv-row">
-                <span class="kv-label">Fine ID</span>
+                <span class="kv-label" i18n="@@fines.detail.labelFineId">Fine ID</span>
                 <span class="kv-value mono">{{ fine()!.fineId }}</span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Status</span>
+                <span class="kv-label" i18n="@@fines.detail.labelStatus">Status</span>
                 <span class="kv-value">
                   <app-badge
                     [label]="fine()!.isPaid ? 'Paid' : 'Unpaid'"
@@ -113,19 +113,19 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
                 </span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Date</span>
+                <span class="kv-label" i18n="@@fines.detail.labelDate">Date</span>
                 <span class="kv-value">{{ fine()!.occurredAt | date:'dd.MM.yyyy' }}</span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Paid At</span>
+                <span class="kv-label" i18n="@@fines.detail.labelPaidAt">Paid At</span>
                 <span class="kv-value">{{ fine()!.paidAt ? (fine()!.paidAt | date:'dd.MM.yyyy') : '—' }}</span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Payment Method</span>
+                <span class="kv-label" i18n="@@fines.detail.labelPaymentMethod">Payment Method</span>
                 <span class="kv-value">{{ fine()!.paymentMethod || '—' }}</span>
               </div>
               <div class="kv-row kv-full">
-                <span class="kv-label">Notes</span>
+                <span class="kv-label" i18n="@@fines.detail.labelNotes">Notes</span>
                 <span class="kv-value">{{ fine()!.notes || '—' }}</span>
               </div>
             </div>
@@ -139,44 +139,44 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
     @if (showEdit) {
       <div class="modal-overlay" (click)="closeEdit()">
         <div class="modal-box" (click)="$event.stopPropagation()">
-          <h2 class="modal-title">Edit Fine</h2>
+          <h2 class="modal-title" i18n="@@fines.detail.editModalTitle">Edit Fine</h2>
           <div class="form-grid">
             <div class="form-group">
-              <label>Vehicle</label>
+              <label i18n="@@fines.form.vehicleLabel">Vehicle</label>
               <input [value]="fine()?.registrationNumber ?? ''" disabled style="opacity:0.6" />
             </div>
             <div class="form-group">
-              <label>Driver</label>
+              <label i18n="@@fines.form.driverLabel">Driver</label>
               <app-search-select
                 [items]="drivers()"
                 [displayFn]="driverDisplayFn"
                 valueField="driverId"
-                placeholder="Unknown"
+                placeholder="Unknown" i18n-placeholder="@@fines.form.driverPlaceholder"
                 [(ngModel)]="editForm.driverId">
               </app-search-select>
             </div>
             <div class="form-group">
-              <label>Occurred At *</label>
+              <label i18n="@@fines.form.occurredAtLabel">Occurred At *</label>
               <input type="datetime-local" [(ngModel)]="editForm.occurredAt" />
             </div>
             <div class="form-group">
-              <label>Amount (EUR) *</label>
+              <label i18n="@@fines.form.amountLabel">Amount (EUR) *</label>
               <input type="number" [(ngModel)]="editForm.amount" min="0.01" step="0.01" />
             </div>
             <div class="form-group span-2">
-              <label>Reason *</label>
-              <input [(ngModel)]="editForm.reason" placeholder="Speeding, illegal parking…" />
+              <label i18n="@@fines.form.reasonLabel">Reason *</label>
+              <input [(ngModel)]="editForm.reason" placeholder="Speeding, illegal parking…" i18n-placeholder="@@fines.form.reasonPlaceholder" />
             </div>
             <div class="form-group span-2">
-              <label>Notes</label>
+              <label i18n="@@fines.form.notesLabel">Notes</label>
               <textarea [(ngModel)]="editForm.notes" rows="2"></textarea>
             </div>
           </div>
           @if (formError()) { <div class="form-error">{{ formError() }}</div> }
           <div class="modal-actions">
-            <button class="btn btn-secondary" (click)="closeEdit()">Cancel</button>
+            <button class="btn btn-secondary" (click)="closeEdit()" i18n="@@fines.form.cancelBtn">Cancel</button>
             <button class="btn btn-primary" [disabled]="saving()" (click)="saveEdit()">
-              @if (saving()) { <span class="btn-spinner"></span> Saving… } @else { Update }
+              @if (saving()) { <span class="btn-spinner"></span><ng-container i18n="@@fines.form.saving"> Saving…</ng-container> } @else { <ng-container i18n="@@fines.form.updateBtn">Update</ng-container> }
             </button>
           </div>
         </div>
@@ -276,6 +276,9 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
 })
 export class FineDetailComponent implements OnInit {
   readonly icons = { ArrowLeft, Pencil };
+
+  // i18n labels used in interpolated expressions
+  detailLabel = $localize`:@@fines.detail.breadcrumbDetail:Detail`;
 
   fine    = signal<Fine | null>(null);
   loading = signal(true);

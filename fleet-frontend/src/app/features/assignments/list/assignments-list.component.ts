@@ -20,36 +20,36 @@ import { VehicleLabelComponent } from '../../../shared/components/vehicle-label/
     <div class="page">
       <div class="page-header">
         <div>
-          <h1 class="page-title">Vehicle Assignments</h1>
-          <p class="page-subtitle">{{ filtered().length }} assignments · {{ activeCount() }} active</p>
+          <h1 class="page-title" i18n="@@assignments.list.title">Vehicle Assignments</h1>
+          <p class="page-subtitle" i18n="@@assignments.list.subtitle">{{ filtered().length }} assignments · {{ activeCount() }} active</p>
         </div>
         <div class="header-actions">
-          <input class="search-input" [ngModel]="search()" (ngModelChange)="search.set($event)" placeholder="Search vehicle, driver…" />
-          <button *hasRole="['Admin','FleetManager']" class="btn btn-primary" (click)="openCreate()">+ Assign Vehicle</button>
+          <input class="search-input" [ngModel]="search()" (ngModelChange)="search.set($event)" i18n-placeholder="@@assignments.list.searchPlaceholder" placeholder="Search vehicle, driver…" />
+          <button *hasRole="['Admin','FleetManager']" class="btn btn-primary" (click)="openCreate()" i18n="@@assignments.list.assignBtn">+ Assign Vehicle</button>
         </div>
       </div>
 
       <div class="filter-tabs">
-        <button [class.active]="filter() === 'all'"    (click)="filter.set('all')">All</button>
-        <button [class.active]="filter() === 'active'" (click)="filter.set('active')">Active</button>
-        <button [class.active]="filter() === 'ended'"  (click)="filter.set('ended')">Ended</button>
+        <button [class.active]="filter() === 'all'"    (click)="filter.set('all')" i18n="@@assignments.list.filterAll">All</button>
+        <button [class.active]="filter() === 'active'" (click)="filter.set('active')" i18n="@@assignments.list.filterActive">Active</button>
+        <button [class.active]="filter() === 'ended'"  (click)="filter.set('ended')" i18n="@@assignments.list.filterEnded">Ended</button>
       </div>
 
       <div class="table-card">
-        @if (loading()) { <div class="table-loading">Loading…</div> }
-        @else if (filtered().length === 0) { <div class="table-empty">No assignments found.</div> }
+        @if (loading()) { <div class="table-loading" i18n="@@assignments.list.loading">Loading…</div> }
+        @else if (filtered().length === 0) { <div class="table-empty" i18n="@@assignments.list.empty">No assignments found.</div> }
         @else {
           <table class="table">
             <thead>
               <tr>
-                <th>Vehicle</th>
-                <th>Driver</th>
-                <th>Department</th>
-                <th>From</th>
-                <th>To</th>
-                <th>Status</th>
-                <th>Notes</th>
-                <th>Actions</th>
+                <th i18n="@@assignments.list.colVehicle">Vehicle</th>
+                <th i18n="@@assignments.list.colDriver">Driver</th>
+                <th i18n="@@assignments.list.colDepartment">Department</th>
+                <th i18n="@@assignments.list.colFrom">From</th>
+                <th i18n="@@assignments.list.colTo">To</th>
+                <th i18n="@@assignments.list.colStatus">Status</th>
+                <th i18n="@@assignments.list.colNotes">Notes</th>
+                <th i18n="@@assignments.list.colActions">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -68,11 +68,11 @@ import { VehicleLabelComponent } from '../../../shared/components/vehicle-label/
                   </td>
                   <td class="notes-cell">{{ row.notes ?? '—' }}</td>
                   <td class="actions">
-                    <button *hasRole="['Admin','FleetManager']" class="btn-icon" title="Edit" (click)="$event.stopPropagation(); startEdit(row)"><lucide-icon [img]="icons.Pencil" [size]="15" [strokeWidth]="2"></lucide-icon></button>
+                    <button *hasRole="['Admin','FleetManager']" class="btn-icon" i18n-title="@@assignments.list.actionEdit" title="Edit" (click)="$event.stopPropagation(); startEdit(row)"><lucide-icon [img]="icons.Pencil" [size]="15" [strokeWidth]="2"></lucide-icon></button>
                     @if (row.isActive) {
-                      <button *hasRole="['Admin','FleetManager']" class="btn-icon warning" title="End Assignment" (click)="$event.stopPropagation(); endAssignment(row)">⏹</button>
+                      <button *hasRole="['Admin','FleetManager']" class="btn-icon warning" i18n-title="@@assignments.list.actionEnd" title="End Assignment" (click)="$event.stopPropagation(); endAssignment(row)">⏹</button>
                     }
-                    <button *hasRole="'Admin'" class="btn-icon danger" title="Delete" (click)="$event.stopPropagation(); confirmDelete(row)"><lucide-icon [img]="icons.Trash2" [size]="15" [strokeWidth]="2"></lucide-icon></button>
+                    <button *hasRole="'Admin'" class="btn-icon danger" i18n-title="@@assignments.list.actionDelete" title="Delete" (click)="$event.stopPropagation(); confirmDelete(row)"><lucide-icon [img]="icons.Trash2" [size]="15" [strokeWidth]="2"></lucide-icon></button>
                   </td>
                 </tr>
               }
@@ -86,46 +86,48 @@ import { VehicleLabelComponent } from '../../../shared/components/vehicle-label/
     @if (showCreate) {
       <div class="modal-overlay" (click)="closeCreate()">
         <div class="modal-box" (click)="$event.stopPropagation()">
-          <h2 class="modal-title">Assign Vehicle</h2>
+          <h2 class="modal-title" i18n="@@assignments.create.title">Assign Vehicle</h2>
           <div class="form-grid">
             <div class="form-group">
-              <label>Vehicle *</label>
+              <label i18n="@@assignments.create.labelVehicle">Vehicle *</label>
               <app-search-select
                 [items]="assignableVehicles()"
                 [displayFn]="vehicleDisplayFn"
                 valueField="vehicleId"
+                i18n-placeholder="@@assignments.create.vehiclePlaceholder"
                 placeholder="Select vehicle…"
                 [(ngModel)]="createForm.vehicleId">
               </app-search-select>
             </div>
             <div class="form-group">
-              <label>Driver *</label>
+              <label i18n="@@assignments.create.labelDriver">Driver *</label>
               <app-search-select
                 [items]="drivers()"
                 [displayFn]="driverDisplayFn"
                 valueField="driverId"
+                i18n-placeholder="@@assignments.create.driverPlaceholder"
                 placeholder="Select driver…"
                 [(ngModel)]="createForm.driverId">
               </app-search-select>
             </div>
             <div class="form-group">
-              <label>From *</label>
+              <label i18n="@@assignments.create.labelFrom">From *</label>
               <input type="date" [(ngModel)]="createForm.assignedFrom" />
             </div>
             <div class="form-group">
-              <label>To (leave blank = open-ended)</label>
+              <label i18n="@@assignments.create.labelTo">To (leave blank = open-ended)</label>
               <input type="date" [(ngModel)]="createForm.assignedTo" />
             </div>
             <div class="form-group span-2">
-              <label>Notes</label>
+              <label i18n="@@assignments.create.labelNotes">Notes</label>
               <textarea [(ngModel)]="createForm.notes" rows="2"></textarea>
             </div>
           </div>
           @if (formError()) { <div class="form-error">{{ formError() }}</div> }
           <div class="modal-actions">
-            <button class="btn btn-secondary" (click)="closeCreate()">Cancel</button>
+            <button class="btn btn-secondary" (click)="closeCreate()" i18n="@@assignments.create.cancelBtn">Cancel</button>
             <button class="btn btn-primary" [disabled]="saving()" (click)="saveCreate()">
-              {{ saving() ? 'Saving…' : 'Assign' }}
+              @if (saving()) { <ng-container i18n="@@assignments.create.savingBtn">Saving…</ng-container> } @else { <ng-container i18n="@@assignments.create.assignBtn">Assign</ng-container> }
             </button>
           </div>
         </div>
@@ -136,22 +138,22 @@ import { VehicleLabelComponent } from '../../../shared/components/vehicle-label/
     @if (showEdit) {
       <div class="modal-overlay" (click)="closeEdit()">
         <div class="modal-box" style="max-width:400px" (click)="$event.stopPropagation()">
-          <h2 class="modal-title">Edit Assignment</h2>
+          <h2 class="modal-title" i18n="@@assignments.edit.title">Edit Assignment</h2>
           <div class="form-grid" style="grid-template-columns:1fr">
             <div class="form-group">
-              <label>End Date</label>
+              <label i18n="@@assignments.edit.labelEndDate">End Date</label>
               <input type="date" [(ngModel)]="editForm.assignedTo" />
             </div>
             <div class="form-group">
-              <label>Notes</label>
+              <label i18n="@@assignments.edit.labelNotes">Notes</label>
               <textarea [(ngModel)]="editForm.notes" rows="2"></textarea>
             </div>
           </div>
           @if (formError()) { <div class="form-error">{{ formError() }}</div> }
           <div class="modal-actions">
-            <button class="btn btn-secondary" (click)="closeEdit()">Cancel</button>
+            <button class="btn btn-secondary" (click)="closeEdit()" i18n="@@assignments.edit.cancelBtn">Cancel</button>
             <button class="btn btn-primary" [disabled]="saving()" (click)="saveEdit()">
-              {{ saving() ? 'Saving…' : 'Update' }}
+              @if (saving()) { <ng-container i18n="@@assignments.edit.savingBtn">Saving…</ng-container> } @else { <ng-container i18n="@@assignments.edit.updateBtn">Update</ng-container> }
             </button>
           </div>
         </div>
@@ -160,7 +162,9 @@ import { VehicleLabelComponent } from '../../../shared/components/vehicle-label/
 
     <app-confirm-modal
       [visible]="!!deleteTarget"
+      i18n-title="@@assignments.delete.title"
       title="Delete Assignment"
+      i18n-message="@@assignments.delete.message"
       message="Delete this assignment record? This cannot be undone."
       (confirmed)="doDelete()"
       (cancelled)="deleteTarget = null"

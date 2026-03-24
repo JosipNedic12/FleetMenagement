@@ -22,13 +22,13 @@ import { AuthService } from '../../../core/auth/auth.service';
           <img src="maxfleet-logo -black.png" alt="MaxFleet" class="logo-img" />
         </div>
 
-        <h1 class="login-title">Welcome back</h1>
-        <p class="login-subtitle">Sign in to your fleet management dashboard</p>
+        <h1 class="login-title" i18n="@@login.title">Welcome back</h1>
+        <p class="login-subtitle" i18n="@@login.subtitle">Sign in to your fleet management dashboard</p>
 
         <form (ngSubmit)="onLogin()" #f="ngForm">
           <!-- Username -->
           <div class="form-group">
-            <label for="login-username">Username</label>
+            <label for="login-username" i18n="@@login.usernameLabel">Username</label>
             <div class="input-wrapper" [class.focused]="usernameFocused()" [class.error]="error()">
               <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
@@ -40,7 +40,7 @@ import { AuthService } from '../../../core/auth/auth.service';
                 name="username"
                 [(ngModel)]="username"
                 required
-                placeholder="Enter your username"
+                placeholder="Enter your username" i18n-placeholder="@@login.usernamePlaceholder"
                 class="form-input"
                 autocomplete="username"
                 (focus)="usernameFocused.set(true)"
@@ -51,7 +51,7 @@ import { AuthService } from '../../../core/auth/auth.service';
 
           <!-- Password -->
           <div class="form-group">
-            <label for="login-password">Password</label>
+            <label for="login-password" i18n="@@login.passwordLabel">Password</label>
             <div class="input-wrapper" [class.focused]="passwordFocused()" [class.error]="error()">
               <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
@@ -63,7 +63,7 @@ import { AuthService } from '../../../core/auth/auth.service';
                 name="password"
                 [(ngModel)]="password"
                 required
-                placeholder="Enter your password"
+                placeholder="Enter your password" i18n-placeholder="@@login.passwordPlaceholder"
                 class="form-input"
                 autocomplete="current-password"
                 (focus)="passwordFocused.set(true)"
@@ -73,7 +73,7 @@ import { AuthService } from '../../../core/auth/auth.service';
                 type="button"
                 class="toggle-pw"
                 (click)="showPassword.set(!showPassword())"
-                [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
+                [attr.aria-label]="showPassword() ? showPasswordLabel : hidePasswordLabel"
                 tabindex="-1"
               >
                 @if (showPassword()) {
@@ -112,9 +112,9 @@ import { AuthService } from '../../../core/auth/auth.service';
           >
             @if (loading()) {
               <span class="spinner"></span>
-              <span>Signing in...</span>
+              <span i18n="@@login.signingIn">Signing in...</span>
             } @else {
-              <span>Sign in</span>
+              <span i18n="@@login.signIn">Sign in</span>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="5" y1="12" x2="19" y2="12"/>
                 <polyline points="12 5 19 12 12 19"/>
@@ -125,7 +125,7 @@ import { AuthService } from '../../../core/auth/auth.service';
 
         <!-- Footer -->
         <p class="login-footer">
-          MaxFleet &middot; Fleet Management System
+          <ng-container i18n="@@login.footer">MaxFleet &middot; Fleet Management System</ng-container>
         </p>
       </div>
     </div>
@@ -446,6 +446,8 @@ export class LoginComponent {
   showPassword = signal(false);
   usernameFocused = signal(false);
   passwordFocused = signal(false);
+  showPasswordLabel = $localize`:@@login.showPasswordAriaLabel:Show password`;
+  hidePasswordLabel = $localize`:@@login.hidePasswordAriaLabel:Hide password`;
 
   constructor(
     private authApi: AuthApiService,
@@ -466,7 +468,9 @@ export class LoginComponent {
         error: (err) => {
           this.loading.set(false);
           this.error.set(
-            err.status === 401 ? 'Invalid username or password.' : 'Login failed. Please try again.'
+            err.status === 401
+              ? $localize`:@@login.errorInvalidCredentials:Invalid username or password.`
+              : $localize`:@@login.errorGeneric:Login failed. Please try again.`
           );
         }
       });

@@ -17,7 +17,7 @@ import { LucideAngularModule, CheckCircle, XCircle, TriangleAlert, Info, X } fro
             class="toast-icon"
           ></lucide-icon>
           <span class="toast-message">{{ toast.message }}</span>
-          <button class="toast-close" (click)="toastService.dismiss(toast.id)" aria-label="Dismiss">
+          <button class="toast-close" (click)="toastService.dismiss(toast.id)" i18n-aria-label="@@shared.toast.dismissAriaLabel" aria-label="Dismiss">
             <lucide-icon [img]="xIcon" [size]="13" [strokeWidth]="2.5"></lucide-icon>
           </button>
           <div class="toast-progress"></div>

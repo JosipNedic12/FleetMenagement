@@ -25,36 +25,36 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
     <div class="page">
       <div class="page-header">
         <div>
-          <h1 class="page-title">Fuel</h1>
-          <p class="page-subtitle">Cards & transactions</p>
+          <h1 class="page-title" i18n="@@fuel.pageTitle">Fuel</h1>
+          <p class="page-subtitle" i18n="@@fuel.pageSubtitle">Cards & transactions</p>
         </div>
       </div>
 
       <div class="tab-row">
-        <button [class.tab-active]="tab() === 'cards'"        (click)="tab.set('cards')">Fuel Cards ({{ cards().length }})</button>
-        <button [class.tab-active]="tab() === 'transactions'" (click)="tab.set('transactions')">Transactions ({{ transactions().length }})</button>
+        <button [class.tab-active]="tab() === 'cards'"        (click)="tab.set('cards')" i18n="@@fuel.tabCards">Fuel Cards ({{ cards().length }})</button>
+        <button [class.tab-active]="tab() === 'transactions'" (click)="tab.set('transactions')" i18n="@@fuel.tabTransactions">Transactions ({{ transactions().length }})</button>
       </div>
 
       <!-- ── Cards Tab ──────────────────────────────────────────────────── -->
       @if (tab() === 'cards') {
         <div class="section-actions">
-          <input class="search-input" [ngModel]="cardSearch()" (ngModelChange)="cardSearch.set($event)" placeholder="Search card#, provider…" />
-          <button *hasRole="['Admin','FleetManager']" class="btn btn-primary" (click)="openCreateCard()">+ Add Card</button>
+          <input class="search-input" [ngModel]="cardSearch()" (ngModelChange)="cardSearch.set($event)" placeholder="Search card#, provider…" i18n-placeholder="@@fuel.cardSearchPlaceholder" />
+          <button *hasRole="['Admin','FleetManager']" class="btn btn-primary" (click)="openCreateCard()" i18n="@@fuel.addCard">+ Add Card</button>
         </div>
         <div class="table-card">
-          @if (loadingCards()) { <div class="table-loading">Loading…</div> }
-          @else if (filteredCards().length === 0) { <div class="table-empty">No cards found.</div> }
+          @if (loadingCards()) { <div class="table-loading" i18n="@@fuel.loading">Loading…</div> }
+          @else if (filteredCards().length === 0) { <div class="table-empty" i18n="@@fuel.noCardsFound">No cards found.</div> }
           @else {
             <table class="table">
               <thead>
                 <tr>
-                  <th>Card #</th>
-                  <th>Provider</th>
-                  <th>Vehicle</th>
-                  <th>Valid From</th>
-                  <th>Valid To</th>
-                  <th>Status</th>
-                  <th>Actions</th>
+                  <th i18n="@@fuel.colCardNumber">Card #</th>
+                  <th i18n="@@fuel.colProvider">Provider</th>
+                  <th i18n="@@fuel.colVehicle">Vehicle</th>
+                  <th i18n="@@fuel.colValidFrom">Valid From</th>
+                  <th i18n="@@fuel.colValidTo">Valid To</th>
+                  <th i18n="@@fuel.colStatus">Status</th>
+                  <th i18n="@@fuel.colActions">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -83,23 +83,23 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
       <!-- ── Transactions Tab ───────────────────────────────────────────── -->
       @if (tab() === 'transactions') {
         <div class="section-actions">
-          <input class="search-input" [ngModel]="txSearch()" (ngModelChange)="txSearch.set($event)" placeholder="Search vehicle, station…" />
-          <button *hasRole="['Admin','FleetManager']" class="btn btn-primary" (click)="openCreateTx()">+ Add Transaction</button>
+          <input class="search-input" [ngModel]="txSearch()" (ngModelChange)="txSearch.set($event)" placeholder="Search vehicle, station…" i18n-placeholder="@@fuel.txSearchPlaceholder" />
+          <button *hasRole="['Admin','FleetManager']" class="btn btn-primary" (click)="openCreateTx()" i18n="@@fuel.addTransaction">+ Add Transaction</button>
         </div>
         <div class="table-card">
-          @if (loadingTx()) { <div class="table-loading">Loading…</div> }
-          @else if (filteredTx().length === 0) { <div class="table-empty">No transactions found.</div> }
+          @if (loadingTx()) { <div class="table-loading" i18n="@@fuel.loading">Loading…</div> }
+          @else if (filteredTx().length === 0) { <div class="table-empty" i18n="@@fuel.noTransactionsFound">No transactions found.</div> }
           @else {
             <table class="table">
               <thead>
                 <tr>
-                  <th>Vehicle</th>
-                  <th>Date</th>
-                  <th>Fuel Type</th>
-                  <th>Quantity</th>
-                  <th>Total</th>
-                  <th>Station</th>
-                  <th>Actions</th>
+                  <th i18n="@@fuel.colVehicle">Vehicle</th>
+                  <th i18n="@@fuel.colDate">Date</th>
+                  <th i18n="@@fuel.colFuelType">Fuel Type</th>
+                  <th i18n="@@fuel.colQuantity">Quantity</th>
+                  <th i18n="@@fuel.colTotal">Total</th>
+                  <th i18n="@@fuel.colStation">Station</th>
+                  <th i18n="@@fuel.colActions">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -116,9 +116,9 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
                     <td>{{ row.stationName ?? '—' }}</td>
                     <td class="actions">
                       @if (!row.isSuspicious) {
-                        <button *hasRole="['Admin','FleetManager']" class="btn-icon warning-btn" title="Mark suspicious" (click)="$event.stopPropagation(); markSuspicious(row)"><lucide-icon [img]="icons.TriangleAlert" [size]="15" [strokeWidth]="2"></lucide-icon></button>
+                        <button *hasRole="['Admin','FleetManager']" class="btn-icon warning-btn" title="Mark suspicious" i18n-title="@@fuel.markSuspiciousTitle" (click)="$event.stopPropagation(); markSuspicious(row)"><lucide-icon [img]="icons.TriangleAlert" [size]="15" [strokeWidth]="2"></lucide-icon></button>
                       } @else {
-                        <app-badge label="Suspicious" variant="danger" />
+                        <app-badge label="Suspicious" i18n-label="@@fuel.suspicious" variant="danger" />
                       }
                       <button *hasRole="'Admin'" class="btn-icon danger" (click)="$event.stopPropagation(); confirmDeleteTx(row)"><lucide-icon [img]="icons.Trash2" [size]="15" [strokeWidth]="2"></lucide-icon></button>
                     </td>
@@ -135,42 +135,43 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
     @if (showCreateCard) {
       <div class="modal-overlay" (click)="closeCreateCard()">
         <div class="modal-box" (click)="$event.stopPropagation()">
-          <h2 class="modal-title">Add Fuel Card</h2>
+          <h2 class="modal-title" i18n="@@fuel.addCardTitle">Add Fuel Card</h2>
           <div class="form-grid">
             <div class="form-group">
-              <label>Card # *</label>
+              <label i18n="@@fuel.labelCardNumber">Card # *</label>
               <input [(ngModel)]="cardForm.cardNumber" placeholder="1234-5678-9012" />
             </div>
             <div class="form-group">
-              <label>Provider</label>
+              <label i18n="@@fuel.labelProvider">Provider</label>
               <input [(ngModel)]="cardForm.provider" placeholder="INA, Shell, Petrol…" />
             </div>
             <div class="form-group">
-              <label>Vehicle</label>
+              <label i18n="@@fuel.labelVehicle">Vehicle</label>
               <app-search-select
                 [items]="vehicles()"
                 [displayFn]="vehicleDisplayFn"
                 valueField="vehicleId"
                 placeholder="No vehicle"
+                i18n-placeholder="@@fuel.noVehiclePlaceholder"
                 [(ngModel)]="cardForm.assignedVehicleId">
               </app-search-select>
             </div>
             <div class="form-group">
-              <label>Valid From</label>
+              <label i18n="@@fuel.labelValidFrom">Valid From</label>
               <input type="date" [(ngModel)]="cardForm.validFrom" />
             </div>
             <div class="form-group">
-              <label>Valid To</label>
+              <label i18n="@@fuel.labelValidTo">Valid To</label>
               <input type="date" [(ngModel)]="cardForm.validTo" />
             </div>
             <div class="form-group">
-              <label>Notes</label>
+              <label i18n="@@fuel.labelNotes">Notes</label>
               <input [(ngModel)]="cardForm.notes" />
             </div>
           </div>
           @if (formError()) { <div class="form-error">{{ formError() }}</div> }
           <div class="modal-actions">
-            <button class="btn btn-secondary" (click)="closeCreateCard()">Cancel</button>
+            <button class="btn btn-secondary" (click)="closeCreateCard()" i18n="@@fuel.cancel">Cancel</button>
             <button class="btn btn-primary" [disabled]="saving()" (click)="saveCard()">
               {{ saving() ? 'Saving…' : editCardId ? 'Update' : 'Add Card' }}
             </button>
@@ -183,92 +184,94 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
     @if (showCreateTx) {
       <div class="modal-overlay" (click)="closeCreateTx()">
         <div class="modal-box" (click)="$event.stopPropagation()">
-          <h2 class="modal-title">Add Fuel Transaction</h2>
+          <h2 class="modal-title" i18n="@@fuel.addTransactionTitle">Add Fuel Transaction</h2>
           <div class="form-grid">
             <div class="form-group">
-              <label>Vehicle *</label>
+              <label i18n="@@fuel.labelVehicleRequired">Vehicle *</label>
               <app-search-select
                 [items]="vehicles()"
                 [displayFn]="vehicleDisplayFn"
                 valueField="vehicleId"
                 placeholder="Select vehicle…"
+                i18n-placeholder="@@fuel.selectVehiclePlaceholder"
                 [(ngModel)]="txForm.vehicleId"
                 (ngModelChange)="onTxVehicleChange($event)">
               </app-search-select>
             </div>
             <div class="form-group">
-              <label>Fuel Card</label>
+              <label i18n="@@fuel.labelFuelCard">Fuel Card</label>
               <app-search-select
                 [items]="cards()"
                 [displayFn]="fuelCardDisplayFn"
                 valueField="fuelCardId"
                 placeholder="No card (cash)"
+                i18n-placeholder="@@fuel.noCardPlaceholder"
                 [(ngModel)]="txForm.fuelCardId">
               </app-search-select>
             </div>
             <div class="form-group">
-              <label>Fuel Type *</label>
+              <label i18n="@@fuel.labelFuelTypeRequired">Fuel Type *</label>
               <select [(ngModel)]="txForm.fuelTypeId" (ngModelChange)="recalcTotalCost()">
-                <option [ngValue]="0">Select type…</option>
+                <option [ngValue]="0" i18n="@@fuel.selectTypePlaceholder">Select type…</option>
                 @for (f of fuelTypes(); track f.fuelTypeId) {
                   <option [ngValue]="f.fuelTypeId">{{ f.label }}</option>
                 }
               </select>
             </div>
             <div class="form-group">
-              <label>Date *</label>
+              <label i18n="@@fuel.labelDateRequired">Date *</label>
               <input type="datetime-local" [(ngModel)]="txForm.postedAt" />
             </div>
 
             @if (!isElectric()) {
               <div class="form-group">
-                <label>Liters</label>
+                <label i18n="@@fuel.labelLiters">Liters</label>
                 <input type="number" [(ngModel)]="txForm.liters" min="0" step="0.01"
                       (ngModelChange)="recalcTotalCost()" />
               </div>
               <div class="form-group">
-                <label>Price/L (EUR)</label>
+                <label i18n="@@fuel.labelPricePerLiter">Price/L (EUR)</label>
                 <input type="number" [(ngModel)]="txForm.pricePerLiter" min="0" step="0.001"
                       (ngModelChange)="recalcTotalCost()" />
               </div>
             }
             @if (isElectric()) {
               <div class="form-group">
-                <label>kWh</label>
+                <label i18n="@@fuel.labelKwh">kWh</label>
                 <input type="number" [(ngModel)]="txForm.energyKwh" min="0" step="0.01"
                       (ngModelChange)="recalcTotalCost()" />
               </div>
               <div class="form-group">
-                <label>Price/kWh (EUR)</label>
+                <label i18n="@@fuel.labelPricePerKwh">Price/kWh (EUR)</label>
                 <input type="number" [(ngModel)]="txForm.pricePerKwh" min="0" step="0.001"
                       (ngModelChange)="recalcTotalCost()" />
               </div>
             }
 
             <div class="form-group">
-              <label>Total Cost (EUR) *</label>
+              <label i18n="@@fuel.labelTotalCostRequired">Total Cost (EUR) *</label>
               <input type="number" [(ngModel)]="txForm.totalCost" min="0" step="0.01" />
             </div>
             <div class="form-group">
-              <label>Odometer (km)</label>
+              <label i18n="@@fuel.labelOdometer">Odometer (km)</label>
               <input type="number" [(ngModel)]="txForm.odometerKm" min="0" />
             </div>
             <div class="form-group">
-              <label>Station</label>
+              <label i18n="@@fuel.labelStation">Station</label>
               <input [(ngModel)]="txForm.stationName" placeholder="INA Zagreb…" />
             </div>
             <div class="form-group">
-              <label>Receipt #</label>
+              <label i18n="@@fuel.labelReceiptNumber">Receipt #</label>
               <input [(ngModel)]="txForm.receiptNumber" />
             </div>
             <div class="form-group span-2">
-              <label>Notes</label>
+              <label i18n="@@fuel.labelNotes">Notes</label>
               <textarea [(ngModel)]="txForm.notes" rows="2"></textarea>
             </div>
           </div>
           @if (formError()) { <div class="form-error">{{ formError() }}</div> }
           <div class="modal-actions">
-            <button class="btn btn-secondary" (click)="closeCreateTx()">Cancel</button>
+            <button class="btn btn-secondary" (click)="closeCreateTx()" i18n="@@fuel.cancel">Cancel</button>
             <button class="btn btn-primary" [disabled]="saving()" (click)="saveTx()">
               {{ saving() ? 'Saving…' : 'Add Transaction' }}
             </button>
@@ -280,6 +283,7 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
     <app-confirm-modal
       [visible]="!!deleteCardTarget"
       title="Delete Fuel Card"
+      i18n-title="@@fuel.deleteCardTitle"
       [message]="'Delete card ' + (deleteCardTarget?.cardNumber ?? '') + '?'"
       (confirmed)="doDeleteCard()"
       (cancelled)="deleteCardTarget = null"
@@ -287,7 +291,9 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
     <app-confirm-modal
       [visible]="!!deleteTxTarget"
       title="Delete Transaction"
+      i18n-title="@@fuel.deleteTxTitle"
       message="Delete this fuel transaction? This cannot be undone."
+      i18n-message="@@fuel.deleteTxMessage"
       (confirmed)="doDeleteTx()"
       (cancelled)="deleteTxTarget = null"
     />

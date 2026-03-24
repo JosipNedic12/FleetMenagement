@@ -20,32 +20,32 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
 
       <!-- Breadcrumb -->
       <nav class="breadcrumb">
-        <a routerLink="/dashboard">Dashboard</a>
+        <a routerLink="/dashboard" i18n="@@maintenance.breadcrumb.dashboard">Dashboard</a>
         <span class="bc-sep">›</span>
-        <a routerLink="/maintenance">Maintenance</a>
+        <a routerLink="/maintenance" i18n="@@maintenance.breadcrumb.maintenance">Maintenance</a>
         <span class="bc-sep">›</span>
-        <span>Order #{{ order()?.orderId ?? 'Detail' }}</span>
+        <span i18n="@@maintenance.breadcrumb.orderDetail">Order #{{ order()?.orderId ?? 'Detail' }}</span>
       </nav>
 
       <div class="page-header">
         <div style="display:flex; align-items:center; gap:12px">
           <button class="back-btn" (click)="goBack()">
             <lucide-icon [img]="icons.ArrowLeft" [size]="16" [strokeWidth]="2"></lucide-icon>
-            Maintenance
+            <ng-container i18n="@@maintenance.breadcrumb.maintenance">Maintenance</ng-container>
           </button>
           <div>
             @if (order()) {
-              <h1 class="page-title">Maintenance Order #{{ order()!.orderId }} · {{ order()!.vehicleMake }} {{ order()!.vehicleModel }}</h1>
-              <p class="page-subtitle"><span class="mono">{{ order()!.registrationNumber }}</span> · Reported {{ order()!.reportedAt | date:'dd.MM.yyyy' }}{{ order()!.vendorName ? ' · ' + order()!.vendorName : '' }}</p>
+              <h1 class="page-title" i18n="@@maintenance.detail.title">Maintenance Order #{{ order()!.orderId }} · {{ order()!.vehicleMake }} {{ order()!.vehicleModel }}</h1>
+              <p class="page-subtitle" i18n="@@maintenance.detail.subtitle"><span class="mono">{{ order()!.registrationNumber }}</span> · Reported {{ order()!.reportedAt | date:'dd.MM.yyyy' }}{{ order()!.vendorName ? ' · ' + order()!.vendorName : '' }}</p>
             } @else {
-              <h1 class="page-title">Maintenance Detail</h1>
+              <h1 class="page-title" i18n="@@maintenance.detail.titleFallback">Maintenance Detail</h1>
             }
           </div>
         </div>
         <div style="display:flex; align-items:center; gap:10px">
           <button *hasRole="['Admin','FleetManager']" class="btn btn-secondary" (click)="startEdit()" [disabled]="!order()">
             <lucide-icon [img]="icons.Pencil" [size]="15" [strokeWidth]="2"></lucide-icon>
-            Edit
+            <ng-container i18n="@@maintenance.action.edit">Edit</ng-container>
           </button>
           @if (order()) {
             <app-badge
@@ -57,38 +57,38 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
       </div>
 
       @if (loading()) {
-        <div class="table-loading">Loading…</div>
+        <div class="table-loading" i18n="@@maintenance.detail.loading">Loading…</div>
       } @else if (error()) {
         <div class="table-empty">{{ error() }}</div>
       } @else if (!order()) {
-        <div class="table-empty">Maintenance order not found.</div>
+        <div class="table-empty" i18n="@@maintenance.detail.notFound">Maintenance order not found.</div>
       } @else {
         <div class="overview-grid">
 
           <!-- Order Info -->
           <div class="info-group">
-            <div class="info-group-title">Order Info</div>
+            <div class="info-group-title" i18n="@@maintenance.detail.sectionOrderInfo">Order Info</div>
             <div class="kv-grid">
               <div class="kv-row">
-                <span class="kv-label">Order ID</span>
+                <span class="kv-label" i18n="@@maintenance.detail.labelOrderId">Order ID</span>
                 <span class="kv-value mono">{{ order()!.orderId }}</span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Status</span>
+                <span class="kv-label" i18n="@@maintenance.col.status">Status</span>
                 <span class="kv-value">
                   <app-badge [label]="order()!.status" [variant]="statusVariant(order()!.status)" />
                 </span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Vehicle</span>
+                <span class="kv-label" i18n="@@maintenance.col.vehicle">Vehicle</span>
                 <span class="kv-value">{{ order()!.vehicleMake }} {{ order()!.vehicleModel }}<br><span class="mono" style="font-size:12px; color:var(--text-muted)">{{ order()!.registrationNumber }}</span></span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Vendor</span>
+                <span class="kv-label" i18n="@@maintenance.col.vendor">Vendor</span>
                 <span class="kv-value">{{ order()!.vendorName || '—' }}</span>
               </div>
               <div class="kv-row kv-full">
-                <span class="kv-label">Description</span>
+                <span class="kv-label" i18n="@@maintenance.form.descriptionOptional">Description</span>
                 <span class="kv-value">{{ order()!.description || '—' }}</span>
               </div>
             </div>
@@ -96,30 +96,30 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
 
           <!-- Dates & Cost -->
           <div class="info-group">
-            <div class="info-group-title">Dates &amp; Cost</div>
+            <div class="info-group-title" i18n="@@maintenance.detail.sectionDatesCost">Dates &amp; Cost</div>
             <div class="kv-grid">
               <div class="kv-row">
-                <span class="kv-label">Reported</span>
+                <span class="kv-label" i18n="@@maintenance.col.reported">Reported</span>
                 <span class="kv-value">{{ order()!.reportedAt | date:'dd.MM.yyyy' }}</span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Scheduled</span>
+                <span class="kv-label" i18n="@@maintenance.col.scheduled">Scheduled</span>
                 <span class="kv-value">{{ order()!.scheduledAt ? (order()!.scheduledAt | date:'dd.MM.yyyy') : '—' }}</span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Closed</span>
+                <span class="kv-label" i18n="@@maintenance.detail.labelClosed">Closed</span>
                 <span class="kv-value">{{ order()!.closedAt ? (order()!.closedAt | date:'dd.MM.yyyy') : '—' }}</span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Odometer</span>
+                <span class="kv-label" i18n="@@maintenance.detail.labelOdometer">Odometer</span>
                 <span class="kv-value">{{ order()!.odometerKm != null ? (order()!.odometerKm | euNumber) + ' km' : '—' }}</span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Total Cost</span>
+                <span class="kv-label" i18n="@@maintenance.col.total">Total Cost</span>
                 <span class="kv-value">{{ order()!.totalCost != null ? (order()!.totalCost | euNumber:'1.2-2') + ' €' : '—' }}</span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Cancel Reason</span>
+                <span class="kv-label" i18n="@@maintenance.detail.labelCancelReason">Cancel Reason</span>
                 <span class="kv-value">{{ order()!.cancelReason || '—' }}</span>
               </div>
             </div>
@@ -128,15 +128,15 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
           <!-- Items -->
           @if (order()!.items && order()!.items.length > 0) {
             <div class="info-group info-group--full">
-              <div class="info-group-title">Maintenance Items</div>
+              <div class="info-group-title" i18n="@@maintenance.detail.sectionItems">Maintenance Items</div>
               <table class="table">
                 <thead>
                   <tr>
-                    <th>Type</th>
-                    <th>Parts Cost</th>
-                    <th>Labor Cost</th>
-                    <th>Total</th>
-                    <th>Notes</th>
+                    <th i18n="@@maintenance.form.type">Type</th>
+                    <th i18n="@@maintenance.form.partsCost">Parts Cost</th>
+                    <th i18n="@@maintenance.form.laborCost">Labor Cost</th>
+                    <th i18n="@@maintenance.col.total">Total</th>
+                    <th i18n="@@maintenance.form.notes">Notes</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -162,32 +162,33 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
     @if (showEdit) {
       <div class="modal-overlay" (click)="closeEdit()">
         <div class="modal-box" (click)="$event.stopPropagation()">
-          <h2 class="modal-title">Edit Order</h2>
+          <h2 class="modal-title" i18n="@@maintenance.edit.title">Edit Order</h2>
           <div class="form-grid">
             <div class="form-group">
-              <label>Vendor</label>
+              <label i18n="@@maintenance.form.vendorOptional">Vendor</label>
               <app-search-select
                 [items]="vendors()"
                 [displayFn]="vendorDisplayFn"
                 valueField="vendorId"
                 placeholder="No vendor"
+                i18n-placeholder="@@maintenance.form.noVendor"
                 [(ngModel)]="editForm.vendorId">
               </app-search-select>
             </div>
             <div class="form-group">
-              <label>Scheduled At</label>
+              <label i18n="@@maintenance.form.scheduledAtOptional">Scheduled At</label>
               <input type="datetime-local" [(ngModel)]="editForm.scheduledAt" />
             </div>
             <div class="form-group span-2">
-              <label>Description</label>
+              <label i18n="@@maintenance.form.descriptionOptional">Description</label>
               <textarea [(ngModel)]="editForm.description" rows="3"></textarea>
             </div>
           </div>
           @if (formError()) { <div class="form-error">{{ formError() }}</div> }
           <div class="modal-actions">
-            <button class="btn btn-secondary" (click)="closeEdit()">Cancel</button>
+            <button class="btn btn-secondary" (click)="closeEdit()" i18n="@@maintenance.btn.cancel">Cancel</button>
             <button class="btn btn-primary" [disabled]="saving()" (click)="saveEdit()">
-              @if (saving()) { <span class="btn-spinner"></span> Saving… } @else { Update }
+              @if (saving()) { <span class="btn-spinner"></span><ng-container i18n="@@maintenance.btn.saving"> Saving…</ng-container> } @else { <ng-container i18n="@@maintenance.btn.update">Update</ng-container> }
             </button>
           </div>
         </div>

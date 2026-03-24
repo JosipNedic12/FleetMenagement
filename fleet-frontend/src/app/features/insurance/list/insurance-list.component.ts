@@ -24,12 +24,12 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
       <!-- Header -->
       <div class="page-header">
         <div>
-          <h1 class="page-title">Insurance Policies</h1>
-          <p class="page-subtitle">{{ filtered().length }} records</p>
+          <h1 class="page-title" i18n="@@insurance.list.title">Insurance Policies</h1>
+          <p class="page-subtitle" i18n="@@insurance.list.subtitle">{{ filtered().length }} records</p>
         </div>
         <div class="header-actions">
-          <input class="search-input" [ngModel]="search()" (ngModelChange)="search.set($event)" placeholder="Search vehicle, insurer, policy#…" />
-          <button *hasRole="['Admin','FleetManager']" class="btn btn-primary" (click)="showForm = true">
+          <input class="search-input" [ngModel]="search()" (ngModelChange)="search.set($event)" placeholder="Search vehicle, insurer, policy#…" i18n-placeholder="@@insurance.list.searchPlaceholder" />
+          <button *hasRole="['Admin','FleetManager']" class="btn btn-primary" (click)="showForm = true" i18n="@@insurance.list.newButton">
             + New Policy
           </button>
         </div>
@@ -37,29 +37,29 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
 
       <!-- Filter tabs -->
       <div class="filter-tabs">
-        <button [class.active]="filter() === 'all'"    (click)="filter.set('all')">All</button>
-        <button [class.active]="filter() === 'active'" (click)="filter.set('active')">Active</button>
-        <button [class.active]="filter() === 'expired'"(click)="filter.set('expired')">Expired</button>
+        <button [class.active]="filter() === 'all'"    (click)="filter.set('all')" i18n="@@insurance.list.filterAll">All</button>
+        <button [class.active]="filter() === 'active'" (click)="filter.set('active')" i18n="@@insurance.list.filterActive">Active</button>
+        <button [class.active]="filter() === 'expired'"(click)="filter.set('expired')" i18n="@@insurance.list.filterExpired">Expired</button>
       </div>
 
       <!-- Table -->
       <div class="table-card">
         @if (loading()) {
-          <div class="table-loading">Loading…</div>
+          <div class="table-loading" i18n="@@insurance.list.loading">Loading…</div>
         } @else if (filtered().length === 0) {
-          <div class="table-empty">No records found.</div>
+          <div class="table-empty" i18n="@@insurance.list.empty">No records found.</div>
         } @else {
           <table class="table">
             <thead>
               <tr>
-                <th>Vehicle</th>
-                <th>Policy #</th>
-                <th>Insurer</th>
-                <th>Valid From</th>
-                <th>Valid To</th>
-                <th>Premium</th>
-                <th>Status</th>
-                <th>Actions</th>
+                <th i18n="@@insurance.list.colVehicle">Vehicle</th>
+                <th i18n="@@insurance.list.colPolicyNumber">Policy #</th>
+                <th i18n="@@insurance.list.colInsurer">Insurer</th>
+                <th i18n="@@insurance.list.colValidFrom">Valid From</th>
+                <th i18n="@@insurance.list.colValidTo">Valid To</th>
+                <th i18n="@@insurance.list.colPremium">Premium</th>
+                <th i18n="@@insurance.list.colStatus">Status</th>
+                <th i18n="@@insurance.list.colActions">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -78,9 +78,9 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
                     />
                   </td>
                   <td class="actions">
-                    <button class="btn-icon" title="Documents" (click)="$event.stopPropagation(); openDocs(row)"><lucide-icon [img]="icons.Paperclip" [size]="15" [strokeWidth]="2"></lucide-icon></button>
-                    <button *hasRole="['Admin','FleetManager']" class="btn-icon" title="Edit" (click)="$event.stopPropagation(); startEdit(row)"><lucide-icon [img]="icons.Pencil" [size]="15" [strokeWidth]="2"></lucide-icon></button>
-                    <button *hasRole="'Admin'" class="btn-icon danger" title="Delete" (click)="$event.stopPropagation(); confirmDelete(row)"><lucide-icon [img]="icons.Trash2" [size]="15" [strokeWidth]="2"></lucide-icon></button>
+                    <button class="btn-icon" title="Documents" i18n-title="@@insurance.list.actionDocuments" (click)="$event.stopPropagation(); openDocs(row)"><lucide-icon [img]="icons.Paperclip" [size]="15" [strokeWidth]="2"></lucide-icon></button>
+                    <button *hasRole="['Admin','FleetManager']" class="btn-icon" title="Edit" i18n-title="@@insurance.list.actionEdit" (click)="$event.stopPropagation(); startEdit(row)"><lucide-icon [img]="icons.Pencil" [size]="15" [strokeWidth]="2"></lucide-icon></button>
+                    <button *hasRole="'Admin'" class="btn-icon danger" title="Delete" i18n-title="@@insurance.list.actionDelete" (click)="$event.stopPropagation(); confirmDelete(row)"><lucide-icon [img]="icons.Trash2" [size]="15" [strokeWidth]="2"></lucide-icon></button>
                   </td>
                 </tr>
               }
@@ -94,11 +94,11 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
     @if (showForm) {
       <div class="modal-overlay" (click)="closeForm()">
         <div class="modal-box" (click)="$event.stopPropagation()">
-          <h2 class="modal-title">{{ editId ? 'Edit Policy' : 'New Insurance Policy' }}</h2>
+          <h2 class="modal-title" i18n="@@insurance.list.formTitle">{{ editId ? 'Edit Policy' : 'New Insurance Policy' }}</h2>
 
           <div class="form-grid">
             <div class="form-group">
-              <label>Vehicle *</label>
+              <label i18n="@@insurance.list.fieldVehicle">Vehicle *</label>
               <app-search-select
                 [items]="vehicles()"
                 [displayFn]="vehicleDisplayFn"
@@ -109,28 +109,28 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
               </app-search-select>
             </div>
             <div class="form-group">
-              <label>Policy Number *</label>
-              <input [(ngModel)]="form.policyNumber" placeholder="POL-2025-001" />
+              <label i18n="@@insurance.list.fieldPolicyNumber">Policy Number *</label>
+              <input [(ngModel)]="form.policyNumber" placeholder="POL-2025-001" i18n-placeholder="@@insurance.list.fieldPolicyNumberPlaceholder" />
             </div>
             <div class="form-group">
-              <label>Insurer *</label>
-              <input [(ngModel)]="form.insurer" placeholder="Croatia osiguranje" />
+              <label i18n="@@insurance.list.fieldInsurer">Insurer *</label>
+              <input [(ngModel)]="form.insurer" placeholder="Croatia osiguranje" i18n-placeholder="@@insurance.list.fieldInsurerPlaceholder" />
             </div>
             <div class="form-group">
-              <label>Premium (EUR) *</label>
+              <label i18n="@@insurance.list.fieldPremium">Premium (EUR) *</label>
               <input type="number" [(ngModel)]="form.premium" min="0" />
             </div>
             <div class="form-group">
-              <label>Valid From *</label>
+              <label i18n="@@insurance.list.fieldValidFrom">Valid From *</label>
               <input type="date" [(ngModel)]="form.validFrom" />
             </div>
             <div class="form-group">
-              <label>Valid To *</label>
+              <label i18n="@@insurance.list.fieldValidTo">Valid To *</label>
               <input type="date" [(ngModel)]="form.validTo" />
             </div>
             <div class="form-group span-2">
-              <label>Coverage Notes</label>
-              <textarea [(ngModel)]="form.coverageNotes" rows="2" placeholder="AO + kasko…"></textarea>
+              <label i18n="@@insurance.list.fieldCoverageNotes">Coverage Notes</label>
+              <textarea [(ngModel)]="form.coverageNotes" rows="2" placeholder="AO + kasko…" i18n-placeholder="@@insurance.list.fieldCoverageNotesPlaceholder"></textarea>
             </div>
           </div>
 
@@ -139,8 +139,8 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
           }
 
           <div class="modal-actions">
-            <button class="btn btn-secondary" (click)="closeForm()">Cancel</button>
-            <button class="btn btn-primary" [disabled]="saving()" (click)="save()">
+            <button class="btn btn-secondary" (click)="closeForm()" i18n="@@insurance.list.cancelButton">Cancel</button>
+            <button class="btn btn-primary" [disabled]="saving()" (click)="save()" i18n="@@insurance.list.saveButton">
               {{ saving() ? 'Saving…' : editId ? 'Update' : 'Create' }}
             </button>
           </div>
@@ -151,7 +151,7 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
     <!-- Delete confirmation -->
     <app-confirm-modal
       [visible]="!!deleteTarget"
-      title="Delete Insurance Policy"
+      title="Delete Insurance Policy" i18n-title="@@insurance.list.deleteTitle"
       [message]="'Delete policy ' + (deleteTarget?.policyNumber ?? '') + '? This cannot be undone.'"
       (confirmed)="doDelete()"
       (cancelled)="deleteTarget = null"
@@ -161,7 +161,7 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
     @if (docsTarget) {
       <div class="modal-overlay" (click)="docsTarget = null">
         <div class="modal-box modal-box--wide" (click)="$event.stopPropagation()">
-          <h2 class="modal-title">Documents — {{ docsTarget.policyNumber }}</h2>
+          <h2 class="modal-title" i18n="@@insurance.list.docsTitle">Documents — {{ docsTarget.policyNumber }}</h2>
           <app-file-upload
             [entityType]="'Insurance'"
             [entityId]="docsTarget.policyId"
@@ -173,7 +173,7 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
             [entityId]="docsTarget.policyId"
           />
           <div class="modal-actions">
-            <button class="btn btn-secondary" (click)="docsTarget = null">Close</button>
+            <button class="btn btn-secondary" (click)="docsTarget = null" i18n="@@insurance.list.closeButton">Close</button>
           </div>
         </div>
       </div>

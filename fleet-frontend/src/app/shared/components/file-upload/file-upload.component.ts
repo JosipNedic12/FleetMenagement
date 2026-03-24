@@ -34,8 +34,8 @@ const ACCEPT = '.pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx';
             </button>
           </div>
         } @else {
-          <p class="drop-label">Drag & drop a file here, or <span class="drop-link">browse</span></p>
-          <p class="drop-hint">PDF, JPG, PNG, DOC, XLS — max 10 MB</p>
+          <p class="drop-label" i18n="@@shared.fileUpload.dropLabel">Drag &amp; drop a file here, or <span class="drop-link">browse</span></p>
+          <p class="drop-hint" i18n="@@shared.fileUpload.dropHint">PDF, JPG, PNG, DOC, XLS — max 10 MB</p>
         }
       </div>
 
@@ -56,19 +56,19 @@ const ACCEPT = '.pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx';
       @if (error()) {
         <div class="upload-error-row">
           <p class="upload-error">{{ error() }}</p>
-          <button class="retry-btn" (click)="upload()">Retry</button>
+          <button class="retry-btn" (click)="upload()" i18n="@@shared.fileUpload.retryBtn">Retry</button>
         </div>
       }
 
       <div class="upload-controls">
         <div class="upload-fields">
           <select class="ctrl-select" [(ngModel)]="selectedCategory">
-            <option value="">Category (optional)</option>
+            <option value="" i18n="@@shared.fileUpload.categoryPlaceholder">Category (optional)</option>
             @for (cat of categories; track cat) {
               <option [value]="cat">{{ cat }}</option>
             }
           </select>
-          <input class="ctrl-input" type="text" placeholder="Notes (optional)" [(ngModel)]="notesValue" />
+          <input class="ctrl-input" type="text" i18n-placeholder="@@shared.fileUpload.notesPlaceholder" placeholder="Notes (optional)" [(ngModel)]="notesValue" />
         </div>
         <button
           class="upload-btn"
@@ -76,10 +76,10 @@ const ACCEPT = '.pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx';
           (click)="upload()"
         >
           @if (uploading()) {
-            <span class="spinner"></span> Uploading…
+            <span class="spinner"></span> <ng-container i18n="@@shared.fileUpload.uploading">Uploading…</ng-container>
           } @else {
             <lucide-icon [img]="icons.Upload" [size]="14" [strokeWidth]="2"></lucide-icon>
-            Upload
+            <ng-container i18n="@@shared.fileUpload.uploadBtn">Upload</ng-container>
           }
         </button>
       </div>
@@ -253,7 +253,7 @@ export class FileUploadComponent {
       },
       error: () => {
         this.uploading.set(false);
-        this.error.set('Upload failed. Please try again.');
+        this.error.set($localize`:@@shared.fileUpload.uploadError:Upload failed. Please try again.`);
       }
     });
   }
@@ -266,7 +266,7 @@ export class FileUploadComponent {
 
   private selectFile(file: File): void {
     if (file.size > MAX_BYTES) {
-      this.error.set('File exceeds the 10 MB limit.');
+      this.error.set($localize`:@@shared.fileUpload.fileTooLarge:File exceeds the 10 MB limit.`);
       return;
     }
     this.error.set(null);

@@ -19,32 +19,40 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
 
       <!-- Breadcrumb -->
       <nav class="breadcrumb">
-        <a routerLink="/dashboard">Dashboard</a>
+        <a routerLink="/dashboard" i18n="@@inspections.detail.breadcrumbDashboard">Dashboard</a>
         <span class="bc-sep">›</span>
-        <a routerLink="/inspections">Inspections</a>
+        <a routerLink="/inspections" i18n="@@inspections.detail.breadcrumbList">Inspections</a>
         <span class="bc-sep">›</span>
-        <span>{{ inspection() ? inspection()!.registrationNumber + ' · ' + (inspection()!.inspectedAt | date:'dd.MM.yyyy') : 'Detail' }}</span>
+        @if (inspection()) {
+          <span>{{ inspection()!.registrationNumber + ' · ' + (inspection()!.inspectedAt | date:'dd.MM.yyyy') }}</span>
+        } @else {
+          <span i18n="@@inspections.detail.breadcrumbDetail">Detail</span>
+        }
       </nav>
 
       <div class="page-header">
         <div style="display:flex; align-items:center; gap:12px">
           <button class="back-btn" (click)="goBack()">
             <lucide-icon [img]="icons.ArrowLeft" [size]="16" [strokeWidth]="2"></lucide-icon>
-            Inspections
+            <ng-container i18n="@@inspections.detail.backButton">Inspections</ng-container>
           </button>
           <div>
             @if (inspection()) {
-              <h1 class="page-title">Inspection · {{ inspection()!.vehicleMake }} {{ inspection()!.vehicleModel }}</h1>
-              <p class="page-subtitle"><span class="mono">{{ inspection()!.registrationNumber }}</span> · Inspected {{ inspection()!.inspectedAt | date:'dd.MM.yyyy' }}{{ inspection()!.validTo ? ' · Valid to ' + (inspection()!.validTo | date:'dd.MM.yyyy') : '' }}</p>
+              <h1 class="page-title"><ng-container i18n="@@inspections.detail.titlePrefix">Inspection ·</ng-container> {{ inspection()!.vehicleMake }} {{ inspection()!.vehicleModel }}</h1>
+              <p class="page-subtitle">
+                <span class="mono">{{ inspection()!.registrationNumber }}</span>
+                · <ng-container i18n="@@inspections.detail.inspectedAtPrefix">Inspected</ng-container> {{ inspection()!.inspectedAt | date:'dd.MM.yyyy' }}
+                @if (inspection()!.validTo) { · <ng-container i18n="@@inspections.detail.validToPrefix">Valid to</ng-container> {{ inspection()!.validTo | date:'dd.MM.yyyy' }} }
+              </p>
             } @else {
-              <h1 class="page-title">Inspection Detail</h1>
+              <h1 class="page-title" i18n="@@inspections.detail.titleFallback">Inspection Detail</h1>
             }
           </div>
         </div>
         <div style="display:flex; align-items:center; gap:10px">
           <button *hasRole="['Admin','FleetManager']" class="btn btn-secondary" (click)="startEdit()" [disabled]="!inspection()">
             <lucide-icon [img]="icons.Pencil" [size]="15" [strokeWidth]="2"></lucide-icon>
-            Edit
+            <ng-container i18n="@@inspections.detail.editButton">Edit</ng-container>
           </button>
           @if (inspection()) {
             <app-badge
@@ -56,34 +64,34 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
       </div>
 
       @if (loading()) {
-        <div class="table-loading">Loading…</div>
+        <div class="table-loading" i18n="@@inspections.detail.loading">Loading…</div>
       } @else if (error()) {
         <div class="table-empty">{{ error() }}</div>
       } @else if (!inspection()) {
-        <div class="table-empty">Inspection not found.</div>
+        <div class="table-empty" i18n="@@inspections.detail.notFound">Inspection not found.</div>
       } @else {
         <div class="overview-grid">
 
           <!-- Inspection Info -->
           <div class="info-group">
-            <div class="info-group-title">Inspection Info</div>
+            <div class="info-group-title" i18n="@@inspections.detail.sectionInfo">Inspection Info</div>
             <div class="kv-grid">
               <div class="kv-row">
-                <span class="kv-label">Inspection ID</span>
+                <span class="kv-label" i18n="@@inspections.detail.inspectionId">Inspection ID</span>
                 <span class="kv-value mono">{{ inspection()!.inspectionId }}</span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Vehicle</span>
+                <span class="kv-label" i18n="@@inspections.detail.vehicle">Vehicle</span>
                 <span class="kv-value">{{ inspection()!.vehicleMake }} {{ inspection()!.vehicleModel }}<br><span class="mono" style="font-size:12px; color:var(--text-muted)">{{ inspection()!.registrationNumber }}</span></span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Result</span>
+                <span class="kv-label" i18n="@@inspections.detail.result">Result</span>
                 <span class="kv-value">
                   <app-badge [label]="inspection()!.result" [variant]="resultVariant(inspection()!.result)" />
                 </span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Validity</span>
+                <span class="kv-label" i18n="@@inspections.detail.validity">Validity</span>
                 <span class="kv-value">
                   <app-badge [label]="inspection()!.isValid ? 'Valid' : 'Expired'" [variant]="inspection()!.isValid ? 'success' : 'danger'" />
                 </span>
@@ -93,22 +101,22 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
 
           <!-- Dates & Details -->
           <div class="info-group">
-            <div class="info-group-title">Dates &amp; Details</div>
+            <div class="info-group-title" i18n="@@inspections.detail.sectionDates">Dates &amp; Details</div>
             <div class="kv-grid">
               <div class="kv-row">
-                <span class="kv-label">Inspected At</span>
+                <span class="kv-label" i18n="@@inspections.detail.inspectedAt">Inspected At</span>
                 <span class="kv-value">{{ inspection()!.inspectedAt | date:'dd.MM.yyyy' }}</span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Valid To</span>
+                <span class="kv-label" i18n="@@inspections.detail.validTo">Valid To</span>
                 <span class="kv-value">{{ inspection()!.validTo ? (inspection()!.validTo | date:'dd.MM.yyyy') : '—' }}</span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Odometer</span>
+                <span class="kv-label" i18n="@@inspections.detail.odometer">Odometer</span>
                 <span class="kv-value">{{ inspection()!.odometerKm != null ? (inspection()!.odometerKm | euNumber) + ' km' : '—' }}</span>
               </div>
               <div class="kv-row kv-full">
-                <span class="kv-label">Notes</span>
+                <span class="kv-label" i18n="@@inspections.detail.notes">Notes</span>
                 <span class="kv-value">{{ inspection()!.notes || '—' }}</span>
               </div>
             </div>
@@ -122,38 +130,38 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
     @if (showEdit) {
       <div class="modal-overlay" (click)="closeEdit()">
         <div class="modal-box" (click)="$event.stopPropagation()">
-          <h2 class="modal-title">Edit Inspection</h2>
+          <h2 class="modal-title" i18n="@@inspections.detail.editTitle">Edit Inspection</h2>
           <div class="form-grid">
             <div class="form-group">
-              <label>Inspected At *</label>
+              <label i18n="@@inspections.form.inspectedAtLabel">Inspected At *</label>
               <input type="date" [(ngModel)]="editForm.inspectedAt" />
             </div>
             <div class="form-group">
-              <label>Valid To</label>
+              <label i18n="@@inspections.form.validToLabel">Valid To</label>
               <input type="date" [(ngModel)]="editForm.validTo" />
             </div>
             <div class="form-group">
-              <label>Result *</label>
+              <label i18n="@@inspections.form.resultLabel">Result *</label>
               <select [(ngModel)]="editForm.result">
-                <option value="passed">Passed</option>
-                <option value="failed">Failed</option>
-                <option value="conditional">Conditional</option>
+                <option value="passed" i18n="@@inspections.form.resultPassed">Passed</option>
+                <option value="failed" i18n="@@inspections.form.resultFailed">Failed</option>
+                <option value="conditional" i18n="@@inspections.form.resultConditional">Conditional</option>
               </select>
             </div>
             <div class="form-group">
-              <label>Odometer (km)</label>
+              <label i18n="@@inspections.form.odometerLabel">Odometer (km)</label>
               <input type="number" [(ngModel)]="editForm.odometerKm" min="0" />
             </div>
             <div class="form-group span-2">
-              <label>Notes {{ editForm.result === 'failed' ? '*' : '' }}</label>
-              <input [(ngModel)]="editForm.notes" placeholder="Required if failed" />
+              <label i18n="@@inspections.form.notesLabel">Notes {{ editForm.result === 'failed' ? '*' : '' }}</label>
+              <input [(ngModel)]="editForm.notes" placeholder="Required if failed" i18n-placeholder="@@inspections.form.notesPlaceholder" />
             </div>
           </div>
           @if (formError()) { <div class="form-error">{{ formError() }}</div> }
           <div class="modal-actions">
-            <button class="btn btn-secondary" (click)="closeEdit()">Cancel</button>
+            <button class="btn btn-secondary" (click)="closeEdit()" i18n="@@inspections.form.cancel">Cancel</button>
             <button class="btn btn-primary" [disabled]="saving()" (click)="saveEdit()">
-              @if (saving()) { <span class="btn-spinner"></span> Saving… } @else { Update }
+              @if (saving()) { <span class="btn-spinner"></span><ng-container i18n="@@inspections.form.saving"> Saving…</ng-container> } @else { <ng-container i18n="@@inspections.form.update">Update</ng-container> }
             </button>
           </div>
         </div>

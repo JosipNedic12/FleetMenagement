@@ -13,24 +13,26 @@ import { NotificationApiService } from './core/auth/feature-api.services';
 import { Notification } from './core/models/notification.models';
 import { DatePipe } from '@angular/common';
 
-const ROUTE_LABELS: Record<string, string> = {
-  '/dashboard':   'Dashboard',
-  '/reports':     'Reports',
-  '/vehicles':    'Vehicles',
-  '/drivers':     'Drivers',
-  '/assignments': 'Assignments',
-  '/maintenance': 'Maintenance',
-  '/fuel':        'Fuel',
-  '/odometer':    'Odometer',
-  '/insurance':   'Insurance',
-  '/registration':'Registration',
-  '/inspections': 'Inspections',
-  '/fines':       'Fines',
-  '/accidents':   'Accidents',
-  '/users':       'User Management',
-  '/profile':     'My Profile',
-  '/settings':    'Settings',
-};
+function buildRouteLabels(): Record<string, string> {
+  return {
+    '/dashboard':    $localize`:@@shell.route.dashboard:Dashboard`,
+    '/reports':      $localize`:@@shell.route.reports:Reports`,
+    '/vehicles':     $localize`:@@shell.route.vehicles:Vehicles`,
+    '/drivers':      $localize`:@@shell.route.drivers:Drivers`,
+    '/assignments':  $localize`:@@shell.route.assignments:Assignments`,
+    '/maintenance':  $localize`:@@shell.route.maintenance:Maintenance`,
+    '/fuel':         $localize`:@@shell.route.fuel:Fuel`,
+    '/odometer':     $localize`:@@shell.route.odometer:Odometer`,
+    '/insurance':    $localize`:@@shell.route.insurance:Insurance`,
+    '/registration': $localize`:@@shell.route.registration:Registration`,
+    '/inspections':  $localize`:@@shell.route.inspections:Inspections`,
+    '/fines':        $localize`:@@shell.route.fines:Fines`,
+    '/accidents':    $localize`:@@shell.route.accidents:Accidents`,
+    '/users':        $localize`:@@shell.route.users:User Management`,
+    '/profile':      $localize`:@@shell.route.profile:My Profile`,
+    '/settings':     $localize`:@@shell.route.settings:Settings`,
+  };
+}
 
 const TYPE_COLOR: Record<string, string> = {
   info:    '#3b82f6',
@@ -72,12 +74,12 @@ const ENTITY_ROUTES: Record<string, string> = {
         <header class="topbar">
           <!-- Left: hamburger (mobile) + breadcrumb -->
           <div class="topbar-left">
-            <button class="topbar-hamburger" (click)="mobileOpen.set(true)" aria-label="Open menu">
+            <button class="topbar-hamburger" (click)="mobileOpen.set(true)" i18n-aria-label="@@shell.hamburger.ariaLabel" aria-label="Open menu">
               <span class="hamburger-line"></span>
               <span class="hamburger-line"></span>
               <span class="hamburger-line"></span>
             </button>
-            <nav class="topbar-breadcrumb" aria-label="Breadcrumb">
+            <nav class="topbar-breadcrumb" i18n-aria-label="@@shell.breadcrumb.ariaLabel" aria-label="Breadcrumb">
               <span class="breadcrumb-home">MaxFleet</span>
               @if (pageLabel()) {
                 <span class="breadcrumb-sep">/</span>
@@ -99,7 +101,7 @@ const ENTITY_ROUTES: Record<string, string> = {
               @if (notifOpen()) {
                 <div class="notif-backdrop" (click)="notifOpen.set(false)"></div>
               }
-              <button class="topbar-icon-btn notif-btn" (click)="toggleNotifications()" aria-label="Notifications" title="Notifications">
+              <button class="topbar-icon-btn notif-btn" (click)="toggleNotifications()" i18n-aria-label="@@shell.notif.ariaLabel" aria-label="Notifications" i18n-title="@@shell.notif.title" title="Notifications">
                 <lucide-icon [img]="bellIcon" [size]="18" [strokeWidth]="1.8"></lucide-icon>
                 @if (unreadCount() > 0) {
                   <span class="notif-badge">{{ unreadCount() > 99 ? '99+' : unreadCount() }}</span>
@@ -108,16 +110,16 @@ const ENTITY_ROUTES: Record<string, string> = {
               @if (notifOpen()) {
                 <div class="notif-dropdown">
                   <div class="notif-header">
-                    <span class="notif-title">Notifications</span>
+                    <span class="notif-title" i18n="@@shell.notif.panelTitle">Notifications</span>
                     @if (unreadCount() > 0) {
-                      <button class="notif-mark-all" (click)="markAllAsRead()">Mark all as read</button>
+                      <button class="notif-mark-all" (click)="markAllAsRead()" i18n="@@shell.notif.markAllRead">Mark all as read</button>
                     }
                   </div>
                   <div class="notif-list">
                     @if (notifications().length === 0) {
                       <div class="notif-empty">
                         <lucide-icon [img]="bellIcon" [size]="28" [strokeWidth]="1.4"></lucide-icon>
-                        <span>No notifications</span>
+                        <span i18n="@@shell.notif.empty">No notifications</span>
                       </div>
                     } @else {
                       @for (n of notifications(); track n.notificationId) {
@@ -156,16 +158,16 @@ const ENTITY_ROUTES: Record<string, string> = {
                 <div class="user-dropdown">
                   <button class="dropdown-item" (click)="navigateTo('/profile')">
                     <lucide-icon [img]="userIcon" [size]="15" [strokeWidth]="1.8"></lucide-icon>
-                    My Profile
+                    <ng-container i18n="@@shell.userMenu.profile">My Profile</ng-container>
                   </button>
                   <button class="dropdown-item" (click)="navigateTo('/settings')">
                     <lucide-icon [img]="settingsIcon" [size]="15" [strokeWidth]="1.8"></lucide-icon>
-                    Settings
+                    <ng-container i18n="@@shell.userMenu.settings">Settings</ng-container>
                   </button>
                   <div class="dropdown-divider"></div>
                   <button class="dropdown-item dropdown-item--danger" (click)="doLogout()">
                     <lucide-icon [img]="logOutIcon" [size]="15" [strokeWidth]="1.8"></lucide-icon>
-                    Logout
+                    <ng-container i18n="@@shell.userMenu.logout">Logout</ng-container>
                   </button>
                 </div>
               }
@@ -668,11 +670,13 @@ export class AppShellComponent implements OnInit, OnDestroy {
     const mins  = Math.floor(diff / 60_000);
     const hours = Math.floor(diff / 3_600_000);
     const days  = Math.floor(diff / 86_400_000);
-    if (mins < 1)   return 'Just now';
-    if (mins < 60)  return `${mins} min ago`;
-    if (hours < 24) return `${hours} hour${hours > 1 ? 's' : ''} ago`;
-    if (days === 1) return 'Yesterday';
-    return `${days} days ago`;
+    if (mins < 1)   return $localize`:@@shell.time.justNow:Just now`;
+    if (mins < 60)  return $localize`:@@shell.time.minsAgo:${mins}:mins: min ago`;
+    if (hours < 24) return hours === 1
+      ? $localize`:@@shell.time.oneHourAgo:1 hour ago`
+      : $localize`:@@shell.time.hoursAgo:${hours}:hours: hours ago`;
+    if (days === 1) return $localize`:@@shell.time.yesterday:Yesterday`;
+    return $localize`:@@shell.time.daysAgo:${days}:days: days ago`;
   }
 
   navigateTo(path: string): void {
@@ -687,10 +691,12 @@ export class AppShellComponent implements OnInit, OnDestroy {
 
   private currentUrl = toSignal(this.navEnd$, { initialValue: this.router.url });
 
+  private readonly routeLabels = buildRouteLabels();
+
   pageLabel = computed(() => {
     const url = this.currentUrl() ?? '';
     const segment = '/' + url.split('/')[1];
-    return ROUTE_LABELS[segment] ?? '';
+    return this.routeLabels[segment] ?? '';
   });
 
   initials = computed(() =>

@@ -19,11 +19,11 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
 
       <!-- Breadcrumb -->
       <nav class="breadcrumb">
-        <a routerLink="/dashboard">Dashboard</a>
+        <a routerLink="/dashboard" i18n="@@fuel.breadcrumbDashboard">Dashboard</a>
         <span class="bc-sep">›</span>
-        <a routerLink="/fuel">Fuel</a>
+        <a routerLink="/fuel" i18n="@@fuel.breadcrumbFuel">Fuel</a>
         <span class="bc-sep">›</span>
-        <span>Transaction #{{ tx()?.transactionId ?? 'Detail' }}</span>
+        <span i18n="@@fuel.breadcrumbDetail">Transaction #{{ tx()?.transactionId ?? 'Detail' }}</span>
       </nav>
 
       <div class="page-header">
@@ -37,14 +37,14 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
               <h1 class="page-title">Fuel Transaction #{{ tx()!.transactionId }} · {{ tx()!.vehicleMake }} {{ tx()!.vehicleModel }}</h1>
               <p class="page-subtitle"><span class="mono">{{ tx()!.registrationNumber }}</span> · {{ tx()!.postedAt | date:'dd.MM.yyyy' }} · {{ tx()!.fuelTypeName }} · {{ tx()!.totalCost | euNumber:'1.2-2' }} €</p>
             } @else {
-              <h1 class="page-title">Fuel Transaction Detail</h1>
+              <h1 class="page-title" i18n="@@fuel.detailTitle">Fuel Transaction Detail</h1>
             }
           </div>
         </div>
         <div style="display:flex; align-items:center; gap:10px">
           <button *hasRole="['Admin','FleetManager']" class="btn btn-secondary" (click)="startEdit()" [disabled]="!tx()">
             <lucide-icon [img]="icons.Pencil" [size]="15" [strokeWidth]="2"></lucide-icon>
-            Edit
+            <ng-container i18n="@@fuel.editButton">Edit</ng-container>
           </button>
           @if (tx()?.isSuspicious) {
             <app-badge label="Suspicious" variant="danger" />
@@ -53,40 +53,40 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
       </div>
 
       @if (loading()) {
-        <div class="table-loading">Loading…</div>
+        <div class="table-loading" i18n="@@fuel.loading">Loading…</div>
       } @else if (error()) {
         <div class="table-empty">{{ error() }}</div>
       } @else if (!tx()) {
-        <div class="table-empty">Fuel transaction not found.</div>
+        <div class="table-empty" i18n="@@fuel.txNotFound">Fuel transaction not found.</div>
       } @else {
         <div class="overview-grid">
 
           <!-- Transaction Info -->
           <div class="info-group">
-            <div class="info-group-title">Transaction Info</div>
+            <div class="info-group-title" i18n="@@fuel.sectionTransactionInfo">Transaction Info</div>
             <div class="kv-grid">
               <div class="kv-row">
-                <span class="kv-label">Transaction ID</span>
+                <span class="kv-label" i18n="@@fuel.kvTransactionId">Transaction ID</span>
                 <span class="kv-value mono">{{ tx()!.transactionId }}</span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Date</span>
+                <span class="kv-label" i18n="@@fuel.kvDate">Date</span>
                 <span class="kv-value">{{ tx()!.postedAt | date:'dd.MM.yyyy HH:mm' }}</span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Vehicle</span>
+                <span class="kv-label" i18n="@@fuel.kvVehicle">Vehicle</span>
                 <span class="kv-value">{{ tx()!.vehicleMake }} {{ tx()!.vehicleModel }}<br><span class="mono" style="font-size:12px; color:var(--text-muted)">{{ tx()!.registrationNumber }}</span></span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Fuel Type</span>
+                <span class="kv-label" i18n="@@fuel.kvFuelType">Fuel Type</span>
                 <span class="kv-value">{{ tx()!.fuelTypeName }}</span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Station</span>
+                <span class="kv-label" i18n="@@fuel.kvStation">Station</span>
                 <span class="kv-value">{{ tx()!.stationName || '—' }}</span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Suspicious</span>
+                <span class="kv-label" i18n="@@fuel.kvSuspicious">Suspicious</span>
                 <span class="kv-value">
                   <app-badge
                     [label]="tx()!.isSuspicious ? 'Yes' : 'No'"
@@ -99,30 +99,30 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
 
           <!-- Cost & Volume -->
           <div class="info-group">
-            <div class="info-group-title">Cost &amp; Volume</div>
+            <div class="info-group-title" i18n="@@fuel.sectionCostVolume">Cost &amp; Volume</div>
             <div class="kv-grid">
               <div class="kv-row">
-                <span class="kv-label">Litres</span>
+                <span class="kv-label" i18n="@@fuel.kvLitres">Litres</span>
                 <span class="kv-value">{{ tx()!.liters != null ? (tx()!.liters | euNumber:'1.2-2') : '—' }}</span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Price / Litre</span>
+                <span class="kv-label" i18n="@@fuel.kvPricePerLitre">Price / Litre</span>
                 <span class="kv-value">{{ tx()!.pricePerLiter != null ? (tx()!.pricePerLiter | euNumber:'1.3-3') + ' €' : '—' }}</span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Energy (kWh)</span>
+                <span class="kv-label" i18n="@@fuel.kvEnergyKwh">Energy (kWh)</span>
                 <span class="kv-value">{{ tx()!.energyKwh != null ? (tx()!.energyKwh | euNumber:'1.2-2') : '—' }}</span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Price / kWh</span>
+                <span class="kv-label" i18n="@@fuel.kvPricePerKwh">Price / kWh</span>
                 <span class="kv-value">{{ tx()!.pricePerKwh != null ? (tx()!.pricePerKwh | euNumber:'1.3-3') + ' €' : '—' }}</span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Total Cost</span>
+                <span class="kv-label" i18n="@@fuel.kvTotalCost">Total Cost</span>
                 <span class="kv-value">{{ tx()!.totalCost | euNumber:'1.2-2' }} €</span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Odometer</span>
+                <span class="kv-label" i18n="@@fuel.kvOdometer">Odometer</span>
                 <span class="kv-value">{{ tx()!.odometerKm != null ? (tx()!.odometerKm | euNumber) + ' km' : '—' }}</span>
               </div>
             </div>
@@ -130,18 +130,18 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
 
           <!-- Additional Details -->
           <div class="info-group info-group--full">
-            <div class="info-group-title">Additional Details</div>
+            <div class="info-group-title" i18n="@@fuel.sectionAdditionalDetails">Additional Details</div>
             <div class="kv-grid kv-grid--3">
               <div class="kv-row">
-                <span class="kv-label">Fuel Card</span>
+                <span class="kv-label" i18n="@@fuel.kvFuelCard">Fuel Card</span>
                 <span class="kv-value mono">{{ tx()!.cardNumber || '—' }}</span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Receipt Number</span>
+                <span class="kv-label" i18n="@@fuel.kvReceiptNumber">Receipt Number</span>
                 <span class="kv-value mono">{{ tx()!.receiptNumber || '—' }}</span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Notes</span>
+                <span class="kv-label" i18n="@@fuel.kvNotes">Notes</span>
                 <span class="kv-value">{{ tx()!.notes || '—' }}</span>
               </div>
             </div>
@@ -155,30 +155,30 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
     @if (showEdit) {
       <div class="modal-overlay" (click)="closeEdit()">
         <div class="modal-box" (click)="$event.stopPropagation()">
-          <h2 class="modal-title">Edit Transaction</h2>
+          <h2 class="modal-title" i18n="@@fuel.editTransactionTitle">Edit Transaction</h2>
           <div class="form-grid">
             <div class="form-group">
-              <label>Date *</label>
+              <label i18n="@@fuel.labelDateRequired">Date *</label>
               <input type="datetime-local" [(ngModel)]="editForm.postedAt" />
             </div>
             <div class="form-group">
-              <label>Total Cost (EUR) *</label>
+              <label i18n="@@fuel.labelTotalCostRequired">Total Cost (EUR) *</label>
               <input type="number" [(ngModel)]="editForm.totalCost" min="0" step="0.01" />
             </div>
             <div class="form-group">
-              <label>Odometer (km)</label>
+              <label i18n="@@fuel.labelOdometer">Odometer (km)</label>
               <input type="number" [(ngModel)]="editForm.odometerKm" min="0" />
             </div>
             <div class="form-group span-2">
-              <label>Notes</label>
+              <label i18n="@@fuel.labelNotes">Notes</label>
               <textarea [(ngModel)]="editForm.notes" rows="2"></textarea>
             </div>
           </div>
           @if (formError()) { <div class="form-error">{{ formError() }}</div> }
           <div class="modal-actions">
-            <button class="btn btn-secondary" (click)="closeEdit()">Cancel</button>
+            <button class="btn btn-secondary" (click)="closeEdit()" i18n="@@fuel.cancel">Cancel</button>
             <button class="btn btn-primary" [disabled]="saving()" (click)="saveEdit()">
-              @if (saving()) { <span class="btn-spinner"></span> Saving… } @else { Update }
+              @if (saving()) { <span class="btn-spinner"></span><ng-container i18n="@@fuel.saving"> Saving…</ng-container> } @else { <ng-container i18n="@@fuel.update">Update</ng-container> }
             </button>
           </div>
         </div>

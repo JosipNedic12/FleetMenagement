@@ -29,9 +29,9 @@ type Tab = 'overview' | 'assignments' | 'fines' | 'accidents' | 'documents';
 
       <!-- Breadcrumb -->
       <nav class="breadcrumb">
-        <a routerLink="/dashboard">Dashboard</a>
+        <a routerLink="/dashboard" i18n="@@drivers.detail.breadcrumb.dashboard">Dashboard</a>
         <span class="bc-sep">›</span>
-        <a routerLink="/drivers">Drivers</a>
+        <a routerLink="/drivers" i18n="@@drivers.detail.breadcrumb.drivers">Drivers</a>
         <span class="bc-sep">›</span>
         <span>{{ driver()?.fullName ?? 'Detail' }}</span>
       </nav>
@@ -40,14 +40,14 @@ type Tab = 'overview' | 'assignments' | 'fines' | 'accidents' | 'documents';
         <div style="display:flex; align-items:center; gap:12px">
           <button class="back-btn" (click)="goBack()">
             <lucide-icon [img]="icons.ArrowLeft" [size]="16" [strokeWidth]="2"></lucide-icon>
-            Drivers
+            <ng-container i18n="@@drivers.detail.backBtn">Drivers</ng-container>
           </button>
           <div>
             @if (driver()) {
               <h1 class="page-title">{{ driver()!.fullName }}</h1>
               <p class="page-subtitle">{{ driver()!.department ?? 'No department' }} · License: <span class="mono">{{ driver()!.licenseNumber }}</span></p>
             } @else {
-              <h1 class="page-title">Driver Detail</h1>
+              <h1 class="page-title" i18n="@@drivers.detail.titleFallback">Driver Detail</h1>
             }
           </div>
         </div>
@@ -60,9 +60,9 @@ type Tab = 'overview' | 'assignments' | 'fines' | 'accidents' | 'documents';
       </div>
 
       @if (loading()) {
-        <div class="table-loading">Loading…</div>
+        <div class="table-loading" i18n="@@drivers.detail.loading">Loading…</div>
       } @else if (!driver()) {
-        <div class="table-empty">Driver not found.</div>
+        <div class="table-empty" i18n="@@drivers.detail.notFound">Driver not found.</div>
       } @else {
 
         <!-- Tab bar -->
@@ -82,7 +82,7 @@ type Tab = 'overview' | 'assignments' | 'fines' | 'accidents' | 'documents';
 
             <!-- Avatar + Personal Info -->
             <div class="info-group">
-              <div class="info-group-title">Personal Info</div>
+              <div class="info-group-title" i18n="@@drivers.detail.overview.personalInfo">Personal Info</div>
               <div class="driver-header">
                 <div class="avatar">{{ getInitials(driver()!.fullName) }}</div>
                 <div class="driver-header-details">
@@ -92,15 +92,15 @@ type Tab = 'overview' | 'assignments' | 'fines' | 'accidents' | 'documents';
               </div>
               <div class="kv-grid">
                 <div class="kv-row kv-full">
-                  <span class="kv-label">Full Name</span>
+                  <span class="kv-label" i18n="@@drivers.detail.overview.fullName">Full Name</span>
                   <span class="kv-value">{{ driver()!.fullName }}</span>
                 </div>
                 <div class="kv-row kv-full">
-                  <span class="kv-label">Department</span>
+                  <span class="kv-label" i18n="@@drivers.detail.overview.department">Department</span>
                   <span class="kv-value">{{ driver()!.department || '—' }}</span>
                 </div>
                 <div class="kv-row kv-full">
-                  <span class="kv-label">Notes</span>
+                  <span class="kv-label" i18n="@@drivers.detail.overview.notes">Notes</span>
                   <span class="kv-value">{{ driver()!.notes || '—' }}</span>
                 </div>
               </div>
@@ -108,20 +108,20 @@ type Tab = 'overview' | 'assignments' | 'fines' | 'accidents' | 'documents';
 
             <!-- License -->
             <div class="info-group">
-              <div class="info-group-title">License</div>
+              <div class="info-group-title" i18n="@@drivers.detail.overview.licenseSection">License</div>
               <div class="kv-grid">
                 <div class="kv-row kv-full">
-                  <span class="kv-label">License Number</span>
+                  <span class="kv-label" i18n="@@drivers.detail.overview.licenseNumber">License Number</span>
                   <span class="kv-value mono">{{ driver()!.licenseNumber }}</span>
                 </div>
                 <div class="kv-row kv-full">
-                  <span class="kv-label">License Expiry</span>
+                  <span class="kv-label" i18n="@@drivers.detail.overview.licenseExpiry">License Expiry</span>
                   <span class="kv-value" [class.expired-text]="driver()!.licenseExpired">
                     {{ driver()!.licenseExpiry | date:'dd.MM.yyyy' }}
                   </span>
                 </div>
                 <div class="kv-row kv-full">
-                  <span class="kv-label">License Status</span>
+                  <span class="kv-label" i18n="@@drivers.detail.overview.licenseStatus">License Status</span>
                   <span class="kv-value">
                     <app-badge
                       [label]="driver()!.licenseExpired ? 'Expired' : 'Valid'"
@@ -130,7 +130,7 @@ type Tab = 'overview' | 'assignments' | 'fines' | 'accidents' | 'documents';
                   </span>
                 </div>
                 <div class="kv-row kv-full">
-                  <span class="kv-label">License Categories</span>
+                  <span class="kv-label" i18n="@@drivers.detail.overview.licenseCategories">License Categories</span>
                   <span class="kv-value cat-list">
                     @for (cat of driver()!.licenseCategories; track cat) {
                       <span class="cat-chip">{{ cat }}</span>
@@ -148,10 +148,10 @@ type Tab = 'overview' | 'assignments' | 'fines' | 'accidents' | 'documents';
         @if (activeTab() === 'assignments') {
           <div class="section-card">
             @if (assignments().length === 0) {
-              <div class="table-empty">No assignments.</div>
+              <div class="table-empty" i18n="@@drivers.detail.assignments.empty">No assignments.</div>
             } @else {
               <table class="table">
-                <thead><tr><th>Vehicle</th><th>From</th><th>To</th><th>Notes</th><th>Status</th></tr></thead>
+                <thead><tr><th i18n="@@drivers.detail.assignments.col.vehicle">Vehicle</th><th i18n="@@drivers.detail.assignments.col.from">From</th><th i18n="@@drivers.detail.assignments.col.to">To</th><th i18n="@@drivers.detail.assignments.col.notes">Notes</th><th i18n="@@drivers.detail.assignments.col.status">Status</th></tr></thead>
                 <tbody>
                   @for (r of assignments(); track r.assignmentId) {
                     <tr>
@@ -172,10 +172,10 @@ type Tab = 'overview' | 'assignments' | 'fines' | 'accidents' | 'documents';
         @if (activeTab() === 'fines') {
           <div class="section-card">
             @if (fines().length === 0) {
-              <div class="table-empty">No fines.</div>
+              <div class="table-empty" i18n="@@drivers.detail.fines.empty">No fines.</div>
             } @else {
               <table class="table">
-                <thead><tr><th>Date</th><th>Vehicle</th><th>Reason</th><th>Amount</th><th>Status</th></tr></thead>
+                <thead><tr><th i18n="@@drivers.detail.fines.col.date">Date</th><th i18n="@@drivers.detail.fines.col.vehicle">Vehicle</th><th i18n="@@drivers.detail.fines.col.reason">Reason</th><th i18n="@@drivers.detail.fines.col.amount">Amount</th><th i18n="@@drivers.detail.fines.col.status">Status</th></tr></thead>
                 <tbody>
                   @for (r of fines(); track r.fineId) {
                     <tr>
@@ -196,10 +196,10 @@ type Tab = 'overview' | 'assignments' | 'fines' | 'accidents' | 'documents';
         @if (activeTab() === 'accidents') {
           <div class="section-card">
             @if (accidents().length === 0) {
-              <div class="table-empty">No accidents.</div>
+              <div class="table-empty" i18n="@@drivers.detail.accidents.empty">No accidents.</div>
             } @else {
               <table class="table">
-                <thead><tr><th>Date</th><th>Vehicle</th><th>Severity</th><th>Damage Est.</th><th>Police Report</th><th>Description</th></tr></thead>
+                <thead><tr><th i18n="@@drivers.detail.accidents.col.date">Date</th><th i18n="@@drivers.detail.accidents.col.vehicle">Vehicle</th><th i18n="@@drivers.detail.accidents.col.severity">Severity</th><th i18n="@@drivers.detail.accidents.col.damageEst">Damage Est.</th><th i18n="@@drivers.detail.accidents.col.policeReport">Police Report</th><th i18n="@@drivers.detail.accidents.col.description">Description</th></tr></thead>
                 <tbody>
                   @for (r of accidents(); track r.accidentId) {
                     <tr>
@@ -227,17 +227,17 @@ type Tab = 'overview' | 'assignments' | 'fines' | 'accidents' | 'documents';
               (uploaded)="onDocumentUploaded($event)"
             />
             @if (documents().length === 0) {
-              <div class="table-empty">No documents attached.</div>
+              <div class="table-empty" i18n="@@drivers.detail.documents.empty">No documents attached.</div>
             } @else {
               <table class="table">
                 <thead>
                   <tr>
-                    <th>File Name</th>
-                    <th>Category</th>
-                    <th>Size</th>
-                    <th>Uploaded</th>
-                    <th>Notes</th>
-                    <th>Actions</th>
+                    <th i18n="@@drivers.detail.documents.col.fileName">File Name</th>
+                    <th i18n="@@drivers.detail.documents.col.category">Category</th>
+                    <th i18n="@@drivers.detail.documents.col.size">Size</th>
+                    <th i18n="@@drivers.detail.documents.col.uploaded">Uploaded</th>
+                    <th i18n="@@drivers.detail.documents.col.notes">Notes</th>
+                    <th i18n="@@drivers.detail.documents.col.actions">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -256,10 +256,10 @@ type Tab = 'overview' | 'assignments' | 'fines' | 'accidents' | 'documents';
                       <td style="color:var(--text-muted);font-size:13px">{{ doc.notes || '—' }}</td>
                       <td>
                         <div style="display:flex;gap:6px">
-                          <button class="btn-icon" title="Download" (click)="downloadDoc(doc.documentId)">
+                          <button class="btn-icon" title="Download" i18n-title="@@drivers.detail.documents.action.download" (click)="downloadDoc(doc.documentId)">
                             <lucide-icon [img]="icons.Download" [size]="14" [strokeWidth]="2"></lucide-icon>
                           </button>
-                          <button class="btn-icon btn-icon--danger" title="Delete" (click)="deleteDoc(doc.documentId)">
+                          <button class="btn-icon btn-icon--danger" title="Delete" i18n-title="@@drivers.detail.documents.action.delete" (click)="deleteDoc(doc.documentId)">
                             <lucide-icon [img]="icons.Trash2" [size]="14" [strokeWidth]="2"></lucide-icon>
                           </button>
                         </div>

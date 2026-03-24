@@ -36,9 +36,9 @@ type Tab = 'overview' | 'maintenance' | 'fuel' | 'assignments' | 'insurance' | '
 
       <!-- Breadcrumb -->
       <nav class="breadcrumb">
-        <a routerLink="/dashboard">Dashboard</a>
+        <a routerLink="/dashboard" i18n="@@vehicles.breadcrumb.dashboard">Dashboard</a>
         <span class="bc-sep">›</span>
-        <a routerLink="/vehicles">Vehicles</a>
+        <a routerLink="/vehicles" i18n="@@vehicles.breadcrumb.vehicles">Vehicles</a>
         <span class="bc-sep">›</span>
         <span>{{ vehicle()?.registrationNumber ?? 'Detail' }}</span>
       </nav>
@@ -47,14 +47,14 @@ type Tab = 'overview' | 'maintenance' | 'fuel' | 'assignments' | 'insurance' | '
         <div style="display:flex; align-items:center; gap:12px">
           <button class="back-btn" (click)="goBack()">
             <lucide-icon [img]="icons.ArrowLeft" [size]="16" [strokeWidth]="2"></lucide-icon>
-            Vehicles
+            <ng-container i18n="@@vehicles.detail.backButton">Vehicles</ng-container>
           </button>
           <div>
             @if (vehicle()) {
               <h1 class="page-title">{{ vehicle()!.make }} {{ vehicle()!.model }} · <span class="mono">{{ vehicle()!.registrationNumber }}</span></h1>
               <p class="page-subtitle">{{ vehicle()!.year }} · {{ vehicle()!.category }} · {{ vehicle()!.fuelType }}</p>
             } @else {
-              <h1 class="page-title">Vehicle Detail</h1>
+              <h1 class="page-title" i18n="@@vehicles.detail.title">Vehicle Detail</h1>
             }
           </div>
         </div>
@@ -67,9 +67,9 @@ type Tab = 'overview' | 'maintenance' | 'fuel' | 'assignments' | 'insurance' | '
       </div>
 
       @if (loading()) {
-        <div class="table-loading">Loading…</div>
+        <div class="table-loading" i18n="@@vehicles.detail.loading">Loading…</div>
       } @else if (!vehicle()) {
-        <div class="table-empty">Vehicle not found.</div>
+        <div class="table-empty" i18n="@@vehicles.detail.notFound">Vehicle not found.</div>
       } @else {
 
         <!-- Tab bar -->
@@ -89,18 +89,18 @@ type Tab = 'overview' | 'maintenance' | 'fuel' | 'assignments' | 'insurance' | '
 
             <!-- Vehicle Info -->
             <div class="info-group">
-              <div class="info-group-title">Vehicle Info</div>
+              <div class="info-group-title" i18n="@@vehicles.detail.vehicleInfo">Vehicle Info</div>
               <div class="kv-grid">
                 <div class="kv-row kv-full">
-                  <span class="kv-label">Vehicle</span>
+                  <span class="kv-label" i18n="@@vehicles.detail.kv.vehicle">Vehicle</span>
                   <span class="kv-value">{{ vehicle()!.make }} {{ vehicle()!.model }}<br><span class="mono" style="font-size:12px; color:var(--text-muted)">{{ vehicle()!.registrationNumber }}</span></span>
                 </div>
                 <div class="kv-row">
-                  <span class="kv-label">Year</span>
+                  <span class="kv-label" i18n="@@vehicles.detail.kv.year">Year</span>
                   <span class="kv-value">{{ vehicle()!.year }}</span>
                 </div>
                 <div class="kv-row kv-full">
-                  <span class="kv-label">Category</span>
+                  <span class="kv-label" i18n="@@vehicles.detail.kv.category">Category</span>
                   <span class="kv-value">{{ vehicle()!.category }}</span>
                 </div>
               </div>
@@ -108,10 +108,10 @@ type Tab = 'overview' | 'maintenance' | 'fuel' | 'assignments' | 'insurance' | '
 
             <!-- Status & Operations -->
             <div class="info-group">
-              <div class="info-group-title">Status &amp; Operations</div>
+              <div class="info-group-title" i18n="@@vehicles.detail.statusOps">Status &amp; Operations</div>
               <div class="kv-grid">
                 <div class="kv-row kv-full">
-                  <span class="kv-label">Status</span>
+                  <span class="kv-label" i18n="@@vehicles.detail.kv.status">Status</span>
                   <span class="kv-value">
                     <app-badge
                       [label]="vehicle()!.status"
@@ -120,11 +120,11 @@ type Tab = 'overview' | 'maintenance' | 'fuel' | 'assignments' | 'insurance' | '
                   </span>
                 </div>
                 <div class="kv-row">
-                  <span class="kv-label">Odometer</span>
+                  <span class="kv-label" i18n="@@vehicles.detail.kv.odometer">Odometer</span>
                   <span class="kv-value">{{ vehicle()!.currentOdometerKm | euNumber }} km</span>
                 </div>
                 <div class="kv-row">
-                  <span class="kv-label">Color</span>
+                  <span class="kv-label" i18n="@@vehicles.detail.kv.color">Color</span>
                   <span class="kv-value">{{ vehicle()!.color || '—' }}</span>
                 </div>
               </div>
@@ -132,18 +132,18 @@ type Tab = 'overview' | 'maintenance' | 'fuel' | 'assignments' | 'insurance' | '
 
             <!-- Technical Details -->
             <div class="info-group info-group--full">
-              <div class="info-group-title">Technical Details</div>
+              <div class="info-group-title" i18n="@@vehicles.detail.technicalDetails">Technical Details</div>
               <div class="kv-grid kv-grid--3">
                 <div class="kv-row">
-                  <span class="kv-label">Fuel Type</span>
+                  <span class="kv-label" i18n="@@vehicles.detail.kv.fuelType">Fuel Type</span>
                   <span class="kv-value">{{ vehicle()!.fuelType }}</span>
                 </div>
                 <div class="kv-row">
-                  <span class="kv-label">VIN</span>
+                  <span class="kv-label" i18n="@@vehicles.detail.kv.vin">VIN</span>
                   <span class="kv-value mono">{{ vehicle()!.vin || '—' }}</span>
                 </div>
                 <div class="kv-row">
-                  <span class="kv-label">Notes</span>
+                  <span class="kv-label" i18n="@@vehicles.detail.kv.notes">Notes</span>
                   <span class="kv-value">{{ vehicle()!.notes || '—' }}</span>
                 </div>
               </div>
@@ -156,10 +156,10 @@ type Tab = 'overview' | 'maintenance' | 'fuel' | 'assignments' | 'insurance' | '
         @if (activeTab() === 'maintenance') {
           <div class="section-card">
             @if (maintenance().length === 0) {
-              <div class="table-empty">No maintenance orders.</div>
+              <div class="table-empty" i18n="@@vehicles.maintenance.empty">No maintenance orders.</div>
             } @else {
               <table class="table">
-                <thead><tr><th>Reported</th><th>Vendor</th><th>Description</th><th>Cost</th><th>Status</th></tr></thead>
+                <thead><tr><th i18n="@@vehicles.maintenance.reported">Reported</th><th i18n="@@vehicles.maintenance.vendor">Vendor</th><th i18n="@@vehicles.maintenance.description">Description</th><th i18n="@@vehicles.maintenance.cost">Cost</th><th i18n="@@vehicles.table.status">Status</th></tr></thead>
                 <tbody>
                   @for (r of maintenance(); track r.orderId) {
                     <tr>
@@ -181,10 +181,10 @@ type Tab = 'overview' | 'maintenance' | 'fuel' | 'assignments' | 'insurance' | '
         @if (activeTab() === 'fuel') {
           <div class="section-card">
             @if (fuel().length === 0) {
-              <div class="table-empty">No fuel transactions.</div>
+              <div class="table-empty" i18n="@@vehicles.fuel.empty">No fuel transactions.</div>
             } @else {
               <table class="table">
-                <thead><tr><th>Date</th><th>Litres</th><th>Price/L</th><th>Total</th><th>Odometer</th><th>Fuel Type</th></tr></thead>
+                <thead><tr><th i18n="@@vehicles.fuel.date">Date</th><th i18n="@@vehicles.fuel.litres">Litres</th><th i18n="@@vehicles.fuel.pricePerL">Price/L</th><th i18n="@@vehicles.fuel.total">Total</th><th i18n="@@vehicles.table.odometer">Odometer</th><th i18n="@@vehicles.detail.kv.fuelType">Fuel Type</th></tr></thead>
                 <tbody>
                   @for (r of fuel(); track r.transactionId) {
                     <tr>
@@ -206,10 +206,10 @@ type Tab = 'overview' | 'maintenance' | 'fuel' | 'assignments' | 'insurance' | '
         @if (activeTab() === 'assignments') {
           <div class="section-card">
             @if (assignments().length === 0) {
-              <div class="table-empty">No assignments.</div>
+              <div class="table-empty" i18n="@@vehicles.assignments.empty">No assignments.</div>
             } @else {
               <table class="table">
-                <thead><tr><th>Driver</th><th>From</th><th>To</th><th>Notes</th><th>Status</th></tr></thead>
+                <thead><tr><th i18n="@@vehicles.assignments.driver">Driver</th><th i18n="@@vehicles.assignments.from">From</th><th i18n="@@vehicles.assignments.to">To</th><th i18n="@@vehicles.detail.kv.notes">Notes</th><th i18n="@@vehicles.table.status">Status</th></tr></thead>
                 <tbody>
                   @for (r of assignments(); track r.assignmentId) {
                     <tr>
@@ -230,10 +230,10 @@ type Tab = 'overview' | 'maintenance' | 'fuel' | 'assignments' | 'insurance' | '
         @if (activeTab() === 'insurance') {
           <div class="section-card">
             @if (insurance().length === 0) {
-              <div class="table-empty">No insurance policies.</div>
+              <div class="table-empty" i18n="@@vehicles.insurance.empty">No insurance policies.</div>
             } @else {
               <table class="table">
-                <thead><tr><th>Policy #</th><th>Insurer</th><th>Valid From</th><th>Valid To</th><th>Premium</th><th>Coverage</th><th>Status</th></tr></thead>
+                <thead><tr><th i18n="@@vehicles.insurance.policyNo">Policy #</th><th i18n="@@vehicles.insurance.insurer">Insurer</th><th i18n="@@vehicles.insurance.validFrom">Valid From</th><th i18n="@@vehicles.insurance.validTo">Valid To</th><th i18n="@@vehicles.insurance.premium">Premium</th><th i18n="@@vehicles.insurance.coverage">Coverage</th><th i18n="@@vehicles.table.status">Status</th></tr></thead>
                 <tbody>
                   @for (r of insurance(); track r.policyId) {
                     <tr>
@@ -256,10 +256,10 @@ type Tab = 'overview' | 'maintenance' | 'fuel' | 'assignments' | 'insurance' | '
         @if (activeTab() === 'inspections') {
           <div class="section-card">
             @if (inspections().length === 0) {
-              <div class="table-empty">No inspections.</div>
+              <div class="table-empty" i18n="@@vehicles.inspections.empty">No inspections.</div>
             } @else {
               <table class="table">
-                <thead><tr><th>Date</th><th>Result</th><th>Valid To</th><th>Odometer</th><th>Notes</th><th>Status</th></tr></thead>
+                <thead><tr><th i18n="@@vehicles.fuel.date">Date</th><th i18n="@@vehicles.inspections.result">Result</th><th i18n="@@vehicles.insurance.validTo">Valid To</th><th i18n="@@vehicles.table.odometer">Odometer</th><th i18n="@@vehicles.detail.kv.notes">Notes</th><th i18n="@@vehicles.table.status">Status</th></tr></thead>
                 <tbody>
                   @for (r of inspections(); track r.inspectionId) {
                     <tr>
@@ -282,10 +282,10 @@ type Tab = 'overview' | 'maintenance' | 'fuel' | 'assignments' | 'insurance' | '
         @if (activeTab() === 'fines') {
           <div class="section-card">
             @if (fines().length === 0) {
-              <div class="table-empty">No fines.</div>
+              <div class="table-empty" i18n="@@vehicles.fines.empty">No fines.</div>
             } @else {
               <table class="table">
-                <thead><tr><th>Date</th><th>Driver</th><th>Reason</th><th>Amount</th><th>Status</th></tr></thead>
+                <thead><tr><th i18n="@@vehicles.fuel.date">Date</th><th i18n="@@vehicles.assignments.driver">Driver</th><th i18n="@@vehicles.fines.reason">Reason</th><th i18n="@@vehicles.fines.amount">Amount</th><th i18n="@@vehicles.table.status">Status</th></tr></thead>
                 <tbody>
                   @for (r of fines(); track r.fineId) {
                     <tr>
@@ -306,10 +306,10 @@ type Tab = 'overview' | 'maintenance' | 'fuel' | 'assignments' | 'insurance' | '
         @if (activeTab() === 'accidents') {
           <div class="section-card">
             @if (accidents().length === 0) {
-              <div class="table-empty">No accidents.</div>
+              <div class="table-empty" i18n="@@vehicles.accidents.empty">No accidents.</div>
             } @else {
               <table class="table">
-                <thead><tr><th>Date</th><th>Driver</th><th>Severity</th><th>Damage Est.</th><th>Police Report</th><th>Description</th></tr></thead>
+                <thead><tr><th i18n="@@vehicles.fuel.date">Date</th><th i18n="@@vehicles.assignments.driver">Driver</th><th i18n="@@vehicles.accidents.severity">Severity</th><th i18n="@@vehicles.accidents.damageEst">Damage Est.</th><th i18n="@@vehicles.accidents.policeReport">Police Report</th><th i18n="@@vehicles.maintenance.description">Description</th></tr></thead>
                 <tbody>
                   @for (r of accidents(); track r.accidentId) {
                     <tr>
@@ -337,16 +337,16 @@ type Tab = 'overview' | 'maintenance' | 'fuel' | 'assignments' | 'insurance' | '
               (uploaded)="onDocumentUploaded($event)"
             />
             @if (documents().length === 0) {
-              <div class="table-empty">No documents attached.</div>
+              <div class="table-empty" i18n="@@vehicles.documents.empty">No documents attached.</div>
             } @else {
               <table class="table">
                 <thead>
                   <tr>
-                    <th>File Name</th>
-                    <th>Type</th>
-                    <th>Size</th>
-                    <th>Uploaded</th>
-                    <th>Actions</th>
+                    <th i18n="@@vehicles.documents.fileName">File Name</th>
+                    <th i18n="@@vehicles.documents.type">Type</th>
+                    <th i18n="@@vehicles.documents.size">Size</th>
+                    <th i18n="@@vehicles.documents.uploaded">Uploaded</th>
+                    <th i18n="@@vehicles.table.actions">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -357,7 +357,7 @@ type Tab = 'overview' | 'maintenance' | 'fuel' | 'assignments' | 'insurance' | '
                       <td style="color:var(--text-muted);font-size:13px">{{ formatFileSize(doc.fileSize) }}</td>
                       <td style="color:var(--text-muted);font-size:13px">{{ doc.uploadedAt | date:'dd.MM.yyyy' }}</td>
                       <td>
-                        <button class="btn-icon" title="Download" (click)="downloadDoc(doc.documentId)">
+                        <button class="btn-icon" title="Download" i18n-title="@@vehicles.documents.download" (click)="downloadDoc(doc.documentId)">
                           <lucide-icon [img]="icons.Download" [size]="14" [strokeWidth]="2"></lucide-icon>
                         </button>
                       </td>

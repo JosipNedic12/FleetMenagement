@@ -21,6 +21,7 @@ type GroupedResults = { type: string; items: SearchResult[] }[];
         <input
           #inputEl
           class="search-input"
+          i18n-placeholder="@@shared.globalSearch.placeholder"
           placeholder="Search vehicles, drivers, maintenance…"
           [(ngModel)]="query"
           (ngModelChange)="onQueryChange($event)"
@@ -36,7 +37,7 @@ type GroupedResults = { type: string; items: SearchResult[] }[];
       @if (open() && (grouped().length > 0 || query.length >= 2)) {
         <div class="dropdown">
           @if (grouped().length === 0) {
-            <div class="empty">No results for "{{ query }}"</div>
+            <div class="empty" i18n="@@shared.globalSearch.noResults">No results for "{{ query }}"</div>
           }
           @for (group of grouped(); track group.type) {
             <div class="group-label">{{ group.type }}s</div>

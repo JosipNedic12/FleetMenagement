@@ -18,8 +18,8 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
     <div class="page">
       <div class="page-header">
         <div>
-          <h1 class="page-title">Odometer Logs</h1>
-          <p class="page-subtitle">{{ logs().length }} entries for selected vehicle</p>
+          <h1 class="page-title" i18n="@@odometer.title">Odometer Logs</h1>
+          <p class="page-subtitle" i18n="@@odometer.subtitle">{{ logs().length }} entries for selected vehicle</p>
         </div>
         <div class="header-actions">
           <div style="width:320px">
@@ -28,29 +28,30 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
               [displayFn]="vehicleDisplayFn"
               valueField="vehicleId"
               placeholder="Select vehicle…"
+              i18n-placeholder="@@odometer.selectVehiclePlaceholder"
               [(ngModel)]="selectedVehicleId"
               (ngModelChange)="onVehicleChange($event)">
             </app-search-select>
           </div>
-          <button *hasRole="['Admin','FleetManager']" class="btn btn-primary" [disabled]="!selectedVehicleId" (click)="openCreate()">+ Add Reading</button>
+          <button *hasRole="['Admin','FleetManager']" class="btn btn-primary" [disabled]="!selectedVehicleId" (click)="openCreate()" i18n="@@odometer.addReadingBtn">+ Add Reading</button>
         </div>
       </div>
 
       @if (!selectedVehicleId) {
-        <div class="empty-state">Select a vehicle to view its odometer log.</div>
+        <div class="empty-state" i18n="@@odometer.selectVehiclePrompt">Select a vehicle to view its odometer log.</div>
       } @else {
         <div class="table-card">
-          @if (loading()) { <div class="table-loading">Loading…</div> }
-          @else if (logs().length === 0) { <div class="table-empty">No odometer entries for this vehicle.</div> }
+          @if (loading()) { <div class="table-loading" i18n="@@odometer.loading">Loading…</div> }
+          @else if (logs().length === 0) { <div class="table-empty" i18n="@@odometer.noEntries">No odometer entries for this vehicle.</div> }
           @else {
             <table class="table">
               <thead>
                 <tr>
-                  <th>Date</th>
-                  <th>Reading (km)</th>
-                  <th>Notes</th>
-                  <th>Logged At</th>
-                  <th>Actions</th>
+                  <th i18n="@@odometer.colDate">Date</th>
+                  <th i18n="@@odometer.colReading">Reading (km)</th>
+                  <th i18n="@@odometer.colNotes">Notes</th>
+                  <th i18n="@@odometer.colLoggedAt">Logged At</th>
+                  <th i18n="@@odometer.colActions">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -76,29 +77,33 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
     @if (showCreate) {
       <div class="modal-overlay" (click)="closeCreate()">
         <div class="modal-box" style="max-width:420px" (click)="$event.stopPropagation()">
-          <h2 class="modal-title">Add Odometer Reading</h2>
+          <h2 class="modal-title" i18n="@@odometer.modalTitle">Add Odometer Reading</h2>
           <p class="modal-sub">
-            Current reading: <strong>{{ selectedVehicle()?.currentOdometerKm | euNumber }} km</strong>
+            <ng-container i18n="@@odometer.currentReading">Current reading:</ng-container> <strong>{{ selectedVehicle()?.currentOdometerKm | euNumber }} km</strong>
           </p>
           <div class="form-grid" style="grid-template-columns:1fr">
             <div class="form-group">
-              <label>Reading (km) *</label>
+              <label i18n="@@odometer.labelReading">Reading (km) *</label>
               <input type="number" [(ngModel)]="form.odometerKm" [min]="(selectedVehicle()?.currentOdometerKm ?? 0) + 1" />
             </div>
             <div class="form-group">
-              <label>Date *</label>
+              <label i18n="@@odometer.labelDate">Date *</label>
               <input type="date" [(ngModel)]="form.logDate" />
             </div>
             <div class="form-group">
-              <label>Notes</label>
+              <label i18n="@@odometer.labelNotes">Notes</label>
               <textarea [(ngModel)]="form.notes" rows="2"></textarea>
             </div>
           </div>
           @if (formError()) { <div class="form-error">{{ formError() }}</div> }
           <div class="modal-actions">
-            <button class="btn btn-secondary" (click)="closeCreate()">Cancel</button>
+            <button class="btn btn-secondary" (click)="closeCreate()" i18n="@@odometer.cancelBtn">Cancel</button>
             <button class="btn btn-primary" [disabled]="saving()" (click)="save()">
-              {{ saving() ? 'Saving…' : 'Add Reading' }}
+              @if (saving()) {
+                <ng-container i18n="@@odometer.saving">Saving…</ng-container>
+              } @else {
+                <ng-container i18n="@@odometer.addReadingSubmit">Add Reading</ng-container>
+              }
             </button>
           </div>
         </div>
@@ -108,7 +113,9 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
     <app-confirm-modal
       [visible]="!!deleteTarget"
       title="Delete Reading"
+      i18n-title="@@odometer.deleteTitle"
       message="Delete this odometer entry? This cannot be undone."
+      i18n-message="@@odometer.deleteMessage"
       (confirmed)="doDelete()"
       (cancelled)="deleteTarget = null"
     />

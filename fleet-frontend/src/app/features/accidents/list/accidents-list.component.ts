@@ -21,37 +21,37 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
     <div class="page">
       <div class="page-header">
         <div>
-          <h1 class="page-title">Accidents</h1>
-          <p class="page-subtitle">{{ filtered().length }} incidents reported</p>
+          <h1 class="page-title" i18n="@@accidents.title">Accidents</h1>
+          <p class="page-subtitle" i18n="@@accidents.subtitle">{{ filtered().length }} incidents reported</p>
         </div>
         <div class="header-actions">
-          <input class="search-input" [ngModel]="search()" (ngModelChange)="search.set($event)" placeholder="Search vehicle, description…" />
-          <button *hasRole="['Admin','FleetManager']" class="btn btn-primary" (click)="showForm = true">+ Report Accident</button>
+          <input class="search-input" [ngModel]="search()" (ngModelChange)="search.set($event)" placeholder="Search vehicle, description…" i18n-placeholder="@@accidents.searchPlaceholder" />
+          <button *hasRole="['Admin','FleetManager']" class="btn btn-primary" (click)="showForm = true" i18n="@@accidents.reportBtn">+ Report Accident</button>
         </div>
       </div>
 
       <div class="filter-tabs">
-        <button [class.active]="filter() === 'all'"   (click)="filter.set('all')">All</button>
-        <button [class.active]="filter() === 'minor'" (click)="filter.set('minor')">Minor</button>
-        <button [class.active]="filter() === 'major'" (click)="filter.set('major')">Major</button>
-        <button [class.active]="filter() === 'total'" (click)="filter.set('total')">Total Loss</button>
+        <button [class.active]="filter() === 'all'"   (click)="filter.set('all')"   i18n="@@accidents.filterAll">All</button>
+        <button [class.active]="filter() === 'minor'" (click)="filter.set('minor')" i18n="@@accidents.filterMinor">Minor</button>
+        <button [class.active]="filter() === 'major'" (click)="filter.set('major')" i18n="@@accidents.filterMajor">Major</button>
+        <button [class.active]="filter() === 'total'" (click)="filter.set('total')" i18n="@@accidents.filterTotal">Total Loss</button>
       </div>
 
       <div class="table-card">
-        @if (loading()) { <div class="table-loading">Loading…</div> }
-        @else if (filtered().length === 0) { <div class="table-empty">No accidents found.</div> }
+        @if (loading()) { <div class="table-loading" i18n="@@accidents.loading">Loading…</div> }
+        @else if (filtered().length === 0) { <div class="table-empty" i18n="@@accidents.empty">No accidents found.</div> }
         @else {
           <table class="table">
             <thead>
               <tr>
-                <th>Vehicle</th>
-                <th>Driver</th>
-                <th>Occurred</th>
-                <th>Severity</th>
-                <th>Description</th>
-                <th>Damage Est.</th>
-                <th>Police Report</th>
-                <th>Actions</th>
+                <th i18n="@@accidents.colVehicle">Vehicle</th>
+                <th i18n="@@accidents.colDriver">Driver</th>
+                <th i18n="@@accidents.colOccurred">Occurred</th>
+                <th i18n="@@accidents.colSeverity">Severity</th>
+                <th i18n="@@accidents.colDescription">Description</th>
+                <th i18n="@@accidents.colDamageEst">Damage Est.</th>
+                <th i18n="@@accidents.colPoliceReport">Police Report</th>
+                <th i18n="@@accidents.colActions">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -84,68 +84,76 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
     @if (showForm) {
       <div class="modal-overlay" (click)="closeForm()">
         <div class="modal-box" (click)="$event.stopPropagation()">
-          <h2 class="modal-title">{{ editId ? 'Edit Accident' : 'Report Accident' }}</h2>
+          @if (editId) {
+            <h2 class="modal-title" i18n="@@accidents.editAccident">Edit Accident</h2>
+          } @else {
+            <h2 class="modal-title" i18n="@@accidents.reportAccident">Report Accident</h2>
+          }
           <div class="form-grid">
             <div class="form-group">
-              <label>Vehicle *</label>
+              <label i18n="@@accidents.formVehicle">Vehicle *</label>
               <app-search-select
                 [items]="vehicles()"
                 [displayFn]="vehicleDisplayFn"
                 valueField="vehicleId"
                 placeholder="Select vehicle…"
+                i18n-placeholder="@@accidents.formVehiclePlaceholder"
                 [disabled]="!!editId"
                 [(ngModel)]="form.vehicleId">
               </app-search-select>
             </div>
             <div class="form-group">
-              <label>Driver</label>
+              <label i18n="@@accidents.formDriver">Driver</label>
               <app-search-select
                 [items]="drivers()"
                 [displayFn]="driverDisplayFn"
                 valueField="driverId"
                 placeholder="Unknown"
+                i18n-placeholder="@@accidents.formDriverPlaceholder"
                 [(ngModel)]="form.driverId">
               </app-search-select>
             </div>
             <div class="form-group">
-              <label>Occurred At *</label>
+              <label i18n="@@accidents.formOccurredAt">Occurred At *</label>
               <input type="datetime-local" [(ngModel)]="form.occurredAt" />
             </div>
             <div class="form-group">
-              <label>Severity *</label>
+              <label i18n="@@accidents.formSeverity">Severity *</label>
               <select [(ngModel)]="form.severity">
-                <option value="minor">Minor</option>
-                <option value="major">Major</option>
-                <option value="total">Total Loss</option>
+                <option value="minor" i18n="@@accidents.severityMinor">Minor</option>
+                <option value="major" i18n="@@accidents.severityMajor">Major</option>
+                <option value="total" i18n="@@accidents.severityTotal">Total Loss</option>
               </select>
             </div>
             @if (form.severity === 'total') {
               <div class="form-group span-2 total-warning">
-                <lucide-icon [img]="icons.TriangleAlert" [size]="14" [strokeWidth]="2"></lucide-icon> <strong>Total loss</strong> will automatically retire the vehicle.
+                <lucide-icon [img]="icons.TriangleAlert" [size]="14" [strokeWidth]="2"></lucide-icon> <strong i18n="@@accidents.totalLossWarning">Total loss</strong> <span i18n="@@accidents.totalLossWarningDetail"> will automatically retire the vehicle.</span>
               </div>
             }
             <div class="form-group span-2">
-              <label>Description *</label>
-              <textarea [(ngModel)]="form.description" rows="3" placeholder="Describe what happened…"></textarea>
+              <label i18n="@@accidents.formDescription">Description *</label>
+              <textarea [(ngModel)]="form.description" rows="3" placeholder="Describe what happened…" i18n-placeholder="@@accidents.formDescriptionPlaceholder"></textarea>
             </div>
             <div class="form-group">
-              <label>Damage Estimate (EUR)</label>
+              <label i18n="@@accidents.formDamageEstimate">Damage Estimate (EUR)</label>
               <input type="number" [(ngModel)]="form.damageEstimate" min="0" step="0.01" />
             </div>
             <div class="form-group">
-              <label>Police Report #</label>
+              <label i18n="@@accidents.formPoliceReport">Police Report #</label>
               <input [(ngModel)]="form.policeReport" placeholder="PP-ZG-2025-0001" />
             </div>
             <div class="form-group span-2">
-              <label>Notes</label>
+              <label i18n="@@accidents.formNotes">Notes</label>
               <textarea [(ngModel)]="form.notes" rows="2"></textarea>
             </div>
           </div>
           @if (formError()) { <div class="form-error">{{ formError() }}</div> }
           <div class="modal-actions">
-            <button class="btn btn-secondary" (click)="closeForm()">Cancel</button>
+            <button class="btn btn-secondary" (click)="closeForm()" i18n="@@accidents.cancelBtn">Cancel</button>
             <button class="btn btn-primary" [disabled]="saving()" (click)="save()">
-              {{ saving() ? 'Saving…' : editId ? 'Update' : 'Report' }}
+              @if (saving()) { <span i18n="@@accidents.saving">Saving…</span> }
+              @else if (editId) { <span i18n="@@accidents.update">Update</span> }
+              @else { <span i18n="@@accidents.report">Report</span> }
             </button>
           </div>
         </div>
@@ -155,7 +163,9 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
     <app-confirm-modal
       [visible]="!!deleteTarget"
       title="Delete Accident Record"
+      i18n-title="@@accidents.deleteTitle"
       message="Delete this accident record? This cannot be undone."
+      i18n-message="@@accidents.deleteMessage"
       (confirmed)="doDelete()"
       (cancelled)="deleteTarget = null"
     />
@@ -172,6 +182,7 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
 })
 export class AccidentsListComponent implements OnInit {
   readonly icons = { Eye, Pencil, Trash2, TriangleAlert };
+
   readonly vehicleDisplayFn = (v: Vehicle) => `${v.make} ${v.model} – ${v.registrationNumber}`;
   readonly driverDisplayFn  = (d: Driver)  => d.fullName;
   accidents = signal<Accident[]>([]);

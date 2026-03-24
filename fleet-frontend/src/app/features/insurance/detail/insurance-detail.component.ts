@@ -19,16 +19,16 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
 
       <!-- Breadcrumb -->
       <nav class="breadcrumb">
-        <a routerLink="/dashboard">Dashboard</a>
+        <a routerLink="/dashboard" i18n="@@insurance.detail.breadcrumbDashboard">Dashboard</a>
         <span class="bc-sep">›</span>
-        <a routerLink="/insurance">Insurance</a>
+        <a routerLink="/insurance" i18n="@@insurance.detail.breadcrumbInsurance">Insurance</a>
         <span class="bc-sep">›</span>
         <span>{{ policy()?.policyNumber ?? 'Detail' }}</span>
       </nav>
 
       <div class="page-header">
         <div style="display:flex; align-items:center; gap:12px">
-          <button class="back-btn" (click)="goBack()">
+          <button class="back-btn" (click)="goBack()" i18n="@@insurance.detail.backButton">
             <lucide-icon [img]="icons.ArrowLeft" [size]="16" [strokeWidth]="2"></lucide-icon>
             Insurance
           </button>
@@ -37,12 +37,12 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
               <h1 class="page-title">Policy {{ policy()!.policyNumber }} · {{ policy()!.vehicleMake }} {{ policy()!.vehicleModel }}</h1>
               <p class="page-subtitle"><span class="mono">{{ policy()!.registrationNumber }}</span> · {{ policy()!.insurer }} · Valid {{ policy()!.validFrom | date:'dd.MM.yyyy' }} – {{ policy()!.validTo | date:'dd.MM.yyyy' }}</p>
             } @else {
-              <h1 class="page-title">Insurance Detail</h1>
+              <h1 class="page-title" i18n="@@insurance.detail.titleFallback">Insurance Detail</h1>
             }
           </div>
         </div>
         <div style="display:flex; align-items:center; gap:10px">
-          <button *hasRole="['Admin','FleetManager']" class="btn btn-secondary" (click)="startEdit()" [disabled]="!policy()">
+          <button *hasRole="['Admin','FleetManager']" class="btn btn-secondary" (click)="startEdit()" [disabled]="!policy()" i18n="@@insurance.detail.editButton">
             <lucide-icon [img]="icons.Pencil" [size]="15" [strokeWidth]="2"></lucide-icon>
             Edit
           </button>
@@ -56,42 +56,42 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
       </div>
 
       @if (loading()) {
-        <div class="table-loading">Loading…</div>
+        <div class="table-loading" i18n="@@insurance.detail.loading">Loading…</div>
       } @else if (error()) {
         <div class="table-empty">{{ error() }}</div>
       } @else if (!policy()) {
-        <div class="table-empty">Insurance policy not found.</div>
+        <div class="table-empty" i18n="@@insurance.detail.notFound">Insurance policy not found.</div>
       } @else {
         <div class="overview-grid">
 
           <!-- Policy Info -->
           <div class="info-group">
-            <div class="info-group-title">Policy Info</div>
+            <div class="info-group-title" i18n="@@insurance.detail.sectionPolicyInfo">Policy Info</div>
             <div class="kv-grid">
               <div class="kv-row">
-                <span class="kv-label">Policy ID</span>
+                <span class="kv-label" i18n="@@insurance.detail.labelPolicyId">Policy ID</span>
                 <span class="kv-value mono">{{ policy()!.policyId }}</span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Policy Number</span>
+                <span class="kv-label" i18n="@@insurance.detail.labelPolicyNumber">Policy Number</span>
                 <span class="kv-value mono">{{ policy()!.policyNumber }}</span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Insurer</span>
+                <span class="kv-label" i18n="@@insurance.detail.labelInsurer">Insurer</span>
                 <span class="kv-value">{{ policy()!.insurer }}</span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Status</span>
+                <span class="kv-label" i18n="@@insurance.detail.labelStatus">Status</span>
                 <span class="kv-value">
                   <app-badge [label]="statusLabel()" [variant]="statusVariant()" />
                 </span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Vehicle</span>
+                <span class="kv-label" i18n="@@insurance.detail.labelVehicle">Vehicle</span>
                 <span class="kv-value">{{ policy()!.vehicleMake }} {{ policy()!.vehicleModel }}<br><span class="mono" style="font-size:12px; color:var(--text-muted)">{{ policy()!.registrationNumber }}</span></span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Premium</span>
+                <span class="kv-label" i18n="@@insurance.detail.labelPremium">Premium</span>
                 <span class="kv-value">{{ policy()!.premium | euNumber:'1.2-2' }} €</span>
               </div>
             </div>
@@ -99,18 +99,18 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
 
           <!-- Validity & Notes -->
           <div class="info-group">
-            <div class="info-group-title">Validity &amp; Notes</div>
+            <div class="info-group-title" i18n="@@insurance.detail.sectionValidity">Validity &amp; Notes</div>
             <div class="kv-grid">
               <div class="kv-row">
-                <span class="kv-label">Valid From</span>
+                <span class="kv-label" i18n="@@insurance.detail.labelValidFrom">Valid From</span>
                 <span class="kv-value">{{ policy()!.validFrom | date:'dd.MM.yyyy' }}</span>
               </div>
               <div class="kv-row">
-                <span class="kv-label">Valid To</span>
+                <span class="kv-label" i18n="@@insurance.detail.labelValidTo">Valid To</span>
                 <span class="kv-value">{{ policy()!.validTo | date:'dd.MM.yyyy' }}</span>
               </div>
               <div class="kv-row kv-full">
-                <span class="kv-label">Coverage Notes</span>
+                <span class="kv-label" i18n="@@insurance.detail.labelCoverageNotes">Coverage Notes</span>
                 <span class="kv-value">{{ policy()!.coverageNotes || '—' }}</span>
               </div>
             </div>
@@ -124,37 +124,37 @@ import { EuNumberPipe } from '../../../shared/pipes/eu-number.pipe';
     @if (showEdit) {
       <div class="modal-overlay" (click)="closeEdit()">
         <div class="modal-box" (click)="$event.stopPropagation()">
-          <h2 class="modal-title">Edit Policy</h2>
+          <h2 class="modal-title" i18n="@@insurance.detail.editModalTitle">Edit Policy</h2>
           <div class="form-grid">
             <div class="form-group">
-              <label>Policy Number *</label>
-              <input [(ngModel)]="editForm.policyNumber" placeholder="POL-2025-001" />
+              <label i18n="@@insurance.detail.fieldPolicyNumber">Policy Number *</label>
+              <input [(ngModel)]="editForm.policyNumber" placeholder="POL-2025-001" i18n-placeholder="@@insurance.detail.fieldPolicyNumberPlaceholder" />
             </div>
             <div class="form-group">
-              <label>Insurer *</label>
-              <input [(ngModel)]="editForm.insurer" placeholder="Croatia osiguranje" />
+              <label i18n="@@insurance.detail.fieldInsurer">Insurer *</label>
+              <input [(ngModel)]="editForm.insurer" placeholder="Croatia osiguranje" i18n-placeholder="@@insurance.detail.fieldInsurerPlaceholder" />
             </div>
             <div class="form-group">
-              <label>Premium (EUR) *</label>
+              <label i18n="@@insurance.detail.fieldPremium">Premium (EUR) *</label>
               <input type="number" [(ngModel)]="editForm.premium" min="0" />
             </div>
             <div class="form-group">
-              <label>Valid From *</label>
+              <label i18n="@@insurance.detail.fieldValidFrom">Valid From *</label>
               <input type="date" [(ngModel)]="editForm.validFrom" />
             </div>
             <div class="form-group">
-              <label>Valid To *</label>
+              <label i18n="@@insurance.detail.fieldValidTo">Valid To *</label>
               <input type="date" [(ngModel)]="editForm.validTo" />
             </div>
             <div class="form-group span-2">
-              <label>Coverage Notes</label>
-              <textarea [(ngModel)]="editForm.coverageNotes" rows="2" placeholder="AO + kasko…"></textarea>
+              <label i18n="@@insurance.detail.fieldCoverageNotes">Coverage Notes</label>
+              <textarea [(ngModel)]="editForm.coverageNotes" rows="2" placeholder="AO + kasko…" i18n-placeholder="@@insurance.detail.fieldCoverageNotesPlaceholder"></textarea>
             </div>
           </div>
           @if (formError()) { <div class="form-error">{{ formError() }}</div> }
           <div class="modal-actions">
-            <button class="btn btn-secondary" (click)="closeEdit()">Cancel</button>
-            <button class="btn btn-primary" [disabled]="saving()" (click)="saveEdit()">
+            <button class="btn btn-secondary" (click)="closeEdit()" i18n="@@insurance.detail.cancelButton">Cancel</button>
+            <button class="btn btn-primary" [disabled]="saving()" (click)="saveEdit()" i18n="@@insurance.detail.saveButton">
               @if (saving()) { <span class="btn-spinner"></span> Saving… } @else { Update }
             </button>
           </div>

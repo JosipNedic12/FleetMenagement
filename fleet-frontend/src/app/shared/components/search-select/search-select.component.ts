@@ -57,7 +57,7 @@ import { LucideAngularModule, ChevronDown, X } from 'lucide-angular';
       @if (isOpen()) {
         <div class="ss-dropdown" role="listbox">
           @if (filteredItems().length === 0) {
-            <div class="ss-empty">No results</div>
+            <div class="ss-empty" i18n="@@shared.searchSelect.noResults">No results</div>
           }
           @for (item of filteredItems(); track $index) {
             <button
