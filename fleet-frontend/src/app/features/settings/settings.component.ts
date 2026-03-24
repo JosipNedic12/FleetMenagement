@@ -209,7 +209,7 @@ import { DatePipe } from '@angular/common';
       font-weight: 700;
       padding: 2px 9px;
       border-radius: 20px;
-      text-transform: uppercase;
+      text-transform: capitalize;
       letter-spacing: 0.4px;
     }
     .role-admin        { background: #ede9fe; color: #6d28d9; }

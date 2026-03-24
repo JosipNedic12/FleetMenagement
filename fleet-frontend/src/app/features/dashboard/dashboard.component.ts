@@ -401,7 +401,7 @@ interface StatCard {
     .compliance-row--due_soon td:first-child { border-left: 3px solid #f59e0b; }
     .reg-cell { font-weight: 600; }
 
-    .type-chip { font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.4px; }
+    .type-chip { font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px; text-transform: capitalize; letter-spacing: 0.4px; }
     .type-chip--insurance { background: rgba(59,130,246,0.12); color: #3b82f6; }
     .type-chip--registration { background: rgba(139,92,246,0.12); color: #8b5cf6; }
     .type-chip--inspection { background: rgba(16,185,129,0.12); color: #10b981; }

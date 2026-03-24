@@ -20,7 +20,7 @@ type BadgeVariant = 'success' | 'danger' | 'warning' | 'info' | 'neutral';
       font-weight: 600;
       letter-spacing: 0.2px;
       white-space: nowrap;
-      text-transform: uppercase;
+      text-transform: capitalize;
     }
     .badge-success  { background: #dcfce7; color: #15803d; }
     .badge-danger   { background: #fee2e2; color: #dc2626; }

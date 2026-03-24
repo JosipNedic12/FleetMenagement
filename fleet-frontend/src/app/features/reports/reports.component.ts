@@ -259,7 +259,7 @@ interface ComplianceRow {
                       <div class="cell-primary">{{ row.reg }}</div>
                       <div class="cell-sub">{{ row.makeModel }}</div>
                     </td>
-                    <td><span class="badge badge-{{ row.status }}">{{ row.status }}</span></td>
+                    <td><span class="badge badge-{{ row.status }}">{{ row.status === 'in_shop' ? 'In Shop' : row.status }}</span></td>
                     <td class="num bold">{{ row.kmThisMonth | number:'1.0-0' }}</td>
                     <td class="num">{{ row.kmTotal | number:'1.0-0' }}</td>
                     <td class="muted">{{ row.lastLogDate ? (row.lastLogDate | date:'dd.MM.yyyy') : '—' }}</td>
@@ -318,7 +318,7 @@ interface ComplianceRow {
                     <td>{{ row.type }}</td>
                     <td>{{ row.expiresAt | date:'dd.MM.yyyy' }}</td>
                     <td class="num">{{ row.daysLeft }}</td>
-                    <td><span class="badge badge-{{ row.status }}">{{ row.status }}</span></td>
+                    <td><span class="badge badge-{{ row.status }}">{{ row.status === 'ok' ? 'OK' : row.status }}</span></td>
                   </tr>
                 }
               </tbody>
@@ -368,7 +368,7 @@ interface ComplianceRow {
     .cell-primary { font-weight: 600; color: var(--text-primary); }
     .cell-sub { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
 
-    .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; text-transform: lowercase; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; text-transform: capitalize; }
     .badge-active { background: #d1fae5; color: #065f46; }
     .badge-service { background: #fef3c7; color: #92400e; }
     .badge-retired, .badge-sold { background: var(--subtle-bg); color: #64748b; }
