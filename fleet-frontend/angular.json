@@ -15,9 +15,15 @@
       "sourceRoot": "src",
       "prefix": "app",
       "i18n": {
-        "sourceLocale": "en",
+        "sourceLocale": {
+          "code": "en",
+          "baseHref": "/en/"
+        },
         "locales": {
-          "hr": "src/locale/messages.hr.xlf"
+          "hr": {
+            "translation": "src/locale/messages.hr.xlf",
+            "baseHref": "/hr/"
+          }
         }
       },
       "architect": {
@@ -45,7 +51,7 @@
           },
           "configurations": {
             "en": {
-              "localize": ["en"]
+              "localize": true
             },
             "hr": {
               "localize": ["hr"]

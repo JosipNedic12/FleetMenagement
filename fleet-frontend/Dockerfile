@@ -3,7 +3,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci --legacy-peer-deps
 COPY . .
-RUN npm run build:en && npm run build:hr
+RUN npm run build:all
 
 FROM nginx:alpine
 COPY --from=build /app/dist/fleet-frontend/browser/en /usr/share/nginx/html/en
