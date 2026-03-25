@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../core/auth/auth.service';
 import { AuthApiService } from '../../core/auth/feature-api.services';
 import { BadgeComponent } from '../../shared/components/badge/badge.component';
+import { TranslateService } from '../../core/services/translate.service';
 import { LucideAngularModule, Lock, Check, X, Eye, EyeOff, ClipboardList } from 'lucide-angular';
 
 @Component({
@@ -14,7 +15,7 @@ import { LucideAngularModule, Lock, Check, X, Eye, EyeOff, ClipboardList } from 
     <div class="page">
       <div class="page-header">
         <div>
-          <h1 class="page-title">My Profile</h1>
+          <h1 class="page-title">{{ t.profileTitle }}</h1>
           <p class="page-subtitle">Manage your account and security settings</p>
         </div>
       </div>
@@ -57,7 +58,7 @@ import { LucideAngularModule, Lock, Check, X, Eye, EyeOff, ClipboardList } from 
         <div class="profile-card password-card">
           <div class="card-header">
             <div class="card-icon"><lucide-icon [img]="icons.Lock" [size]="16" [strokeWidth]="2"></lucide-icon></div>
-            <h3 class="card-title">Change Password</h3>
+            <h3 class="card-title">{{ t.profileChangePassword }}</h3>
           </div>
           <div class="card-body">
             @if (pwSuccess()) {
@@ -73,7 +74,7 @@ import { LucideAngularModule, Lock, Check, X, Eye, EyeOff, ClipboardList } from 
               </div>
             }
             <div class="form-group">
-              <label class="form-label">Current Password</label>
+              <label class="form-label">{{ t.profileCurrentPassword }}</label>
               <div class="input-wrapper">
                 <input
                   [type]="showCurrentPw ? 'text' : 'password'"
@@ -88,7 +89,7 @@ import { LucideAngularModule, Lock, Check, X, Eye, EyeOff, ClipboardList } from 
               </div>
             </div>
             <div class="form-group">
-              <label class="form-label">New Password</label>
+              <label class="form-label">{{ t.profileNewPassword }}</label>
               <div class="input-wrapper">
                 <input
                   [type]="showNewPw ? 'text' : 'password'"
@@ -109,7 +110,7 @@ import { LucideAngularModule, Lock, Check, X, Eye, EyeOff, ClipboardList } from 
               }
             </div>
             <div class="form-group">
-              <label class="form-label">Confirm New Password</label>
+              <label class="form-label">{{ t.profileConfirmPassword }}</label>
               <input
                 type="password"
                 class="form-input"
@@ -126,7 +127,7 @@ import { LucideAngularModule, Lock, Check, X, Eye, EyeOff, ClipboardList } from 
               [disabled]="pwSaving() || !canSubmitPw()"
               (click)="changePassword()"
             >
-              {{ pwSaving() ? 'Updating…' : 'Update Password' }}
+              {{ pwSaving() ? 'Updating…' : t.profileChangePassword }}
             </button>
           </div>
         </div>
@@ -470,6 +471,7 @@ import { LucideAngularModule, Lock, Check, X, Eye, EyeOff, ClipboardList } from 
 export class ProfileComponent implements OnInit {
   readonly icons = { Lock, Check, X, Eye, EyeOff, ClipboardList };
   auth = inject(AuthService);
+  readonly t = inject(TranslateService);
   private authApi = inject(AuthApiService);
 
   user = this.auth.user;

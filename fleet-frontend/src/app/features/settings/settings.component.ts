@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ThemeService, ThemeDefinition } from '../../core/services/theme.service';
 import { AuthService } from '../../core/auth/auth.service';
 import { LanguageService, AppLocale } from '../../core/services/language.service';
+import { TranslateService } from '../../core/services/translate.service';
 import { LucideAngularModule, Palette, User, KeyRound, Check, Globe } from 'lucide-angular';
 import { DatePipe } from '@angular/common';
 
@@ -14,7 +15,7 @@ import { DatePipe } from '@angular/common';
     <div class="page page-fade-in">
       <div class="page-header">
         <div>
-          <h1 class="page-title">Settings</h1>
+          <h1 class="page-title">{{ t.settingsTitle }}</h1>
           <p class="page-subtitle">Manage your preferences and account.</p>
         </div>
       </div>
@@ -23,10 +24,10 @@ import { DatePipe } from '@angular/common';
       <section class="settings-section">
         <div class="section-header">
           <lucide-icon [img]="paletteIcon" [size]="16" [strokeWidth]="1.8"></lucide-icon>
-          <h2 class="section-title">Appearance</h2>
+          <h2 class="section-title">{{ t.settingsGeneral }}</h2>
         </div>
         <div class="section-body">
-          <p class="section-label">Theme</p>
+          <p class="section-label">{{ t.settingsTheme }}</p>
           <div class="theme-grid">
             @for (t of themeService.themes; track t.key) {
               <button
@@ -56,10 +57,10 @@ import { DatePipe } from '@angular/common';
       <section class="settings-section">
         <div class="section-header">
           <lucide-icon [img]="globeIcon" [size]="16" [strokeWidth]="1.8"></lucide-icon>
-          <h2 class="section-title">Language</h2>
+          <h2 class="section-title">{{ t.settingsLanguage }}</h2>
         </div>
         <div class="section-body">
-          <p class="section-label">Interface Language</p>
+          <p class="section-label">{{ t.settingsLanguage }}</p>
           <div class="theme-grid" style="grid-template-columns: repeat(2, 1fr); max-width: 300px;">
             @for (lang of langs; track lang.code) {
               <button
@@ -99,7 +100,7 @@ import { DatePipe } from '@angular/common';
             </div>
             <button class="btn btn-secondary" (click)="router.navigate(['/profile'])">
               <lucide-icon [img]="keyIcon" [size]="14" [strokeWidth]="2"></lucide-icon>
-              Change Password
+              {{ t.profileChangePassword }}
             </button>
           </div>
         </div>
@@ -267,6 +268,7 @@ export class SettingsComponent {
   readonly auth = inject(AuthService);
   readonly router = inject(Router);
   readonly langService = inject(LanguageService);
+  readonly t = inject(TranslateService);
 
   readonly paletteIcon = Palette;
   readonly userIcon = User;

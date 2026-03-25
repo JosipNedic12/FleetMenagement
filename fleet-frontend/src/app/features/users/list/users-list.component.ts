@@ -5,6 +5,7 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { EmployeeApiService, AuthApiService } from '../../../core/auth/feature-api.services';
 import { Employee } from '../../../core/models/models';
 import { BadgeComponent } from '../../../shared/components/badge/badge.component';
+import { TranslateService } from '../../../core/services/translate.service';
 import { LucideAngularModule, Eye } from 'lucide-angular';
 
 @Component({
@@ -15,36 +16,36 @@ import { LucideAngularModule, Eye } from 'lucide-angular';
     <div class="page">
       <div class="page-header">
         <div>
-          <h1 class="page-title">User Management</h1>
+          <h1 class="page-title">{{ t.userMgmtTitle }}</h1>
           <p class="page-subtitle">{{ filtered().length }} employees · Admin only</p>
         </div>
         <div class="header-actions">
-          <input class="search-input" [ngModel]="search()" (ngModelChange)="search.set($event)" placeholder="Search name, email…" />
+          <input class="search-input" [ngModel]="search()" (ngModelChange)="search.set($event)" [placeholder]="t.userMgmtSearchPlaceholder" />
         </div>
       </div>
 
       <div class="filter-tabs">
-        <button [class.active]="filter() === 'all'"      (click)="filter.set('all')">All</button>
-        <button [class.active]="filter() === 'active'"   (click)="filter.set('active')">Active</button>
-        <button [class.active]="filter() === 'inactive'" (click)="filter.set('inactive')">Inactive</button>
+        <button [class.active]="filter() === 'all'"      (click)="filter.set('all')">{{ t.chipAll }}</button>
+        <button [class.active]="filter() === 'active'"   (click)="filter.set('active')">{{ t.chipActive }}</button>
+        <button [class.active]="filter() === 'inactive'" (click)="filter.set('inactive')">{{ t.chipInactive }}</button>
       </div>
 
       <div class="table-card">
         @if (loading()) {
           <div class="table-loading">Loading…</div>
         } @else if (filtered().length === 0) {
-          <div class="table-empty">No employees found.</div>
+          <div class="table-empty">{{ t.userMgmtNoUsersFound }}</div>
         } @else {
           <table class="table">
             <thead>
               <tr>
                 <th>Name</th>
-                <th>Email</th>
+                <th>{{ t.profileEmail }}</th>
                 <th>Department</th>
-                <th>Status</th>
+                <th>{{ t.userMgmtStatus }}</th>
                 <th>Driver Profile</th>
                 <th>App User</th>
-                <th>Actions</th>
+                <th>{{ t.userMgmtActions }}</th>
               </tr>
             </thead>
             <tbody>
@@ -93,7 +94,7 @@ import { LucideAngularModule, Eye } from 'lucide-angular';
             <div class="detail-header">
               <div class="detail-avatar">{{ getInitials(addUserTarget) }}</div>
               <div>
-                <h2 class="detail-name">Add App User</h2>
+                <h2 class="detail-name">{{ t.userMgmtAddUser }}</h2>
                 <span class="detail-email">{{ addUserTarget.firstName }} {{ addUserTarget.lastName }}</span>
               </div>
               <button class="close-btn" (click)="closeAddUser()">&times;</button>
@@ -113,7 +114,7 @@ import { LucideAngularModule, Eye } from 'lucide-angular';
                   <input class="form-input" type="text" [(ngModel)]="newUser.temporaryPassword" name="password" required placeholder="Temp password (will be hashed)" />
                 </div>
                 <div class="form-group">
-                  <label>Role</label>
+                  <label>{{ t.userMgmtRole }}</label>
                   <select class="form-input" [(ngModel)]="newUser.role" name="role" required>
                     <option value="ReadOnly">ReadOnly</option>
                     <option value="FleetManager">FleetManager</option>
@@ -347,6 +348,7 @@ import { LucideAngularModule, Eye } from 'lucide-angular';
 export class UsersListComponent implements OnInit {
   readonly icons = { Eye };
   auth = inject(AuthService);
+  readonly t = inject(TranslateService);
   private employeeApi = inject(EmployeeApiService);
   private authApi = inject(AuthApiService);
 

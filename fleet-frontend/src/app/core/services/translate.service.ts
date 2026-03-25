@@ -66,4 +66,64 @@ export class TranslateService {
 
   // ── Tooltip ───────────────────────────────────────────────
   readonly currencySuffix = $localize`:@@dashboard.tooltip.currencySuffix:EUR`;
+
+  // ── Common Chips / Filter Labels ─────────────────────────
+  readonly chipAll        = $localize`:@@common.chip.all:All`;
+  readonly chipActive     = $localize`:@@common.chip.active:Active`;
+  readonly chipClosed     = $localize`:@@common.chip.closed:Closed`;
+  readonly chipOpen       = $localize`:@@common.chip.open:Open`;
+  readonly chipPending    = $localize`:@@common.chip.pending:Pending`;
+  readonly chipInactive   = $localize`:@@common.chip.inactive:Inactive`;
+  readonly chipCompleted  = $localize`:@@common.chip.completed:Completed`;
+  readonly chipInProgress = $localize`:@@common.chip.inProgress:In Progress`;
+  readonly chipExpired    = $localize`:@@common.chip.expired:Expired`;
+  readonly chipCancelled  = $localize`:@@common.chip.cancelled:Cancelled`;
+  readonly chipOverdue    = $localize`:@@common.chip.overdue:Overdue`;
+  readonly chipScheduled  = $localize`:@@common.chip.scheduled:Scheduled`;
+  readonly chipDraft      = $localize`:@@common.chip.draft:Draft`;
+
+  // ── Profile Page ──────────────────────────────────────────
+  readonly profileTitle           = $localize`:@@profile.title:Profile`;
+  readonly profileFirstName       = $localize`:@@profile.firstName:First Name`;
+  readonly profileLastName        = $localize`:@@profile.lastName:Last Name`;
+  readonly profileEmail           = $localize`:@@profile.email:Email`;
+  readonly profilePhone           = $localize`:@@profile.phone:Phone`;
+  readonly profileSave            = $localize`:@@profile.save:Save`;
+  readonly profileCancel          = $localize`:@@profile.cancel:Cancel`;
+  readonly profileChangePassword  = $localize`:@@profile.changePassword:Change Password`;
+  readonly profileCurrentPassword = $localize`:@@profile.currentPassword:Current Password`;
+  readonly profileNewPassword     = $localize`:@@profile.newPassword:New Password`;
+  readonly profileConfirmPassword = $localize`:@@profile.confirmPassword:Confirm Password`;
+
+  // ── Settings Page ─────────────────────────────────────────
+  readonly settingsTitle      = $localize`:@@settings.title:Settings`;
+  readonly settingsGeneral    = $localize`:@@settings.general:General`;
+  readonly settingsNotifications = $localize`:@@settings.notifications:Notifications`;
+  readonly settingsLanguage   = $localize`:@@settings.language:Language`;
+  readonly settingsTheme      = $localize`:@@settings.theme:Theme`;
+  readonly settingsDark       = $localize`:@@settings.dark:Dark`;
+  readonly settingsLight      = $localize`:@@settings.light:Light`;
+  readonly settingsSystem     = $localize`:@@settings.system:System`;
+  readonly settingsDateFormat = $localize`:@@settings.dateFormat:Date Format`;
+  readonly settingsTimeZone   = $localize`:@@settings.timeZone:Time Zone`;
+
+  // ── User Management Page ──────────────────────────────────
+  readonly userMgmtTitle         = $localize`:@@userMgmt.title:User Management`;
+  readonly userMgmtUsers         = $localize`:@@userMgmt.users:Users`;
+  readonly userMgmtAddUser       = $localize`:@@userMgmt.addUser:Add User`;
+  readonly userMgmtEditUser      = $localize`:@@userMgmt.editUser:Edit User`;
+  readonly userMgmtDeleteUser    = $localize`:@@userMgmt.deleteUser:Delete User`;
+  readonly userMgmtRole          = $localize`:@@userMgmt.role:Role`;
+  readonly userMgmtRoleAdmin     = $localize`:@@userMgmt.roleAdmin:Admin`;
+  readonly userMgmtRoleManager   = $localize`:@@userMgmt.roleManager:Manager`;
+  readonly userMgmtRoleDriver    = $localize`:@@userMgmt.roleDriver:Driver`;
+  readonly userMgmtRoleViewer    = $localize`:@@userMgmt.roleViewer:Viewer`;
+  readonly userMgmtStatus        = $localize`:@@userMgmt.status:Status`;
+  readonly userMgmtLastLogin     = $localize`:@@userMgmt.lastLogin:Last Login`;
+  readonly userMgmtCreated       = $localize`:@@userMgmt.created:Created`;
+  readonly userMgmtActions       = $localize`:@@userMgmt.actions:Actions`;
+  readonly userMgmtSearchPlaceholder = $localize`:@@userMgmt.searchPlaceholder:Search users...`;
+  readonly userMgmtNoUsersFound  = $localize`:@@userMgmt.noUsersFound:No users found`;
+  readonly userMgmtConfirmDelete = $localize`:@@userMgmt.confirmDelete:Confirm Delete`;
+  readonly userMgmtAreYouSure    = $localize`:@@userMgmt.areYouSure:Are you sure?`;
 }
