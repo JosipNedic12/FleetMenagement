@@ -8,7 +8,7 @@
     "start:en": "ng serve --configuration=en",
     "build": "ng build",
     "build:hr": "ng build --configuration=production,hr",
-    "build:all": "ng build --configuration=production,en",
+    "build:all": "ng build --configuration=production,en && ng build --configuration=production,hr",
     "extract-i18n": "ng extract-i18n --output-path src/locale",
     "watch": "ng build --watch --configuration development"
   },
